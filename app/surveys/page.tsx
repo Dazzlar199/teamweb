@@ -609,7 +609,7 @@ function SurveyDetailModal({
           <div>
             <h3 className="font-semibold text-[#1a1a1a] mb-2">질문 목록</h3>
             <div className="space-y-3">
-              {surveyData.questions.map((question, index) => (
+              {survey.questions.map((question, index) => (
                 <div
                   key={question.id}
                   className="bg-[#F9FAFB] rounded p-3 text-sm"
