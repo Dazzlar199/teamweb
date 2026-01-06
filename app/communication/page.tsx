@@ -366,11 +366,11 @@ export default function CommunicationPage() {
 
               <div className="flex items-center gap-4 pb-4 border-b border-[#E5E7EB]">
                 <button
-                  onClick={() => {
-                    toggleLike(selectedPost.id, currentUser);
-                    const updated = getPostById(selectedPost.id);
+                  onClick={async () => {
+                    await toggleLike(selectedPost.id, currentUser);
+                    const updated = await getPostById(selectedPost.id);
                     if (updated) setSelectedPost(updated);
-                    loadPosts();
+                    await loadPosts();
                   }}
                   className={`flex items-center gap-2 px-3 py-1 rounded text-sm transition-colors ${
                     selectedPost.likes.includes(currentUser)
@@ -475,11 +475,11 @@ export default function CommunicationPage() {
                         )}
                       </div>
                       <button
-                        onClick={() => {
-                          toggleCommentLike(selectedPost.id, comment.id, currentUser);
-                          const updated = getPostById(selectedPost.id);
+                        onClick={async () => {
+                          await toggleCommentLike(selectedPost.id, comment.id, currentUser);
+                          const updated = await getPostById(selectedPost.id);
                           if (updated) setSelectedPost(updated);
-                          loadPosts();
+                          await loadPosts();
                         }}
                         className={`flex items-center gap-1 px-2 py-1 rounded text-xs transition-colors ${
                           comment.likes.includes(currentUser)

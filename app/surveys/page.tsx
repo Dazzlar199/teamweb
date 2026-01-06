@@ -39,7 +39,10 @@ export default function SurveysPage() {
       setSurveys(loaded);
       setStats(getSurveyStats());
     } catch (error) {
-      handleError(error as Error, "설문조사 로드");
+      handleError(error as Error, {
+        component: "SurveysPage",
+        action: "설문조사 로드",
+      });
     }
   };
 
@@ -54,6 +57,7 @@ export default function SurveysPage() {
         id: `survey-${Date.now()}`,
         title: newSurvey.title,
         description: newSurvey.description,
+        targetType: newSurvey.targetType,
         questions: newSurvey.questions,
         targetCount: newSurvey.targetCount,
         responseCount: 0,
@@ -69,11 +73,15 @@ export default function SurveysPage() {
       setNewSurvey({
         title: "",
         description: "",
+        targetType: "all" as SurveyTargetType,
         targetCount: 150,
         questions: [],
       });
     } catch (error) {
-      handleError(error as Error, "설문조사 추가");
+      handleError(error as Error, {
+        component: "SurveysPage",
+        action: "설문조사 추가",
+      });
     }
   };
 
@@ -87,7 +95,10 @@ export default function SurveysPage() {
         setSelectedSurvey(null);
       }
     } catch (error) {
-      handleError(error as Error, "설문조사 삭제");
+      handleError(error as Error, {
+        component: "SurveysPage",
+        action: "설문조사 삭제",
+      });
     }
   };
 

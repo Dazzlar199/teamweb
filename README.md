@@ -1,61 +1,61 @@
-# 특별시 팀 대시보드
+# 팀 대시보드 (Team Dashboard)
 
-> **목적**: 특별시 팀 4명을 위한 내부 협업 도구  
-> **기능**: 일정 공유, 작업 관리, 파일 공유, 이미지 업로드/다운로드
+특별시 팀의 내부 협업 및 관리 도구입니다.
 
----
+## 🚀 빠른 시작
 
-## 🚀 시작하기
+### 로컬 개발
 
-### 개발 서버 실행
 ```bash
+npm install
 npm run dev
 ```
 
-### 빌드
+브라우저에서 [http://localhost:3000](http://localhost:3000) 열기
+
+### 환경 변수 설정
+
+`.env.local` 파일 생성:
+
 ```bash
-npm run build
+NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
 ```
 
-### 배포 (Vercel)
-```bash
-# Vercel CLI 설치
-npm i -g vercel
+## 📦 배포
 
-# 배포
-vercel
-```
+### Vercel 배포
 
----
+1. GitHub 저장소 연결
+2. Root Directory: `apps/team-dashboard` 설정
+3. Environment Variables 추가:
+   - `NEXT_PUBLIC_SUPABASE_URL`
+   - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+4. Deploy
 
-## 📋 기능
+자세한 내용은 [DEPLOYMENT.md](./DEPLOYMENT.md) 참고
 
-### ✅ 구현 예정
-- [ ] 링크 기반 인증 (관리자 허가)
-- [ ] 일정 공유/등록 (캘린더)
-- [ ] 작업 등록/관리
-- [ ] 파일 업로드/다운로드
-- [ ] 이미지 업로드/다운로드
-- [ ] 팀원 정보
-- [ ] 대시보드
+## 📚 문서
 
----
+- [배포 가이드](./DEPLOYMENT.md)
+- [Supabase 설정](./SUPABASE_SETUP.md)
+- [Supabase 빠른 시작](./SUPABASE_QUICK_START.md)
 
-## 🎨 디자인 시스템
+## 🛠️ 기술 스택
 
-### 브랜드 컬러
-- **Primary**: `#E8A4B8` (로즈핑크)
-- **Dark Background**: `#1A1A1D`
-- **Accent Gold**: `#F5D485`
+- Next.js 16
+- React 19
+- TypeScript
+- Tailwind CSS
+- Supabase (선택사항)
 
----
+## 📝 기능
 
-## 🔐 인증
-
-링크 기반 인증:
-- 관리자가 생성한 링크로만 접근 가능
-- Supabase Auth 사용
-
----
-
-**생성일**: 2025-01-05
+- 대시보드
+- 일정 관리
+- 프로젝트 관리
+- 문서 관리
+- 2026 예비창업패키지 관리
+- 재무 관리
+- 고객 검증 (인터뷰, 설문조사)
+- 소통공간 (게시판)

@@ -68,7 +68,10 @@ export default function InterviewsPage() {
       setInterviews(loaded);
       setStats(getInterviewStats());
     } catch (error) {
-      handleError(error as Error, "인터뷰 로드");
+      handleError(error as Error, {
+        component: "InterviewsPage",
+        action: "인터뷰 로드",
+      });
     }
   };
 
@@ -110,7 +113,10 @@ export default function InterviewsPage() {
         script: COUPLE_INTERVIEW_SCRIPT,
       });
     } catch (error) {
-      handleError(error as Error, "인터뷰 추가");
+      handleError(error as Error, {
+        component: "InterviewsPage",
+        action: "인터뷰 추가",
+      });
     }
   };
 
@@ -124,7 +130,10 @@ export default function InterviewsPage() {
         setSelectedInterview(null);
       }
     } catch (error) {
-      handleError(error as Error, "인터뷰 삭제");
+      handleError(error as Error, {
+        component: "InterviewsPage",
+        action: "인터뷰 삭제",
+      });
     }
   };
 
@@ -135,7 +144,10 @@ export default function InterviewsPage() {
       loadInterviews();
       setSelectedInterview(updated);
     } catch (error) {
-      handleError(error as Error, "인터뷰 업데이트");
+      handleError(error as Error, {
+        component: "InterviewsPage",
+        action: "인터뷰 업데이트",
+      });
     }
   };
 
