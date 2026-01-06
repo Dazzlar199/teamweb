@@ -339,7 +339,7 @@ export default function TasksPage() {
     if (confirm("작업을 삭제하시겠습니까?")) {
       // 활동 로그 추가
       addActivityLog({
-        type: 'task',
+        type: 'event',
         action: '작업을 삭제했습니다',
         user: currentUser,
         targetId: id,
@@ -384,7 +384,7 @@ export default function TasksPage() {
     // 완료 시 알림
     if (newStatus === 'done') {
       addNotification({
-        type: 'task',
+        type: 'event',
         title: '작업 완료',
         message: `"${task.title}" 작업이 완료되었습니다.`,
         taskId: id,
