@@ -314,8 +314,8 @@ function SurveyAddModal({
             </label>
             <input
               type="text"
-              value={survey.title}
-              onChange={(e) => onUpdate({ ...survey, title: e.target.value })}
+              value={surveyData.title}
+              onChange={(e) => onUpdate({ ...surveyData, title: e.target.value })}
               className="w-full px-3 py-2 border border-[#E2E8F0] rounded bg-white text-[#1a1a1a]"
               placeholder="설문조사 제목"
             />
@@ -326,8 +326,8 @@ function SurveyAddModal({
               설명
             </label>
             <textarea
-              value={survey.description}
-              onChange={(e) => onUpdate({ ...survey, description: e.target.value })}
+              value={surveyData.description}
+              onChange={(e) => onUpdate({ ...surveyData, description: e.target.value })}
               rows={3}
               className="w-full px-3 py-2 border border-[#E2E8F0] rounded bg-white text-[#1a1a1a]"
               placeholder="설문조사 설명"
@@ -340,8 +340,8 @@ function SurveyAddModal({
             </label>
             <input
               type="number"
-              value={survey.targetCount}
-              onChange={(e) => onUpdate({ ...survey, targetCount: parseInt(e.target.value) || 0 })}
+              value={surveyData.targetCount}
+              onChange={(e) => onUpdate({ ...surveyData, targetCount: parseInt(e.target.value) || 0 })}
               className="w-full px-3 py-2 border border-[#E2E8F0] rounded bg-white text-[#1a1a1a]"
               placeholder="150"
             />
@@ -350,7 +350,7 @@ function SurveyAddModal({
           <div>
             <div className="flex items-center justify-between mb-2">
               <label className="block text-sm font-medium text-[#1a1a1a]">
-                질문 목록 ({survey.questions.length}개)
+                질문 목록 ({surveyData.questions.length}개)
               </label>
               <button
                 onClick={onAddQuestion}
@@ -361,7 +361,7 @@ function SurveyAddModal({
             </div>
 
             <div className="space-y-3">
-              {survey.questions.map((question, index) => (
+              {surveyData.questions.map((question, index) => (
                 <QuestionEditor
                   key={question.id}
                   question={question}
@@ -609,7 +609,7 @@ function SurveyDetailModal({
           <div>
             <h3 className="font-semibold text-[#1a1a1a] mb-2">질문 목록</h3>
             <div className="space-y-3">
-              {survey.questions.map((question, index) => (
+              {surveyData.questions.map((question, index) => (
                 <div
                   key={question.id}
                   className="bg-[#F9FAFB] rounded p-3 text-sm"
