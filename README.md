@@ -22,18 +22,31 @@ NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
 ```
 
-## 📦 배포
+## 📦 Vercel 배포
 
-### Vercel 배포
+### 중요: Vercel 프로젝트 설정
 
-1. GitHub 저장소 연결
-2. Root Directory: `apps/team-dashboard` 설정
-3. Environment Variables 추가:
-   - `NEXT_PUBLIC_SUPABASE_URL`
-   - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-4. Deploy
+1. **Root Directory**: `apps/team-dashboard` 로 설정
+2. **Framework Preset**: Next.js (자동 감지됨)
+3. **Build Command**: 자동 감지됨 (설정 불필요)
+4. **Output Directory**: `.next` (자동 감지됨)
+5. **Install Command**: `npm install` (자동 감지됨)
 
-자세한 내용은 [DEPLOYMENT.md](./DEPLOYMENT.md) 참고
+### 환경 변수
+
+Vercel → Settings → Environment Variables에서 설정:
+
+```
+NEXT_PUBLIC_SUPABASE_URL=https://ldvfagbaxlispvhygpip.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+```
+
+### Git Submodule 경고 해결
+
+경고가 나타나면:
+1. Vercel → Settings → Git
+2. "Ignored Build Step" 확인
+3. 또는 빌드 후 무시해도 됨 (기능에는 영향 없음)
 
 ## 📚 문서
 
