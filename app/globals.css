@@ -1,0 +1,134 @@
+@import "tailwindcss";
+
+:root {
+  /* 부드러운 컬러 팔레트 */
+  --primary: #1a1a1a;
+  --primary-hover: #2d2d2d;
+  --primary-light: #f5f5f5;
+  --primary-accent: #4a5568;
+
+  /* 배경 */
+  --bg-primary: #ffffff;
+  --bg-secondary: #fafafa;
+  --bg-tertiary: #f5f5f5;
+
+  /* 텍스트 */
+  --text-primary: #1a1a1a;
+  --text-secondary: #4a5568;
+  --text-tertiary: #718096;
+
+  /* 보더 */
+  --border: #e2e8f0;
+  --border-strong: #cbd5e0;
+
+  /* 상태 컬러 */
+  --success: #22c55e;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --info: #3b82f6;
+
+  /* 배경 */
+  --background: var(--bg-secondary);
+  --foreground: var(--text-primary);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-geist-sans), -apple-system, BlinkMacSystemFont,
+    "Noto Sans KR", sans-serif;
+  font-size: 13px;
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* Theme utility helpers */
+.page-shell {
+  min-height: 100vh;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+.surface-panel {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+.surface-card {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+}
+
+.surface-border {
+  border-color: var(--border);
+}
+
+.theme-text-primary {
+  color: var(--text-primary);
+}
+
+.theme-text-muted {
+  color: var(--text-secondary);
+}
+
+.theme-text-tertiary {
+  color: var(--text-tertiary);
+}
+
+/* 타이포그래피 스케일 */
+h1 {
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+}
+
+h2 {
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+}
+
+h3 {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+}
+
+p {
+  font-size: 13px;
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+  color: var(--text-secondary);
+}
+
+button {
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+input {
+  font-size: 13px;
+  letter-spacing: -0.01em;
+}
+

@@ -1,0 +1,9 @@
+{
+  "buildCommand": "cd ../.. && npm run build --workspace=apps/team-dashboard",
+  "outputDirectory": ".next",
+  "devCommand": "npm run dev",
+  "installCommand": "npm install",
+  "framework": "nextjs",
+  "regions": ["icn1"]
+}
+
