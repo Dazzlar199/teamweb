@@ -284,7 +284,7 @@ export default function SurveysPage() {
 
 // 설문조사 추가 모달
 function SurveyAddModal({
-  survey,
+  survey: surveyData,
   onUpdate,
   onAdd,
   onClose,
@@ -292,8 +292,8 @@ function SurveyAddModal({
   onUpdateQuestion,
   onDeleteQuestion,
 }: {
-  survey: { title: string; description: string; targetCount: number; questions: Question[] };
-  onUpdate: (surveyData: { title: string; description: string; targetCount: number; questions: Question[] }) => void;
+  survey: { title: string; description: string; targetType: SurveyTargetType; targetCount: number; questions: Question[] };
+  onUpdate: (surveyData: { title: string; description: string; targetType: SurveyTargetType; targetCount: number; questions: Question[] }) => void;
   onAdd: () => void;
   onClose: () => void;
   onAddQuestion: () => void;
