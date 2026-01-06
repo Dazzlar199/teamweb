@@ -10,7 +10,7 @@ import {
   getSurveyStats,
   getResponsesBySurvey,
 } from "@/lib/utils/survey";
-import type { Survey, Question, QuestionType, SurveyStatus } from "@/lib/types/survey";
+import type { Survey, Question, QuestionType, SurveyStatus, SurveyTargetType } from "@/lib/types/survey";
 
 export default function SurveysPage() {
   const { user } = useUser();
@@ -25,6 +25,7 @@ export default function SurveysPage() {
   const [newSurvey, setNewSurvey] = useState({
     title: "",
     description: "",
+    targetType: "all" as SurveyTargetType,
     targetCount: 150,
     questions: [] as Question[],
   });
