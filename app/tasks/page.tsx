@@ -277,6 +277,7 @@ export default function TasksPage() {
       status: "todo",
       priority: template.priority,
       assignedTo: "김찬주",
+      progress: 0,
       dueDate: new Date().toISOString().split("T")[0],
       tags: template.tags || [],
     });
