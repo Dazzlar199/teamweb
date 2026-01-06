@@ -54,7 +54,7 @@ export default function SurveysPage() {
     }
 
     try {
-      const survey: Survey = {
+      const survey = {
         id: `survey-${Date.now()}`,
         title: newSurvey.title,
         description: newSurvey.description,
@@ -62,11 +62,11 @@ export default function SurveysPage() {
         questions: newSurvey.questions,
         targetCount: newSurvey.targetCount,
         responseCount: 0,
-        status: "draft",
+        status: "draft" as SurveyStatus,
         createdAt: Date.now(),
         updatedAt: Date.now(),
         createdBy: currentUser,
-      };
+      } satisfies Survey;
 
       saveSurvey(survey);
       loadSurveys();
