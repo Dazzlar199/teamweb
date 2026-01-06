@@ -24,7 +24,17 @@ export async function saveDocument(document: Document, file?: File): Promise<voi
     
     // 파일이 있으면 저장
     if (file) {
-      fileUrl = await saveFile(file, `documents/${document.id}`);
+      const fileMetadata = {
+        id: document.id,
+        name: file.name,
+        size: file.size,
+        type: file.type,
+        uploadedBy: document.uploadedBy,
+        date: new Date().toISOString(),
+        isImage: file.type.startsWith('image/'),
+      };
+      await saveFile(fileMetadata, file);
+      fileUrl = document.id; // ID를 URL로 사용
     }
     
     const updatedDocument: Document = {
