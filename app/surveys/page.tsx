@@ -54,7 +54,7 @@ export default function SurveysPage() {
     }
 
     try {
-      const survey = {
+      const newSurveyData: Survey = {
         id: `survey-${Date.now()}`,
         title: newSurvey.title,
         description: newSurvey.description,
@@ -62,13 +62,13 @@ export default function SurveysPage() {
         questions: newSurvey.questions,
         targetCount: newSurvey.targetCount,
         responseCount: 0,
-        status: "draft" as SurveyStatus,
+        status: "draft",
         createdAt: Date.now(),
         updatedAt: Date.now(),
         createdBy: currentUser,
-      } satisfies Survey;
+      };
 
-      saveSurvey(survey);
+      saveSurvey(newSurveyData);
       loadSurveys();
       setShowAddForm(false);
       setNewSurvey({
@@ -293,7 +293,7 @@ function SurveyAddModal({
   onDeleteQuestion,
 }: {
   survey: { title: string; description: string; targetCount: number; questions: Question[] };
-  onUpdate: (survey: typeof survey) => void;
+  onUpdate: (surveyData: { title: string; description: string; targetCount: number; questions: Question[] }) => void;
   onAdd: () => void;
   onClose: () => void;
   onAddQuestion: () => void;
