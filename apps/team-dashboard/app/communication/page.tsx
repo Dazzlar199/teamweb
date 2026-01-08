@@ -16,6 +16,7 @@ import {
   toggleCommentLike,
 } from "@/lib/utils/post";
 import type { Post, PostCategory, Comment } from "@/lib/types/post";
+import RichTextEditor from "@/components/common/RichTextEditor";
 
 export default function CommunicationPage() {
   const { user, canModify } = useUser();
@@ -236,13 +237,14 @@ export default function CommunicationPage() {
                     </label>
                   )}
                 </div>
-                <textarea
-                  rows={10}
-                  placeholder="내용을 입력하세요..."
-                  value={newPost.content}
-                  onChange={(e) => setNewPost({...newPost, content: e.target.value})}
-                  className="w-full px-4 py-3 border border-[#E5E7EB] rounded-lg resize-none focus:ring-2 focus:ring-[#3B82F6] outline-none"
-                />
+                
+                <div className="border border-[#E5E7EB] rounded-lg overflow-hidden">
+                  <RichTextEditor 
+                    value={newPost.content} 
+                    onChange={(content) => setNewPost({...newPost, content})}
+                    placeholder="팀원들과 공유할 내용을 자유롭게 작성하세요 (이미지 첨부 가능)"
+                  />
+                </div>
               </div>
               <div className="p-6 bg-[#F9FAFB] border-t border-[#E5E7EB] flex justify-end gap-3">
                 <button onClick={() => setShowPostForm(false)} className="px-4 py-2 font-bold text-[#6B7280]">취소</button>
@@ -274,7 +276,9 @@ export default function CommunicationPage() {
                   </div>
                   <div className="text-xs text-[#9CA3AF]">{new Date(post.createdAt).toLocaleDateString()}</div>
                 </div>
-                <p className="text-sm text-[#4B5563] line-clamp-2 mb-4 leading-relaxed">{post.content}</p>
+                <p className="text-sm text-[#4B5563] line-clamp-2 mb-4 leading-relaxed">
+                  {post.content.replace(/<[^>]*>?/gm, '')}
+                </p>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-4 text-xs text-[#6B7280]">
                     <span className="font-bold text-[#111827]">{post.author}</span>
@@ -322,7 +326,11 @@ export default function CommunicationPage() {
                     <div className="text-xs text-[#9CA3AF]">{new Date(selectedPost.createdAt).toLocaleString()}</div>
                   </div>
                 </div>
-                <div className="text-base text-[#374151] leading-loose whitespace-pre-wrap mb-12">{selectedPost.content}</div>
+                {/* HTML 렌더링 영역 (Rich Text 지원) */}
+                <div 
+                  className="text-base text-[#374151] leading-loose mb-12 prose max-w-none"
+                  dangerouslySetInnerHTML={{ __html: selectedPost.content }}
+                />
                 
                 {/* 댓글 섹션 */}
                 <div className="border-t border-[#E5E7EB] pt-8">
