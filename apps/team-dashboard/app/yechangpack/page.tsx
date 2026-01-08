@@ -41,101 +41,118 @@ export default function YechangpackPage() {
   const [evaluationScores, setEvaluationScores] = useState({ 문제인식: 0, 해결방안: 0, 성장전략: 0, 팀구성: 0 });
 
   useEffect(() => {
-    // 2026년도 도전을 위한 로드맵 (2025 가이드 기반 시뮬레이션)
-    const CHALLENGE_2026_ROADMAP: RoadmapPhase[] = [
-      {
-        id: "phase-1",
-        title: "1단계: 공고 및 서류 접수 (1월 ~ 3월)",
-        period: "2026.01 ~ 2026.03.14",
-        status: "in_progress",
-        description: "2025년 지침 분석 기반 PSST 사업계획서 최종 고도화 및 온라인 접수",
-        tasks: [
-          { 
-            id: "task-1-1", title: "PSST 사업계획서 최종안 작성", completed: false, category: "예창패",
-            description: "2025년 공식 양식 벤치마킹 (문제인식, 해결방안, 성장전략, 팀구성)",
-            details: { 목표: "서류 합격", 담당자: "김찬주", 체크리스트: ["가점 항목 증빙 확보", "시장 규모 최신화", "BM 도식화"] }
-          },
-          { id: "task-1-2", title: "사실증명(창업여부) 및 졸업증명서 등 서류 구비", completed: true, category: "예창패" },
-          { id: "task-1-3", title: "고객 검증 데이터 및 설문 결과 분석 보고서 완성", completed: true, category: "공통" },
-        ],
-      },
-      {
-        id: "phase-2",
-        title: "2단계: 선정 평가 및 면접 (4월 ~ 5월)",
-        period: "2026.04 ~ 2026.05",
-        status: "upcoming",
-        description: "서류 통과 후 발표 평가(PT) 및 최종 선정 절차",
-        tasks: [
-          { id: "task-2-1", title: "발표용 PT 덱(Deck) 제작 및 리허설", completed: false, category: "예창패" },
-          { id: "task-2-2", title: "심층 면접 예상 Q&A 및 방어 전략 수립", completed: false, category: "예창패" },
-        ],
-      },
-      {
-        id: "phase-3",
-        title: "3단계: 협약 및 사업비 세팅 (6월)",
-        period: "2026.06",
-        status: "upcoming",
-        description: "협약 체결 및 사업비 카드 발급, 시스템 등록",
-        tasks: [
-          { id: "task-3-1", title: "주관기관 협약 체결 및 수정 사업계획서 제출", completed: false, category: "예창패" },
-          { id: "task-3-2", title: "사업비 전용 계좌 개설 및 바우처 카드 발급", completed: false, category: "예창패" },
-        ],
-      },
-      {
-        id: "phase-4",
-        title: "4단계: 사업 수행 및 제품 개발 (6월 ~ 10월)",
-        period: "2026.06 ~ 2026.10",
-        status: "upcoming",
-        description: "본격적인 서비스 MVP 개발 및 사업비 집행 시작",
-        tasks: [
-          { id: "task-4-1", title: "웨딩 데모 서비스 MVP 정식 런칭", completed: false, category: "공통" },
-          { id: "task-4-2", title: "사업비 집행 (외주비, 마케팅비, 운영비)", completed: false, category: "예창패" },
-          { id: "task-4-3", title: "전담 멘토링 및 네트워킹 프로그램 참여", completed: false, category: "예창패" },
-        ],
-      },
-      {
-        id: "phase-5",
-        title: "5단계: 중간 점검 및 목표 달성 (11월)",
-        period: "2026.11",
-        status: "upcoming",
-        description: "중간 보고서 제출 및 핵심 지표(KPI) 달성 여부 확인",
-        tasks: [
-          { id: "task-5-1", title: "중간 보고서 및 집행 실적 온라인 제출", completed: false, category: "예창패" },
-          { id: "task-5-2", title: "사용자 피드백 기반 서비스 고도화", completed: false, category: "공통" },
-        ],
-      },
-      {
-        id: "phase-6",
-        title: "6단계: 최종 성과 보고 및 정산 (12월 ~ 27.01)",
-        period: "2026.12 ~ 2027.01",
-        status: "upcoming",
-        description: "사업 성과 최종 보고서 제출 및 회계 감사/정산 완료",
-        tasks: [
-          { id: "task-6-1", title: "최종 성과 보고서 제출 및 증빙 정리", completed: false, category: "예창패" },
-          { id: "task-6-2", title: "사업비 정산 및 회계 감사 대응", completed: false, category: "예창패" },
-          { id: "task-6-3", title: "초기창업패키지 연계 지원 사업 준비", completed: false, category: "공통" },
-        ],
-      },
-    ];
+    // 1. 기존 저장된 데이터 로드 시도
+    const savedRoadmap = getLocalStorage<RoadmapPhase[]>("yechangpack-roadmap", []);
+    const savedChecklist = getLocalStorage<ChecklistItem[]>("yechangpack-checklist", []);
+    const savedScores = getLocalStorage("yechangpack-scores", { 문제인식: 0, 해결방안: 0, 성장전략: 0, 팀구성: 0 });
+    const savedNotes = getLocalStorage<Note[]>("yechangpack-notes", []);
 
-    setRoadmapPhases(CHALLENGE_2026_ROADMAP);
-    setLocalStorage("yechangpack-roadmap", CHALLENGE_2026_ROADMAP);
+    // 2. 데이터가 없을 경우에만 초기값 설정
+    if (savedRoadmap.length === 0) {
+      const INITIAL_ROADMAP: RoadmapPhase[] = [
+        {
+          id: "phase-1",
+          title: "1단계: 공고 및 서류 접수 (1월 ~ 3월)",
+          period: "2026.01 ~ 2026.03.14",
+          status: "in_progress",
+          description: "2025년 지침 분석 기반 PSST 사업계획서 최종 고도화 및 온라인 접수",
+          tasks: [
+            { 
+              id: "task-1-1", title: "PSST 사업계획서 최종안 작성", completed: false, category: "예창패",
+              description: "2025년 공식 양식 벤치마킹 (문제인식, 해결방안, 성장전략, 팀구성)",
+              details: { 목표: "서류 합격", 담당자: "김찬주", 체크리스트: ["가점 항목 증빙 확보", "시장 규모 최신화", "BM 도식화"] }
+            },
+            { id: "task-1-2", title: "사실증명(창업여부) 및 졸업증명서 등 서류 구비", completed: false, category: "예창패" },
+            { id: "task-1-3", title: "고객 검증 데이터 및 설문 결과 분석 보고서 완성", completed: false, category: "공통" },
+          ],
+        },
+        {
+          id: "phase-2",
+          title: "2단계: 선정 평가 및 면접 (4월 ~ 5월)",
+          period: "2026.04 ~ 2026.05",
+          status: "upcoming",
+          description: "서류 통과 후 발표 평가(PT) 및 최종 선정 절차",
+          tasks: [
+            { id: "task-2-1", title: "발표용 PT 덱(Deck) 제작 및 리허설", completed: false, category: "예창패" },
+            { id: "task-2-2", title: "심층 면접 예상 Q&A 및 방어 전략 수립", completed: false, category: "예창패" },
+          ],
+        },
+        {
+          id: "phase-3",
+          title: "3단계: 협약 및 사업비 세팅 (6월)",
+          period: "2026.06",
+          status: "upcoming",
+          description: "협약 체결 및 사업비 카드 발급, 시스템 등록",
+          tasks: [
+            { id: "task-3-1", title: "주관기관 협약 체결 및 수정 사업계획서 제출", completed: false, category: "예창패" },
+            { id: "task-3-2", title: "사업비 전용 계좌 개설 및 바우처 카드 발급", completed: false, category: "예창패" },
+          ],
+        },
+        {
+          id: "phase-4",
+          title: "4단계: 사업 수행 및 제품 개발 (6월 ~ 10월)",
+          period: "2026.06 ~ 2026.10",
+          status: "upcoming",
+          description: "본격적인 서비스 MVP 개발 및 사업비 집행 시작",
+          tasks: [
+            { id: "task-4-1", title: "웨딩 데모 서비스 MVP 정식 런칭", completed: false, category: "공통" },
+            { id: "task-4-2", title: "사업비 집행 (외주비, 마케팅비, 운영비)", completed: false, category: "예창패" },
+            { id: "task-4-3", title: "전담 멘토링 및 네트워킹 프로그램 참여", completed: false, category: "예창패" },
+          ],
+        },
+        {
+          id: "phase-5",
+          title: "5단계: 중간 점검 및 목표 달성 (11월)",
+          period: "2026.11",
+          status: "upcoming",
+          description: "중간 보고서 제출 및 핵심 지표(KPI) 달성 여부 확인",
+          tasks: [
+            { id: "task-5-1", title: "중간 보고서 및 집행 실적 온라인 제출", completed: false, category: "예창패" },
+            { id: "task-5-2", title: "사용자 피드백 기반 서비스 고도화", completed: false, category: "공통" },
+          ],
+        },
+        {
+          id: "phase-6",
+          title: "6단계: 최종 성과 보고 및 정산 (12월 ~ 27.01)",
+          period: "2026.12 ~ 2027.01",
+          status: "upcoming",
+          description: "사업 성과 최종 보고서 제출 및 회계 감사/정산 완료",
+          tasks: [
+            { id: "task-6-1", title: "최종 성과 보고서 제출 및 증빙 정리", completed: false, category: "예창패" },
+            { id: "task-6-2", title: "사업비 정산 및 회계 감사 대응", completed: false, category: "예창패" },
+            { id: "task-6-3", title: "초기창업패키지 연계 지원 사업 준비", completed: false, category: "공통" },
+          ],
+        },
+      ];
+      setRoadmapPhases(INITIAL_ROADMAP);
+      setLocalStorage("yechangpack-roadmap", INITIAL_ROADMAP);
+    } else {
+      setRoadmapPhases(savedRoadmap);
+    }
 
-    // 행정 체크리스트 (2026년 기준)
-    const CHALLENGE_CHECKLIST: ChecklistItem[] = [
-      { id: "ck-1", title: "K-Startup 회원가입 및 본인인증 완료", completed: true, category: "행정", phase: "phase-1" },
-      { id: "ck-2", title: "2025년 가이드 기반 PSST 양식 확보", completed: true, category: "서류", phase: "phase-1" },
-      { id: "ck-3", title: "창업여부 확인용 사실증명 발급", completed: true, category: "서류", phase: "phase-1" },
-      { id: "ck-4", title: "건강보험 자격득실 확인서 준비", completed: false, category: "서류", phase: "phase-1" },
-      { id: "ck-5", title: "발표 평가용 PT 초안(15P) 기획", completed: false, category: "평가", phase: "phase-2" },
-      { id: "ck-6", title: "사업비 전용 카드 발급 및 시스템 등록", completed: false, category: "행정", phase: "phase-3" },
-      { id: "ck-7", title: "외주용역 비교견적서 및 계약서 구비", completed: false, category: "정산", phase: "phase-4" },
-      { id: "ck-8", title: "최종 보고용 성과 지표 증빙 수집", completed: false, category: "정산", phase: "phase-6" },
-    ];
-    setChecklistItems(CHALLENGE_CHECKLIST);
-    setLocalStorage("yechangpack-checklist", CHALLENGE_CHECKLIST);
+    if (savedChecklist.length === 0) {
+      const INITIAL_CHECKLIST: ChecklistItem[] = [
+        { id: "ck-1", title: "K-Startup 회원가입 및 본인인증 완료", completed: false, category: "행정", phase: "phase-1" },
+        { id: "ck-2", title: "2025년 가이드 기반 PSST 양식 확보", completed: false, category: "서류", phase: "phase-1" },
+        { id: "ck-3", title: "창업여부 확인용 사실증명 발급", completed: false, category: "서류", phase: "phase-1" },
+        { id: "ck-4", title: "건강보험 자격득실 확인서 준비", completed: false, category: "서류", phase: "phase-1" },
+        { id: "ck-5", title: "발표 평가용 PT 초안(15P) 기획", completed: false, category: "평가", phase: "phase-2" },
+        { id: "ck-6", title: "사업비 전용 카드 발급 및 시스템 등록", completed: false, category: "행정", phase: "phase-3" },
+        { id: "ck-7", title: "외주용역 비교견적서 및 계약서 구비", completed: false, category: "정산", phase: "phase-4" },
+        { id: "ck-8", title: "최종 보고용 성과 지표 증빙 수집", completed: false, category: "정산", phase: "phase-6" },
+      ];
+      setChecklistItems(INITIAL_CHECKLIST);
+      setLocalStorage("yechangpack-checklist", INITIAL_CHECKLIST);
+    } else {
+      setChecklistItems(savedChecklist);
+    }
 
-    // 문서 목록
+    // 나머지 데이터 설정
+    setEvaluationScores(savedScores);
+    setNotes(savedNotes);
+    setEvidenceDocuments(getDocuments());
+
+    // 문서 목록 (항상 최신 경로 반영)
     const YECHANG_DOCS_PATH = "/inbloom/docs/예창패";
     const actualDocs: YechangpackDocument[] = [
       { id: "yp-doc-1", name: "[참고용] 2025년도 예창패 모집공고문", type: "pdf", size: "1.2MB", path: `${YECHANG_DOCS_PATH}/[공고문] 2025년도 예비창업패키지 예비창업자 모집공고.pdf`, category: "공고" },
@@ -143,11 +160,6 @@ export default function YechangpackPage() {
       { id: "yp-doc-6", name: "[Q&A] 2025년도 예창패 주요 질의응답", type: "pdf", size: "340KB", path: `${YECHANG_DOCS_PATH}/[별첨 4] 2025년도 예비창업패키지 예비창업자 모집공고 관련 주요 질의응답.pdf`, category: "참고" },
     ];
     setDocuments(actualDocs);
-    setLocalStorage("yechangpack-documents", actualDocs);
-
-    setNotes(getLocalStorage<Note[]>("yechangpack-notes", []));
-    setEvaluationScores(getLocalStorage("yechangpack-scores", { 문제인식: 0, 해결방안: 0, 성장전략: 0, 팀구성: 0 }));
-    setEvidenceDocuments(getDocuments());
   }, []);
 
   const updateRoadmapPhases = (newPhases: RoadmapPhase[]) => {
