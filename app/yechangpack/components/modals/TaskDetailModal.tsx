@@ -24,10 +24,10 @@ export default function TaskDetailModal({
   const [attachments, setAttachments] = useState<File[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const categoryColors = {
-    아카데미: "bg-[#F59E0B] text-white",
-    예창패: "bg-[#A855F7] text-white",
-    공통: "bg-[#6B7280] text-white",
+  const categoryColors: Record<string, string> = {
+    "아카데미": "bg-amber-500 text-white",
+    "예창패": "bg-purple-500 text-white",
+    "공통": "bg-slate-500 text-white",
   };
 
   const handleAddNoteClick = () => {
@@ -39,58 +39,48 @@ export default function TaskDetailModal({
 
   return (
     <div
-      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+      className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center z-[120] p-4"
       onClick={onClose}
     >
-      <div className="bg-white" onClick={(e) => e.stopPropagation()}>
+      <div className="bg-white rounded-3xl w-full max-w-2xl shadow-2xl overflow-hidden animate-slide-in" onClick={(e) => e.stopPropagation()}>
         {/* 모달 헤더 */}
-        <div className="sticky top-0 bg-white border-b border-[#E5E7EB] p-6 flex items-start justify-between">
+        <div className="sticky top-0 bg-white border-b border-slate-100 p-8 flex items-start justify-between">
           <div className="flex-1">
-            <div className="flex items-center gap-3 mb-3">
+            <div className="flex items-center gap-3 mb-4">
               <span
-                className={`px-3 py-1 rounded-full text-xs font-medium ${
-                  categoryColors[task.category]
+                className={`px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider ${
+                  categoryColors[task.category] || "bg-slate-100 text-slate-500"
                 }`}
               >
                 {task.category}
               </span>
-              <input
-                type="checkbox"
-                checked={task.completed}
-                onChange={(e) => {
-                  e.stopPropagation();
-                  onToggleComplete();
-                }}
-                className="w-4 h-4 text-black rounded border-[#D1D5DB] focus:ring-black"
-              />
-              <span className="text-xs text-[#6B7280]">
-                {task.completed ? "완료" : "진행중"}
-              </span>
+              <div className="flex items-center gap-2 bg-slate-50 px-2 py-1 rounded-lg">
+                <input
+                  type="checkbox"
+                  checked={task.completed}
+                  onChange={(e) => {
+                    e.stopPropagation();
+                    onToggleComplete();
+                  }}
+                  className="w-4 h-4 rounded border-slate-200 text-indigo-600 focus:ring-indigo-500 cursor-pointer"
+                />
+                <span className="text-[11px] font-bold text-slate-500">
+                  {task.completed ? "완료됨" : "진행중"}
+                </span>
+              </div>
             </div>
-            <h2 className="text-xl font-bold text-[#111827] mb-2">
+            <h2 className="text-2xl font-black text-slate-900 leading-tight">
               {task.title}
             </h2>
             {task.description && (
-              <p className="text-sm text-[#6B7280]">{task.description}</p>
+              <p className="text-sm text-slate-500 font-medium mt-3 leading-relaxed">{task.description}</p>
             )}
           </div>
           <button
             onClick={onClose}
-            className="text-[#6B7280] hover:text-[#111827] transition-colors"
+            className="w-10 h-10 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-400 transition-colors"
           >
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
+            ✕
           </button>
         </div>
 
