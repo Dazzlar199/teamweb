@@ -189,6 +189,26 @@ CREATE TABLE IF NOT EXISTS yechangpack_evidence (
   created_timestamp TIMESTAMP DEFAULT NOW()
 );
 
+-- 14. NCA 창작지원금 지출 내역 테이블
+CREATE TABLE IF NOT EXISTS nca_expenditures (
+  id TEXT PRIMARY KEY,
+  bimok TEXT NOT NULL,
+  item_name TEXT NOT NULL,
+  specification TEXT,
+  quantity INTEGER DEFAULT 1,
+  unit TEXT,
+  unit_price NUMERIC NOT NULL,
+  currency TEXT DEFAULT 'KRW',
+  amount_in_krw NUMERIC NOT NULL,
+  vendor TEXT,
+  date TEXT NOT NULL,
+  description TEXT,
+  evidence_status TEXT DEFAULT '미첨부',
+  type TEXT DEFAULT '일반',
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
 -- =====================================================
 -- 인덱스 생성 (성능 향상)
 -- =====================================================
@@ -223,6 +243,9 @@ CREATE INDEX IF NOT EXISTS idx_notifications_user_name ON notifications(user_nam
 CREATE INDEX IF NOT EXISTS idx_notifications_read ON notifications(read);
 CREATE INDEX IF NOT EXISTS idx_notifications_created_at ON notifications(created_at DESC);
 
+CREATE INDEX IF NOT EXISTS idx_nca_expenditures_date ON nca_expenditures(date DESC);
+CREATE INDEX IF NOT EXISTS idx_nca_expenditures_bimok ON nca_expenditures(bimok);
+
 -- =====================================================
 -- Row Level Security (RLS) 정책 설정
 -- =====================================================
@@ -241,76 +264,66 @@ ALTER TABLE yechangpack_roadmap ENABLE ROW LEVEL SECURITY;
 ALTER TABLE yechangpack_checklist ENABLE ROW LEVEL SECURITY;
 ALTER TABLE yechangpack_notes ENABLE ROW LEVEL SECURITY;
 ALTER TABLE yechangpack_evidence ENABLE ROW LEVEL SECURITY;
+ALTER TABLE nca_expenditures ENABLE ROW LEVEL SECURITY;
 
 -- 정책: 모든 사용자가 읽기/쓰기 가능 (팀 내부 도구이므로)
--- 필요시 나중에 인증 기반으로 제한 가능
 
 -- Posts 정책
 DROP POLICY IF EXISTS "Allow all operations on posts" ON posts;
-CREATE POLICY "Allow all operations on posts" ON posts
-  FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "Allow all operations on posts" ON posts FOR ALL USING (true) WITH CHECK (true);
 
 -- Comments 정책
 DROP POLICY IF EXISTS "Allow all operations on comments" ON comments;
-CREATE POLICY "Allow all operations on comments" ON comments
-  FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "Allow all operations on comments" ON comments FOR ALL USING (true) WITH CHECK (true);
 
 -- Events 정책
 DROP POLICY IF EXISTS "Allow all operations on events" ON events;
-CREATE POLICY "Allow all operations on events" ON events
-  FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "Allow all operations on events" ON events FOR ALL USING (true) WITH CHECK (true);
 
 -- Documents 정책
 DROP POLICY IF EXISTS "Allow all operations on documents" ON documents;
-CREATE POLICY "Allow all operations on documents" ON documents
-  FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "Allow all operations on documents" ON documents FOR ALL USING (true) WITH CHECK (true);
 
 -- Interviews 정책
 DROP POLICY IF EXISTS "Allow all operations on interviews" ON interviews;
-CREATE POLICY "Allow all operations on interviews" ON interviews
-  FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "Allow all operations on interviews" ON interviews FOR ALL USING (true) WITH CHECK (true);
 
 -- Surveys 정책
 DROP POLICY IF EXISTS "Allow all operations on surveys" ON surveys;
-CREATE POLICY "Allow all operations on surveys" ON surveys
-  FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "Allow all operations on surveys" ON surveys FOR ALL USING (true) WITH CHECK (true);
 
 -- Survey Responses 정책
 DROP POLICY IF EXISTS "Allow all operations on survey_responses" ON survey_responses;
-CREATE POLICY "Allow all operations on survey_responses" ON survey_responses
-  FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "Allow all operations on survey_responses" ON survey_responses FOR ALL USING (true) WITH CHECK (true);
 
 -- Activity Logs 정책
 DROP POLICY IF EXISTS "Allow all operations on activity_logs" ON activity_logs;
-CREATE POLICY "Allow all operations on activity_logs" ON activity_logs
-  FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "Allow all operations on activity_logs" ON activity_logs FOR ALL USING (true) WITH CHECK (true);
 
 -- Notifications 정책
 DROP POLICY IF EXISTS "Allow all operations on notifications" ON notifications;
-CREATE POLICY "Allow all operations on notifications" ON notifications
-  FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "Allow all operations on notifications" ON notifications FOR ALL USING (true) WITH CHECK (true);
 
 -- Messages 정책
 DROP POLICY IF EXISTS "Allow all operations on messages" ON messages;
-CREATE POLICY "Allow all operations on messages" ON messages
-  FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "Allow all operations on messages" ON messages FOR ALL USING (true) WITH CHECK (true);
 
 -- Yechangpack 정책들
 DROP POLICY IF EXISTS "Allow all operations on yechangpack_roadmap" ON yechangpack_roadmap;
-CREATE POLICY "Allow all operations on yechangpack_roadmap" ON yechangpack_roadmap
-  FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "Allow all operations on yechangpack_roadmap" ON yechangpack_roadmap FOR ALL USING (true) WITH CHECK (true);
 
 DROP POLICY IF EXISTS "Allow all operations on yechangpack_checklist" ON yechangpack_checklist;
-CREATE POLICY "Allow all operations on yechangpack_checklist" ON yechangpack_checklist
-  FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "Allow all operations on yechangpack_checklist" ON yechangpack_checklist FOR ALL USING (true) WITH CHECK (true);
 
 DROP POLICY IF EXISTS "Allow all operations on yechangpack_notes" ON yechangpack_notes;
-CREATE POLICY "Allow all operations on yechangpack_notes" ON yechangpack_notes
-  FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "Allow all operations on yechangpack_notes" ON yechangpack_notes FOR ALL USING (true) WITH CHECK (true);
 
 DROP POLICY IF EXISTS "Allow all operations on yechangpack_evidence" ON yechangpack_evidence;
-CREATE POLICY "Allow all operations on yechangpack_evidence" ON yechangpack_evidence
-  FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "Allow all operations on yechangpack_evidence" ON yechangpack_evidence FOR ALL USING (true) WITH CHECK (true);
+
+-- NCA Expenditures 정책
+DROP POLICY IF EXISTS "Allow all operations on nca_expenditures" ON nca_expenditures;
+CREATE POLICY "Allow all operations on nca_expenditures" ON nca_expenditures FOR ALL USING (true) WITH CHECK (true);
 
 -- =====================================================
 -- 기존 테이블 업데이트 (컬럼 추가)
@@ -324,9 +337,6 @@ BEGIN
     WHERE table_name = 'events' AND column_name = 'completed'
   ) THEN
     ALTER TABLE events ADD COLUMN completed BOOLEAN DEFAULT FALSE;
-    RAISE NOTICE 'events 테이블에 completed 컬럼이 추가되었습니다.';
-  ELSE
-    RAISE NOTICE 'events 테이블에 completed 컬럼이 이미 존재합니다.';
   END IF;
 END $$;
 
@@ -338,9 +348,6 @@ BEGIN
     WHERE table_name = 'events' AND column_name = 'description'
   ) THEN
     ALTER TABLE events ADD COLUMN description TEXT;
-    RAISE NOTICE 'events 테이블에 description 컬럼이 추가되었습니다.';
-  ELSE
-    RAISE NOTICE 'events 테이블에 description 컬럼이 이미 존재합니다.';
   END IF;
 END $$;
 
@@ -352,15 +359,5 @@ BEGIN
     WHERE table_name = 'events' AND column_name = 'participants'
   ) THEN
     ALTER TABLE events ADD COLUMN participants TEXT[] DEFAULT '{}';
-    RAISE NOTICE 'events 테이블에 participants 컬럼이 추가되었습니다.';
-  ELSE
-    RAISE NOTICE 'events 테이블에 participants 컬럼이 이미 존재합니다.';
   END IF;
 END $$;
-
--- =====================================================
--- 완료 메시지
--- =====================================================
--- 모든 테이블과 정책이 성공적으로 생성되었습니다!
--- 이제 앱에서 Supabase를 사용할 수 있습니다.
-

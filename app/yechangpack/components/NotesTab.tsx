@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState } from "react";
 import type { Note } from "@/lib/types/yechangpack";
 
@@ -8,32 +10,14 @@ interface NotesTabProps {
   onDelete: (id: string) => void;
 }
 
-export default function NotesTab({
-  notes,
-  onAdd,
-  onUpdate,
-  onDelete,
-}: NotesTabProps) {
+export default function NotesTab({ notes, onAdd, onUpdate, onDelete }: NotesTabProps) {
   const [showAddNote, setShowAddNote] = useState(false);
   const [selectedNote, setSelectedNote] = useState<Note | null>(null);
-  const [newNote, setNewNote] = useState({
-    title: "",
-    content: "",
-    category: "메모" as Note["category"],
-  });
+  const [newNote, setNewNote] = useState({ title: "", content: "", category: "메모" as Note["category"] });
 
   const handleAddClick = () => {
     if (!newNote.title.trim()) return;
-    
-    const note: Note = {
-      id: Date.now().toString(),
-      title: newNote.title,
-      content: newNote.content,
-      category: newNote.category,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    };
-
+    const note: Note = { id: Date.now().toString(), title: newNote.title, content: newNote.content, category: newNote.category, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() };
     onAdd(note);
     setNewNote({ title: "", content: "", category: "메모" });
     setShowAddNote(false);
@@ -41,212 +25,94 @@ export default function NotesTab({
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-      {/* 노트 목록 */}
-      <div className="lg:col-span-1 space-y-4">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold text-[#111827]">기록</h2>
+    <div className="flex flex-col lg:flex-row gap-8 min-h-[600px]">
+      
+      {/* 1. 사이드바: 노트 목록 */}
+      <div className="w-full lg:w-80 flex flex-col gap-4">
+        <div className="flex items-center justify-between px-2">
+          <h3 className="text-sm font-black text-slate-900 uppercase tracking-widest">Archive</h3>
           <button
             onClick={() => setShowAddNote(true)}
-            className="px-3 py-1.5 bg-[#3B82F6] text-white text-sm font-medium rounded hover:bg-[#2563EB] transition-colors"
+            className="w-8 h-8 rounded-full bg-indigo-600 text-white flex items-center justify-center shadow-md shadow-indigo-100 hover:bg-indigo-700 transition-all"
           >
-            + 새 기록
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M12 4v16m8-8H4" /></svg>
           </button>
         </div>
 
-        {/* 새 기록 폼 */}
         {showAddNote && (
-          <div className="bg-white rounded-lg border border-[#E5E7EB] p-4 space-y-3 mb-4">
+          <div className="bg-white p-5 rounded-2xl border-2 border-indigo-500 shadow-xl space-y-4 animate-slide-in">
             <input
               type="text"
               placeholder="제목"
               value={newNote.title}
-              onChange={(e) =>
-                setNewNote({ ...newNote, title: e.target.value })
-              }
-              className="w-full px-3 py-2 border border-[#D1D5DB] rounded text-sm focus:outline-none focus:ring-2 focus:ring-[#3B82F6]"
+              onChange={(e) => setNewNote({ ...newNote, title: e.target.value })}
+              className="w-full text-sm font-bold bg-transparent outline-none border-b border-slate-100 pb-2"
             />
-            <select
-              value={newNote.category}
-              onChange={(e) =>
-                setNewNote({
-                  ...newNote,
-                  category: e.target.value as Note["category"],
-                })
-              }
-              className="w-full px-3 py-2 border border-[#D1D5DB] rounded text-sm focus:outline-none focus:ring-2 focus:ring-[#3B82F6] bg-white"
-            >
-              <option value="메모">메모</option>
-              <option value="일정">일정</option>
-              <option value="체크리스트">체크리스트</option>
-              <option value="아이디어">아이디어</option>
-            </select>
             <textarea
-              placeholder="내용"
+              placeholder="자유롭게 기록하세요..."
               value={newNote.content}
-              onChange={(e) =>
-                setNewNote({ ...newNote, content: e.target.value })
-              }
+              onChange={(e) => setNewNote({ ...newNote, content: e.target.value })}
               rows={4}
-              className="w-full px-3 py-2 border border-[#D1D5DB] rounded text-sm focus:outline-none focus:ring-2 focus:ring-[#3B82F6]"
+              className="w-full text-xs font-medium bg-transparent outline-none resize-none"
             />
             <div className="flex gap-2">
-              <button
-                onClick={handleAddClick}
-                className="flex-1 px-3 py-1.5 bg-[#3B82F6] text-white text-sm font-medium rounded hover:bg-[#2563EB] transition-colors"
-              >
-                저장
-              </button>
-              <button
-                onClick={() => {
-                  setShowAddNote(false);
-                  setNewNote({ title: "", content: "", category: "메모" });
-                }}
-                className="px-3 py-1.5 bg-[#F3F4F6] text-[#6B7280] text-sm font-medium rounded hover:bg-[#E5E7EB] transition-colors"
-              >
-                취소
-              </button>
+              <button onClick={handleAddClick} className="flex-1 py-2 bg-indigo-600 text-white text-[11px] font-black rounded-lg">저장</button>
+              <button onClick={() => setShowAddNote(false)} className="flex-1 py-2 bg-slate-100 text-slate-500 text-[11px] font-black rounded-lg">취소</button>
             </div>
           </div>
         )}
 
-        {/* 노트 목록 */}
-        <div className="space-y-2">
-          {notes.map((note) => {
-            const categoryColors = {
-              일정: "bg-[#3B82F6]",
-              체크리스트: "bg-[#10B981]",
-              메모: "bg-[#6B7280]",
-              아이디어: "bg-[#F59E0B]",
-            };
-
-            return (
-              <div
-                key={note.id}
-                onClick={() => setSelectedNote(note)}
-                className={`p-3 bg-white rounded-lg border cursor-pointer transition-colors ${
-                  selectedNote?.id === note.id
-                    ? "border-blue-600"
-                    : "border-[#E5E7EB] hover:border-[#D1D5DB]"
-                }`}
-              >
-                <div className="flex items-start justify-between mb-1">
-                  <div className="flex items-center gap-2 flex-1 min-w-0">
-                    <div
-                      className={`w-2 h-2 rounded-full flex-shrink-0 ${
-                        categoryColors[note.category]
-                      }`}
-                    />
-                    <span className="text-sm font-medium text-[#111827] truncate">
-                      {note.title}
-                    </span>
-                  </div>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onDelete(note.id);
-                      if (selectedNote?.id === note.id) {
-                        setSelectedNote(null);
-                      }
-                    }}
-                    className="text-[#9CA3AF] hover:text-[#DC2626] transition-colors flex-shrink-0 ml-2"
-                  >
-                    <svg
-                      className="w-4 h-4"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                      />
-                    </svg>
-                  </button>
+        <div className="space-y-2 overflow-y-auto max-h-[500px] pr-2 custom-scrollbar">
+          {notes.map((note) => (
+            <div
+              key={note.id}
+              onClick={() => setSelectedNote(note)}
+              className={`group p-4 rounded-2xl cursor-pointer transition-all border ${
+                selectedNote?.id === note.id ? "bg-white border-indigo-200 shadow-md ring-4 ring-indigo-50/50" : "bg-white/50 border-transparent hover:border-slate-200"
+              }`}
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div className="flex-1 min-w-0">
+                  <h4 className="text-[13px] font-bold text-slate-900 truncate mb-1">{note.title}</h4>
+                  <p className="text-[11px] text-slate-400 font-medium line-clamp-1">{note.content}</p>
                 </div>
-                <div className="text-xs text-[#6B7280] mt-1">
-                  {new Date(note.createdAt).toLocaleDateString("ko-KR")}
-                </div>
+                <button
+                  onClick={(e) => { e.stopPropagation(); onDelete(note.id); }}
+                  className="text-slate-300 hover:text-rose-500 opacity-0 group-hover:opacity-100 transition-all"
+                >
+                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
               </div>
-            );
-          })}
-          {notes.length === 0 && (
-            <div className="text-center py-8 text-sm text-[#9CA3AF] bg-white rounded-lg border border-[#E5E7EB]">
-              기록이 없습니다. 새 기록을 추가해보세요.
             </div>
-          )}
+          ))}
         </div>
       </div>
 
-      {/* 노트 상세 */}
-      <div className="lg:col-span-2">
+      {/* 2. 메인: 노트 에디터 뷰 */}
+      <div className="flex-1">
         {selectedNote ? (
-          <div className="bg-white rounded-lg border border-[#E5E7EB] p-6">
-            <div className="mb-4">
-              <input
-                type="text"
-                value={selectedNote.title}
-                onChange={(e) => {
-                  const val = e.target.value;
-                  // Update local state for responsiveness
-                  setSelectedNote({ ...selectedNote, title: val });
-                  // Update parent state
-                  onUpdate(selectedNote.id, { title: val });
-                }}
-                className="w-full text-lg font-semibold text-[#111827] border-none focus:outline-none focus:ring-0 pb-2 border-b border-[#E5E7EB] mb-3"
-              />
-              <div className="flex items-center gap-2 mt-2">
-                <select
-                  value={selectedNote.category}
-                  onChange={(e) => {
-                    const val = e.target.value as Note["category"];
-                    setSelectedNote({ ...selectedNote, category: val });
-                    onUpdate(selectedNote.id, { category: val });
-                  }}
-                  className="px-2 py-1 text-xs border border-[#D1D5DB] rounded focus:outline-none focus:ring-2 focus:ring-[#3B82F6] bg-white"
-                >
-                  <option value="메모">메모</option>
-                  <option value="일정">일정</option>
-                  <option value="체크리스트">체크리스트</option>
-                  <option value="아이디어">아이디어</option>
-                </select>
-                <span className="text-xs text-[#6B7280]">
-                  {new Date(selectedNote.updatedAt).toLocaleString("ko-KR")}
-                </span>
-              </div>
+          <div className="glass-card rounded-3xl bg-white p-10 h-full flex flex-col animate-slide-in">
+            <div className="flex items-center gap-3 mb-6">
+              <span className="px-2.5 py-1 bg-slate-100 text-slate-500 text-[10px] font-black uppercase tracking-wider rounded-md">{selectedNote.category}</span>
+              <span className="text-[11px] font-bold text-slate-300">Updated {new Date(selectedNote.updatedAt).toLocaleDateString()}</span>
             </div>
+            <input
+              type="text"
+              value={selectedNote.title}
+              onChange={(e) => onUpdate(selectedNote.id, { title: e.target.value })}
+              className="w-full text-2xl font-black text-slate-900 outline-none mb-8 bg-transparent tracking-tight"
+            />
             <textarea
               value={selectedNote.content}
-              onChange={(e) => {
-                const val = e.target.value;
-                setSelectedNote({ ...selectedNote, content: val });
-                onUpdate(selectedNote.id, { content: val });
-              }}
-              rows={20}
-              className="w-full px-4 py-3 border border-[#D1D5DB] rounded text-sm focus:outline-none focus:ring-2 focus:ring-[#3B82F6]"
+              onChange={(e) => onUpdate(selectedNote.id, { content: e.target.value })}
+              className="w-full flex-1 text-[15px] font-medium text-slate-600 leading-relaxed outline-none resize-none bg-transparent"
               placeholder="내용을 입력하세요..."
             />
           </div>
         ) : (
-          <div className="bg-white rounded-lg border border-[#E5E7EB] p-12 text-center">
-            <svg
-              className="w-16 h-16 text-[#D1D5DB] mx-auto mb-4"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={1.5}
-                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-              />
-            </svg>
-            <p className="text-sm text-[#6B7280]">
-              기록을 선택하거나 새 기록을 추가하세요.
-            </p>
+          <div className="h-full flex flex-col items-center justify-center bg-slate-50/50 rounded-3xl border-2 border-dashed border-slate-200 opacity-40">
+            <svg className="w-12 h-12 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+            <p className="text-sm font-bold">노트를 선택하거나 새로 추가하세요</p>
           </div>
         )}
       </div>

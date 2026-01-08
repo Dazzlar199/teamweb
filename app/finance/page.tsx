@@ -1,1155 +1,362 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
+import { useToast } from "@/lib/context/ToastContext";
+import { useUser } from "@/lib/context/UserContext";
+import ExcelJS from "exceljs";
+import { saveAs } from "file-saver";
+import { getExpenditures, saveExpenditure, deleteExpenditure, updateExpenditureStatus, NCAExpenditure } from "@/lib/utils/finance";
+import { supabase, isSupabaseConfigured } from "@/lib/supabase/client";
 
-interface Subscription {
-  id: string;
-  name: string;
-  category: string;
-  amount: number; // 원래 금액
-  currency: "KRW" | "USD" | "EUR" | "JPY"; // 통화
-  exchangeRate?: number; // 환율 (USD 기준, 예: 1 USD = 1300 KRW)
-  amountInKRW: number; // 원화로 변환된 금액
-  billingCycle: "monthly" | "yearly" | "one-time";
-  startDate: string;
-  nextBillingDate?: string;
-  status: "active" | "cancelled" | "expired";
-  description?: string;
-}
-
-interface Purchase {
-  id: string;
-  name: string;
-  category: string;
-  amount: number;
-  date: string;
-  vendor: string;
-  paymentMethod: string;
-  description?: string;
-  receipt?: string;
-}
-
-interface Budget {
-  id: string;
-  category: string;
-  allocated: number;
-  spent: number;
-  period: string;
-}
+// --- Types ---
+type NCABimok = "전문가활용비" | "임차비" | "재료구입비" | "외주용역비";
+type EvidenceStatus = "미첨부" | "검토중" | "완료";
+type Currency = "KRW" | "USD";
 
 export default function FinancePage() {
-  const [activeTab, setActiveTab] = useState<
-    "overview" | "subscriptions" | "purchases" | "budgets"
-  >("overview");
-  const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
-  const [purchases, setPurchases] = useState<Purchase[]>([]);
-  const [budgets, setBudgets] = useState<Budget[]>([]);
-  const [showAddSubscription, setShowAddSubscription] = useState(false);
-  const [showAddPurchase, setShowAddPurchase] = useState(false);
-  const [exchangeRate, setExchangeRate] = useState<number>(1300); // 기본 환율 (1 USD = 1300 KRW)
-  const [newSubscription, setNewSubscription] = useState({
-    name: "",
-    category: "",
-    amount: "",
-    currency: "KRW" as Subscription["currency"],
-    billingCycle: "monthly" as Subscription["billingCycle"],
-    startDate: new Date().toISOString().split("T")[0],
-    description: "",
-  });
-  const [newPurchase, setNewPurchase] = useState({
-    name: "",
-    category: "",
-    amount: "",
-    date: new Date().toISOString().split("T")[0],
-    vendor: "",
-    paymentMethod: "",
-    description: "",
+  const { user } = useUser();
+  const { showToast } = useToast();
+  const [activeTab, setActiveTab] = useState<"overview" | "subscriptions" | "excel">("overview");
+  const [expenditures, setExpenditures] = useState<NCAExpenditure[]>([]);
+  const [exchangeRate, setExchangeRate] = useState<number>(1350);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
+
+  // Modals
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [addType, setAddType] = useState<"일반" | "구독">("일반");
+  const [newExp, setNewExp] = useState<Partial<NCAExpenditure>>({
+    bimok: "재료구입비", item_name: "", specification: "N/A", quantity: 1, unit: "EA", unit_price: 0, currency: "KRW", vendor: "", description: "", evidence_status: "미첨부"
   });
 
-  // 아카데미 지원금 정보
-  const academyGrant = {
-    maxAmount: 20000000, // 2000만원
-    usedAmount: 0,
-    availableAmount: 20000000,
-  };
+  const ncaGrant = { max: 20000000 };
+  const deadline = new Date("2026-06-12");
 
-  // 데이터 로드
+  // --- Real-time Sync & Init ---
   useEffect(() => {
-    loadData();
-    loadExchangeRate();
+    loadInitialData();
+
+    if (isSupabaseConfigured()) {
+      const channel = supabase
+        .channel('finance-changes')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'nca_expenditures' }, () => {
+          loadInitialData(); // 실시간 변경 시 데이터 다시 로드
+        })
+        .subscribe();
+      return () => { channel.unsubscribe(); };
+    }
   }, []);
 
-  // 환율 로드
-  const loadExchangeRate = () => {
-    const saved = localStorage.getItem("finance-exchange-rate");
-    if (saved) {
-      try {
-        setExchangeRate(parseFloat(saved));
-      } catch (e) {
-        console.error("환율 로드 실패:", e);
-      }
+  const loadInitialData = async () => {
+    try {
+      const data = await getExpenditures();
+      setExpenditures(data || []);
+    } catch (e) {
+      console.warn("데이터 로드 중 오류 발생, 로컬 저장소를 확인합니다.");
+    }
+    const savedRate = localStorage.getItem("finance-exchange-rate");
+    if (savedRate) setExchangeRate(parseFloat(savedRate));
+  };
+
+  const fetchRealTimeRate = async () => {
+    setIsRefreshing(true);
+    try {
+      const res = await fetch("https://open.er-api.com/v6/latest/USD");
+      const data = await res.json();
+      const newRate = Math.round(data.rates.KRW);
+      setExchangeRate(newRate);
+      localStorage.setItem("finance-exchange-rate", newRate.toString());
+      showToast(`최신 환율(₩${newRate.toLocaleString()}) 적용 완료`, "success");
+    } catch (e) {
+      showToast("환율 연동 실패", "error");
+    } finally {
+      setIsRefreshing(false);
     }
   };
 
-  // 환율 저장
-  const saveExchangeRate = (rate: number) => {
-    setExchangeRate(rate);
-    localStorage.setItem("finance-exchange-rate", rate.toString());
+  const handleExportExcel = async () => {
+    setIsExporting(true);
+    try {
+      const response = await fetch("/templates/nca_template.xlsx");
+      const arrayBuffer = await response.arrayBuffer();
+      const workbook = new ExcelJS.Workbook();
+      await workbook.xlsx.load(arrayBuffer);
+      const sheet = workbook.getWorksheet("세부집행계획") || workbook.worksheets[1]; 
+      
+      let startRow = 6;
+      sheet.eachRow((row, rowNumber) => {
+        row.eachCell((cell) => { if (cell.value?.toString().includes("품명")) startRow = rowNumber + 1; });
+      });
 
-    // 환율이 변경되면 기존 구독의 원화 금액도 업데이트
-    const updated = subscriptions.map((sub) => {
-      if (sub.currency !== "KRW") {
-        return {
-          ...sub,
-          amountInKRW: convertToKRW(sub.amount, sub.currency),
-          exchangeRate: rate,
-        };
-      }
-      return sub;
-    });
-    setSubscriptions(updated);
-    localStorage.setItem("finance-subscriptions", JSON.stringify(updated));
-  };
+      expenditures.forEach((e, index) => {
+        const r = startRow + index;
+        sheet.getCell(`B${r}`).value = e.bimok;
+        sheet.getCell(`C${r}`).value = e.item_name;
+        sheet.getCell(`D${r}`).value = e.specification;
+        sheet.getCell(`E${r}`).value = e.quantity;
+        sheet.getCell(`F${r}`).value = e.unit;
+        sheet.getCell(`G${r}`).value = Math.round(e.amount_in_krw / e.quantity);
+        sheet.getCell(`H${r}`).value = e.amount_in_krw;
+        sheet.getCell(`I${r}`).value = e.vendor;
+        sheet.getCell(`J${r}`).value = e.description;
+      });
 
-  // 환율 적용하여 원화로 변환
-  const convertToKRW = (
-    amount: number,
-    currency: Subscription["currency"],
-    rate?: number
-  ): number => {
-    const currentRate = rate || exchangeRate;
-    if (currency === "KRW") return amount;
-    if (currency === "USD") return amount * currentRate;
-    if (currency === "EUR") return amount * (currentRate * 1.1); // EUR는 USD 대비 약 1.1배 가정
-    if (currency === "JPY") return amount * (currentRate / 100); // JPY는 USD 대비 약 1/100 가정
-    return amount;
-  };
-
-  const loadData = () => {
-    // 구독 로드
-    const savedSubscriptions = localStorage.getItem("finance-subscriptions");
-    if (savedSubscriptions) {
-      try {
-        const loaded = JSON.parse(savedSubscriptions);
-        // 기존 데이터 마이그레이션 (currency 필드가 없는 경우)
-        const migrated = loaded.map((sub: any) => {
-          if (!sub.currency) {
-            // 기존 데이터는 모두 KRW로 간주
-            return {
-              ...sub,
-              currency: "KRW" as const,
-              amountInKRW: sub.amount || 0,
-              exchangeRate: undefined,
-            };
-          }
-          // 환율이 변경되었을 수 있으므로 원화 금액 재계산
-          if (sub.currency !== "KRW") {
-            const currentRate = sub.exchangeRate || exchangeRate;
-            return {
-              ...sub,
-              amountInKRW: convertToKRW(sub.amount, sub.currency),
-              exchangeRate: currentRate,
-            };
-          }
-          return sub;
-        });
-        setSubscriptions(migrated);
-        // 마이그레이션된 데이터 저장
-        localStorage.setItem("finance-subscriptions", JSON.stringify(migrated));
-      } catch (e) {
-        console.error("구독 로드 실패:", e);
-      }
-    }
-
-    // 구매 로드
-    const savedPurchases = localStorage.getItem("finance-purchases");
-    if (savedPurchases) {
-      try {
-        setPurchases(JSON.parse(savedPurchases));
-      } catch (e) {
-        console.error("구매 로드 실패:", e);
-      }
-    }
-
-    // 예산 로드
-    const savedBudgets = localStorage.getItem("finance-budgets");
-    if (savedBudgets) {
-      try {
-        setBudgets(JSON.parse(savedBudgets));
-      } catch (e) {
-        console.error("예산 로드 실패:", e);
-      }
+      const buffer = await workbook.xlsx.writeBuffer();
+      saveAs(new Blob([buffer]), `NCA_사용계획서_${new Date().toISOString().split('T')[0]}.xlsx`);
+      showToast("엑셀 파일이 다운로드되었습니다.", "success");
+    } catch (error) {
+      showToast("엑셀 생성 실패", "error");
+    } finally {
+      setIsExporting(false);
     }
   };
 
-  // 통계 계산 (모두 원화로 변환)
-  const monthlySubscriptions = subscriptions
-    .filter((s) => s.status === "active" && s.billingCycle === "monthly")
-    .reduce((sum, s) => sum + s.amountInKRW, 0);
+  const totalSpent = useMemo(() => expenditures.reduce((sum, e) => sum + e.amount_in_krw, 0), [expenditures, exchangeRate]);
+  const formatCurrency = (val: number) => new Intl.NumberFormat("ko-KR", { style: "currency", currency: "KRW" }).format(val);
 
-  const yearlySubscriptions = subscriptions
-    .filter((s) => s.status === "active" && s.billingCycle === "yearly")
-    .reduce((sum, s) => sum + s.amountInKRW, 0);
+  const handleAddExpenditure = async () => {
+    if (!newExp.item_name || !newExp.unit_price) return;
+    const total = (newExp.quantity || 1) * (newExp.unit_price || 0);
+    const amount_in_krw = newExp.currency === "KRW" ? total : total * exchangeRate;
+    
+    const exp: NCAExpenditure = {
+      ...newExp,
+      id: `nca-${Date.now()}`,
+      type: addType,
+      bimok: addType === "구독" ? "임차비" : (newExp.bimok as NCABimok),
+      unit_price: newExp.unit_price,
+      amount_in_krw,
+      date: newExp.date || new Date().toISOString().split("T")[0],
+    } as NCAExpenditure;
 
-  const thisMonthPurchases = purchases
-    .filter((p) => {
-      const purchaseDate = new Date(p.date);
-      const now = new Date();
-      return (
-        purchaseDate.getMonth() === now.getMonth() &&
-        purchaseDate.getFullYear() === now.getFullYear()
-      );
-    })
-    .reduce((sum, p) => sum + p.amount, 0);
-
-  const totalSpent = monthlySubscriptions + thisMonthPurchases;
-  const remainingBudget = academyGrant.availableAmount - totalSpent;
-
-  // 구독 추가
-  const handleAddSubscription = () => {
-    if (!newSubscription.name || !newSubscription.amount) return;
-
-    const amount = parseFloat(newSubscription.amount);
-    const amountInKRW = convertToKRW(amount, newSubscription.currency);
-
-    const subscription: Subscription = {
-      id: `sub-${Date.now()}`,
-      name: newSubscription.name,
-      category: newSubscription.category,
-      amount: amount,
-      currency: newSubscription.currency,
-      exchangeRate:
-        newSubscription.currency !== "KRW" ? exchangeRate : undefined,
-      amountInKRW: amountInKRW,
-      billingCycle: newSubscription.billingCycle,
-      startDate: newSubscription.startDate,
-      nextBillingDate:
-        newSubscription.billingCycle === "monthly"
-          ? new Date(
-              new Date(newSubscription.startDate).setMonth(
-                new Date(newSubscription.startDate).getMonth() + 1
-              )
-            )
-              .toISOString()
-              .split("T")[0]
-          : newSubscription.billingCycle === "yearly"
-          ? new Date(
-              new Date(newSubscription.startDate).setFullYear(
-                new Date(newSubscription.startDate).getFullYear() + 1
-              )
-            )
-              .toISOString()
-              .split("T")[0]
-          : undefined,
-      status: "active",
-      description: newSubscription.description,
-    };
-
-    const updated = [subscription, ...subscriptions];
-    setSubscriptions(updated);
-    localStorage.setItem("finance-subscriptions", JSON.stringify(updated));
-
-    setNewSubscription({
-      name: "",
-      category: "",
-      amount: "",
-      currency: "KRW",
-      billingCycle: "monthly",
-      startDate: new Date().toISOString().split("T")[0],
-      description: "",
-    });
-    setShowAddSubscription(false);
+    const success = await saveExpenditure(exp, user?.name || "김찬주");
+    if (success) {
+      setShowAddModal(false);
+      showToast("집행 내역이 등록되고 팀원들에게 알림이 전송되었습니다.", "success");
+      loadInitialData();
+    }
   };
 
-  // 구매 추가
-  const handleAddPurchase = () => {
-    if (!newPurchase.name || !newPurchase.amount) return;
-
-    const purchase: Purchase = {
-      id: `purchase-${Date.now()}`,
-      name: newPurchase.name,
-      category: newPurchase.category,
-      amount: parseInt(newPurchase.amount),
-      date: newPurchase.date,
-      vendor: newPurchase.vendor,
-      paymentMethod: newPurchase.paymentMethod,
-      description: newPurchase.description,
-    };
-
-    const updated = [purchase, ...purchases];
-    setPurchases(updated);
-    localStorage.setItem("finance-purchases", JSON.stringify(updated));
-
-    setNewPurchase({
-      name: "",
-      category: "",
-      amount: "",
-      date: new Date().toISOString().split("T")[0],
-      vendor: "",
-      paymentMethod: "",
-      description: "",
-    });
-    setShowAddPurchase(false);
+  const handleDelete = async (id: string) => {
+    if (confirm("삭제하시겠습니까?")) {
+      await deleteExpenditure(id);
+      loadInitialData();
+      showToast("삭제 완료", "info");
+    }
   };
 
-  // 구독 삭제
-  const handleDeleteSubscription = (id: string) => {
-    const updated = subscriptions.filter((s) => s.id !== id);
-    setSubscriptions(updated);
-    localStorage.setItem("finance-subscriptions", JSON.stringify(updated));
-  };
-
-  // 구매 삭제
-  const handleDeletePurchase = (id: string) => {
-    const updated = purchases.filter((p) => p.id !== id);
-    setPurchases(updated);
-    localStorage.setItem("finance-purchases", JSON.stringify(updated));
-  };
-
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat("ko-KR", {
-      style: "currency",
-      currency: "KRW",
-    }).format(amount);
-  };
-
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("ko-KR");
+  const toggleStatus = async (id: string, current: string) => {
+    const next = current === "미첨부" ? "검토중" : current === "검토중" ? "완료" : "미첨부";
+    await updateExpenditureStatus(id, next);
+    loadInitialData();
   };
 
   return (
-    <div className="min-h-screen bg-[#F9FAFB]">
-      {/* 헤더 */}
-      <header className="bg-white">
-        <div className="px-6 py-3.5">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-lg font-semibold text-[#111827]">
-                재무 관리
-              </h1>
-              <p className="text-xs text-[#6B7280]">
-                아카데미 지원금 및 지출 관리
-              </p>
-            </div>
+    <div className="min-h-screen bg-[#F8FAFC] p-6 pb-20 font-sans">
+      <div className="max-w-7xl mx-auto space-y-6">
+        
+        {/* 헤더 */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <h1 className="text-2xl font-black text-slate-900 tracking-tight">재무 관리 (팀 실시간 공유)</h1>
+            <p className="text-sm text-slate-500 font-medium">NCA 창작지원금 실시간 집행 내역 및 팀 알림 시스템</p>
           </div>
-        </div>
-      </header>
-
-      {/* 메인 콘텐츠 */}
-      <div className="p-6">
-        <div className="max-w-7xl mx-auto">
-          {/* 환율 설정 */}
-          <div className="bg-white rounded-lg border border-[#E5E7EB] p-4 mb-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <label className="block text-sm font-medium text-[#111827]">
-                  USD 환율 (1 USD = ? KRW)
-                </label>
-                <input
-                  type="number"
-                  value={exchangeRate}
-                  onChange={(e) =>
-                    saveExchangeRate(parseFloat(e.target.value) || 1300)
-                  }
-                  className="w-32 px-3 py-2 border border-[#D1D5DB] rounded text-sm"
-                  step="0.01"
-                />
-              </div>
-              <div className="text-sm text-[#6B7280]">
-                <button
-                  onClick={async () => {
-                    try {
-                      // 간단한 환율 API 호출 (무료 API 사용)
-                      const response = await fetch(
-                        "https://api.exchangerate-api.com/v4/latest/USD"
-                      );
-                      const data = await response.json();
-                      if (data.rates && data.rates.KRW) {
-                        saveExchangeRate(data.rates.KRW);
-                      }
-                    } catch (error) {
-                      console.error("환율 조회 실패:", error);
-                      alert(
-                        "환율을 자동으로 가져올 수 없습니다. 수동으로 입력해주세요."
-                      );
-                    }
-                  }}
-                  className="px-3 py-1 bg-[#2563EB] text-white text-sm font-medium rounded hover:bg-[#1D4ED8] transition-colors"
-                >
-                  실시간 환율 가져오기
+          <div className="flex items-center gap-3">
+            <div className="bg-white p-2 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-3">
+              <span className="text-[10px] font-black text-slate-400 uppercase px-2">USD 환율</span>
+              <div className="flex items-center gap-2">
+                <input type="number" value={exchangeRate} onChange={(e) => setExchangeRate(parseFloat(e.target.value))} className="w-16 text-sm font-black text-indigo-600 bg-slate-50 rounded-lg py-1 text-center outline-none" />
+                <button onClick={fetchRealTimeRate} className={`p-1.5 rounded-lg hover:bg-slate-100 ${isRefreshing ? "animate-spin text-slate-300" : "text-indigo-600"}`}>
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.001 0 01-15.357-2m15.357 2H15" /></svg>
                 </button>
               </div>
             </div>
           </div>
+        </div>
 
-          {/* 아카데미 지원금 카드 */}
-          <div className="bg-gradient-to-br from-[#E5E7EB] to-[#F3F4F6] rounded-lg border border-[#D1D5DB] p-6 mb-6">
-            <div className="flex items-center justify-between mb-4">
-              <div>
-                <h2 className="text-lg font-bold mb-1 text-[#111827]">
-                  아카데미 지원금
-                </h2>
-                <p className="text-sm text-[#6B7280]">최대 지원금액</p>
-              </div>
-              <div className="text-right">
-                <div className="text-3xl font-bold text-[#111827]">
-                  {formatCurrency(academyGrant.maxAmount)}
-                </div>
-                <div className="text-sm text-[#6B7280]">최대 2,000만원</div>
-              </div>
-            </div>
-            <div className="mt-4">
-              <div className="flex items-center justify-between mb-2 text-sm">
-                <span className="text-[#6B7280]">사용 금액</span>
-                <span className="font-semibold text-[#111827]">
-                  {formatCurrency(totalSpent)}
-                </span>
-              </div>
-              <div className="w-full bg-white rounded-full h-3 mb-2 border border-[#D1D5DB]">
-                <div
-                  className="bg-[#9CA3AF] h-3 rounded-full transition-all duration-300"
-                  style={{
-                    width: `${Math.min(
-                      (totalSpent / academyGrant.maxAmount) * 100,
-                      100
-                    )}%`,
-                  }}
-                />
-              </div>
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-[#6B7280]">잔여 금액</span>
-                <span className="font-bold text-lg text-[#111827]">
-                  {formatCurrency(remainingBudget)}
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {/* 통계 카드 */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-            <div className="bg-white rounded-lg border border-[#E5E7EB] p-4">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-xs font-medium text-[#6B7280]">
-                  월간 구독료
-                </span>
-                <svg
-                  className="w-4 h-4 text-[#6B7280]"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth={1.5}
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0zm3 0h.008v.008H18V10.5zm-12 0h.008v.008H6V10.5z"
-                  />
-                </svg>
-              </div>
-              <div className="text-2xl font-semibold text-[#111827]">
-                {formatCurrency(monthlySubscriptions)}
-              </div>
-            </div>
-            <div className="bg-white rounded-lg border border-[#E5E7EB] p-4">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-xs font-medium text-[#6B7280]">
-                  이번 달 구매
-                </span>
-                <svg
-                  className="w-4 h-4 text-[#6B7280]"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth={1.5}
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.4 2.925-6.75a6.324 6.324 0 00-1.087-.835l-.383-1.437M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"
-                  />
-                </svg>
-              </div>
-              <div className="text-2xl font-semibold text-[#111827]">
-                {formatCurrency(thisMonthPurchases)}
-              </div>
-            </div>
-            <div className="bg-white rounded-lg border border-[#E5E7EB] p-4">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-xs font-medium text-[#6B7280]">
-                  총 지출
-                </span>
-                <svg
-                  className="w-4 h-4 text-[#6B7280]"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth={1.5}
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
-              </div>
-              <div className="text-2xl font-semibold text-[#111827]">
+        {/* 대시보드 카드 */}
+        <div className="glass-card rounded-3xl bg-white p-8 border border-slate-100 shadow-sm space-y-6">
+          <div className="flex flex-col md:flex-row justify-between items-end gap-4">
+            <div className="space-y-1">
+              <p className="text-xs font-black text-slate-400 uppercase tracking-widest">누적 집행액 (팀 전체)</p>
+              <h2 className="text-4xl font-black text-slate-900 tracking-tighter">
                 {formatCurrency(totalSpent)}
-              </div>
-            </div>
-          </div>
-
-          {/* 탭 메뉴 */}
-          <div className="mb-6 flex gap-2 border-b border-[#E2E8F0]">
-            {[
-              { id: "overview", label: "개요" },
-              { id: "subscriptions", label: "구독목록" },
-              { id: "purchases", label: "구매목록" },
-              { id: "budgets", label: "예산 관리" },
-            ].map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id as any)}
-                className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
-                  activeTab === tab.id
-                    ? "border-[#3B82F6] text-[#3B82F6]"
-                    : "border-transparent text-[#4a5568] hover:text-[#111827]"
-                }`}
-              >
-                {tab.label}
-              </button>
-            ))}
-          </div>
-
-          {/* 구독목록 탭 */}
-          {activeTab === "subscriptions" && (
-            <div className="space-y-4">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-lg font-semibold text-[#111827]">
-                  구독목록
-                </h2>
-                <button
-                  onClick={() => setShowAddSubscription(true)}
-                  className="px-4 py-2 bg-[#3B82F6] text-white text-sm font-medium rounded hover:bg-[#2563EB] transition-colors"
-                >
-                  구독 추가
-                </button>
-              </div>
-
-              {subscriptions.length === 0 ? (
-                <div className="bg-white rounded-lg border border-[#E5E7EB] p-6 text-center">
-                  <p className="text-sm text-[#6B7280]">
-                    등록된 구독이 없습니다.
-                  </p>
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  {subscriptions.map((sub) => (
-                    <div
-                      key={sub.id}
-                      className="bg-white rounded-lg border border-[#E5E7EB] p-4"
-                    >
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-2">
-                            <h3 className="font-semibold text-[#111827]">
-                              {sub.name}
-                            </h3>
-                            <span
-                              className={`px-2 py-0.5 rounded text-xs ${
-                                sub.status === "active"
-                                  ? "bg-[#10B981] text-white"
-                                  : "bg-[#6B7280] text-white"
-                              }`}
-                            >
-                              {sub.status === "active" ? "활성" : "취소됨"}
-                            </span>
-                          </div>
-                          <div className="text-sm text-[#6B7280] space-y-1">
-                            <div>
-                              <span className="font-medium text-[#111827]">
-                                금액:{" "}
-                              </span>
-                              <span className="font-semibold text-[#111827]">
-                                {sub.currency !== "KRW" && (
-                                  <span className="text-xs mr-1">
-                                    {sub.amount} {sub.currency} ={" "}
-                                  </span>
-                                )}
-                                {formatCurrency(sub.amountInKRW)}
-                              </span>
-                              {sub.billingCycle === "monthly" && " /월"}
-                              {sub.billingCycle === "yearly" && " /년"}
-                              {sub.currency !== "KRW" && sub.exchangeRate && (
-                                <span className="text-xs ml-1 text-[#9CA3AF]">
-                                  (환율: 1 {sub.currency} ={" "}
-                                  {sub.exchangeRate.toLocaleString()} KRW)
-                                </span>
-                              )}
-                            </div>
-                            {sub.category && (
-                              <div>
-                                <span className="font-medium text-[#111827]">
-                                  카테고리:{" "}
-                                </span>
-                                {sub.category}
-                              </div>
-                            )}
-                            {sub.nextBillingDate && (
-                              <div>
-                                <span className="font-medium text-[#111827]">
-                                  다음 결제일:{" "}
-                                </span>
-                                {formatDate(sub.nextBillingDate)}
-                              </div>
-                            )}
-                            {sub.description && (
-                              <div className="text-xs text-[#9CA3AF] mt-1">
-                                {sub.description}
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                        <button
-                          onClick={() => handleDeleteSubscription(sub.id)}
-                          className="text-[#EF4444] hover:text-[#DC2626] transition-colors"
-                        >
-                          <svg
-                            className="w-5 h-5"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                            />
-                          </svg>
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              {/* 구독 추가 모달 */}
-              {showAddSubscription && (
-                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-                  <div className="bg-white rounded-lg border border-[#E5E7EB] p-6 max-w-md w-full mx-4">
-                    <h3 className="text-lg font-semibold mb-4 text-[#111827]">
-                      구독 추가
-                    </h3>
-                    <div className="space-y-4">
-                      <div>
-                        <label className="block text-sm font-medium mb-1 text-[#111827]">
-                          구독명
-                        </label>
-                        <input
-                          type="text"
-                          value={newSubscription.name}
-                          onChange={(e) =>
-                            setNewSubscription({
-                              ...newSubscription,
-                              name: e.target.value,
-                            })
-                          }
-                          className="w-full px-3 py-2 border border-[#D1D5DB]"
-                          placeholder="예: Notion Pro"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium mb-1 text-[#111827]">
-                          카테고리
-                        </label>
-                        <input
-                          type="text"
-                          value={newSubscription.category}
-                          onChange={(e) =>
-                            setNewSubscription({
-                              ...newSubscription,
-                              category: e.target.value,
-                            })
-                          }
-                          className="w-full px-3 py-2 border border-[#D1D5DB]"
-                          placeholder="예: 도구, 서비스"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium mb-1 text-[#111827]">
-                          통화
-                        </label>
-                        <select
-                          value={newSubscription.currency}
-                          onChange={(e) =>
-                            setNewSubscription({
-                              ...newSubscription,
-                              currency: e.target
-                                .value as Subscription["currency"],
-                            })
-                          }
-                          className="w-full px-3 py-2 border border-[#D1D5DB]"
-                        >
-                          <option value="KRW">원화 (KRW)</option>
-                          <option value="USD">달러 (USD)</option>
-                          <option value="EUR">유로 (EUR)</option>
-                          <option value="JPY">엔화 (JPY)</option>
-                        </select>
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium mb-1 text-[#111827]">
-                          금액 ({newSubscription.currency})
-                        </label>
-                        <input
-                          type="number"
-                          value={newSubscription.amount}
-                          onChange={(e) =>
-                            setNewSubscription({
-                              ...newSubscription,
-                              amount: e.target.value,
-                            })
-                          }
-                          className="w-full px-3 py-2 border border-[#D1D5DB]"
-                          placeholder={
-                            newSubscription.currency === "KRW"
-                              ? "10000"
-                              : newSubscription.currency === "USD"
-                              ? "10"
-                              : "1000"
-                          }
-                          step={
-                            newSubscription.currency === "KRW" ? "1" : "0.01"
-                          }
-                        />
-                        {newSubscription.currency !== "KRW" &&
-                          newSubscription.amount && (
-                            <div className="mt-1 text-xs text-[#6B7280]">
-                              ≈{" "}
-                              {formatCurrency(
-                                convertToKRW(
-                                  parseFloat(newSubscription.amount) || 0,
-                                  newSubscription.currency
-                                )
-                              )}{" "}
-                              (원화)
-                            </div>
-                          )}
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium mb-1 text-[#111827]">
-                          결제 주기
-                        </label>
-                        <select
-                          value={newSubscription.billingCycle}
-                          onChange={(e) =>
-                            setNewSubscription({
-                              ...newSubscription,
-                              billingCycle: e.target.value as any,
-                            })
-                          }
-                          className="w-full px-3 py-2 border border-[#D1D5DB]"
-                        >
-                          <option value="monthly">월간</option>
-                          <option value="yearly">연간</option>
-                          <option value="one-time">일회성</option>
-                        </select>
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium mb-1 text-[#111827]">
-                          시작일
-                        </label>
-                        <input
-                          type="date"
-                          value={newSubscription.startDate}
-                          onChange={(e) =>
-                            setNewSubscription({
-                              ...newSubscription,
-                              startDate: e.target.value,
-                            })
-                          }
-                          className="w-full px-3 py-2 border border-[#D1D5DB]"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium mb-1 text-[#111827]">
-                          설명
-                        </label>
-                        <textarea
-                          value={newSubscription.description}
-                          onChange={(e) =>
-                            setNewSubscription({
-                              ...newSubscription,
-                              description: e.target.value,
-                            })
-                          }
-                          className="w-full px-3 py-2 border border-[#D1D5DB]"
-                          rows={3}
-                        />
-                      </div>
-                    </div>
-                    <div className="flex gap-2 mt-6">
-                      <button
-                        onClick={() => setShowAddSubscription(false)}
-                        className="flex-1 px-4 py-2 border border-[#D1D5DB]"
-                      >
-                        취소
-                      </button>
-                      <button
-                        onClick={handleAddSubscription}
-                        className="flex-1 px-4 py-2 bg-[#3B82F6] text-white text-sm font-medium rounded hover:bg-[#2563EB] transition-colors"
-                      >
-                        추가
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* 구매목록 탭 */}
-          {activeTab === "purchases" && (
-            <div className="space-y-4">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-lg font-semibold text-[#111827]">
-                  구매목록
-                </h2>
-                <button
-                  onClick={() => setShowAddPurchase(true)}
-                  className="px-4 py-2 bg-[#3B82F6] text-white text-sm font-medium rounded hover:bg-[#2563EB] transition-colors"
-                >
-                  구매 추가
-                </button>
-              </div>
-
-              {purchases.length === 0 ? (
-                <div className="bg-white rounded-lg border border-[#E5E7EB] p-6 text-center">
-                  <p className="text-sm text-[#6B7280]">
-                    등록된 구매가 없습니다.
-                  </p>
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  {purchases.map((purchase) => (
-                    <div
-                      key={purchase.id}
-                      className="bg-white rounded-lg border border-[#E5E7EB] p-4"
-                    >
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-2">
-                            <h3 className="font-semibold text-[#111827]">
-                              {purchase.name}
-                            </h3>
-                          </div>
-                          <div className="text-sm text-[#6B7280] space-y-1">
-                            <div>
-                              <span className="font-medium text-[#111827]">
-                                금액:{" "}
-                              </span>
-                              <span className="font-semibold text-[#111827]">
-                                {formatCurrency(purchase.amount)}
-                              </span>
-                            </div>
-                            <div>
-                              <span className="font-medium text-[#111827]">
-                                구매일:{" "}
-                              </span>
-                              {formatDate(purchase.date)}
-                            </div>
-                            {purchase.vendor && (
-                              <div>
-                                <span className="font-medium text-[#111827]">
-                                  판매처:{" "}
-                                </span>
-                                {purchase.vendor}
-                              </div>
-                            )}
-                            {purchase.category && (
-                              <div>
-                                <span className="font-medium text-[#111827]">
-                                  카테고리:{" "}
-                                </span>
-                                {purchase.category}
-                              </div>
-                            )}
-                            {purchase.paymentMethod && (
-                              <div>
-                                <span className="font-medium text-[#111827]">
-                                  결제수단:{" "}
-                                </span>
-                                {purchase.paymentMethod}
-                              </div>
-                            )}
-                            {purchase.description && (
-                              <div className="text-xs text-[#9CA3AF] mt-1">
-                                {purchase.description}
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                        <button
-                          onClick={() => handleDeletePurchase(purchase.id)}
-                          className="text-[#EF4444] hover:text-[#DC2626] transition-colors"
-                        >
-                          <svg
-                            className="w-5 h-5"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                            />
-                          </svg>
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              {/* 구매 추가 모달 */}
-              {showAddPurchase && (
-                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-                  <div className="bg-white rounded-lg border border-[#E5E7EB] p-6 max-w-md w-full mx-4">
-                    <h3 className="text-lg font-semibold mb-4 text-[#111827]">
-                      구매 추가
-                    </h3>
-                    <div className="space-y-4">
-                      <div>
-                        <label className="block text-sm font-medium mb-1 text-[#111827]">
-                          구매명
-                        </label>
-                        <input
-                          type="text"
-                          value={newPurchase.name}
-                          onChange={(e) =>
-                            setNewPurchase({
-                              ...newPurchase,
-                              name: e.target.value,
-                            })
-                          }
-                          className="w-full px-3 py-2 border border-[#D1D5DB]"
-                          placeholder="예: 디자인 툴 구매"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium mb-1 text-[#111827]">
-                          금액 (원)
-                        </label>
-                        <input
-                          type="number"
-                          value={newPurchase.amount}
-                          onChange={(e) =>
-                            setNewPurchase({
-                              ...newPurchase,
-                              amount: e.target.value,
-                            })
-                          }
-                          className="w-full px-3 py-2 border border-[#D1D5DB]"
-                          placeholder="100000"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium mb-1 text-[#111827]">
-                          구매일
-                        </label>
-                        <input
-                          type="date"
-                          value={newPurchase.date}
-                          onChange={(e) =>
-                            setNewPurchase({
-                              ...newPurchase,
-                              date: e.target.value,
-                            })
-                          }
-                          className="w-full px-3 py-2 border border-[#D1D5DB]"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium mb-1 text-[#111827]">
-                          판매처
-                        </label>
-                        <input
-                          type="text"
-                          value={newPurchase.vendor}
-                          onChange={(e) =>
-                            setNewPurchase({
-                              ...newPurchase,
-                              vendor: e.target.value,
-                            })
-                          }
-                          className="w-full px-3 py-2 border border-[#D1D5DB]"
-                          placeholder="예: Adobe"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium mb-1 text-[#111827]">
-                          카테고리
-                        </label>
-                        <input
-                          type="text"
-                          value={newPurchase.category}
-                          onChange={(e) =>
-                            setNewPurchase({
-                              ...newPurchase,
-                              category: e.target.value,
-                            })
-                          }
-                          className="w-full px-3 py-2 border border-[#D1D5DB]"
-                          placeholder="예: 소프트웨어"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium mb-1 text-[#111827]">
-                          결제수단
-                        </label>
-                        <input
-                          type="text"
-                          value={newPurchase.paymentMethod}
-                          onChange={(e) =>
-                            setNewPurchase({
-                              ...newPurchase,
-                              paymentMethod: e.target.value,
-                            })
-                          }
-                          className="w-full px-3 py-2 border border-[#D1D5DB]"
-                          placeholder="예: 카드, 계좌이체"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium mb-1 text-[#111827]">
-                          설명
-                        </label>
-                        <textarea
-                          value={newPurchase.description}
-                          onChange={(e) =>
-                            setNewPurchase({
-                              ...newPurchase,
-                              description: e.target.value,
-                            })
-                          }
-                          className="w-full px-3 py-2 border border-[#D1D5DB]"
-                          rows={3}
-                        />
-                      </div>
-                    </div>
-                    <div className="flex gap-2 mt-6">
-                      <button
-                        onClick={() => setShowAddPurchase(false)}
-                        className="flex-1 px-4 py-2 border border-[#D1D5DB]"
-                      >
-                        취소
-                      </button>
-                      <button
-                        onClick={handleAddPurchase}
-                        className="flex-1 px-4 py-2 bg-[#3B82F6] text-white text-sm font-medium rounded hover:bg-[#2563EB] transition-colors"
-                      >
-                        추가
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* 개요 탭 */}
-          {activeTab === "overview" && (
-            <div className="space-y-6">
-              <div className="bg-white rounded-lg border border-[#E5E7EB] p-6">
-                <h2 className="text-lg font-semibold mb-4 text-[#111827]">
-                  최근 구독
-                </h2>
-                {subscriptions.slice(0, 5).length === 0 ? (
-                  <p className="text-sm text-[#6B7280] text-center py-4">
-                    등록된 구독이 없습니다.
-                  </p>
-                ) : (
-                  <div className="space-y-2">
-                    {subscriptions.slice(0, 5).map((sub) => (
-                      <div
-                        key={sub.id}
-                        className="flex items-center justify-between p-3 bg-[#F9FAFB] rounded border border-[#E5E7EB]"
-                      >
-                        <div className="flex-1 min-w-0">
-                          <div className="font-medium text-[#111827] mb-1">
-                            {sub.name}
-                          </div>
-                          <div className="text-xs text-[#6B7280]">
-                            {sub.category}
-                          </div>
-                        </div>
-                        <div className="text-right ml-4 flex-shrink-0">
-                          <div className="font-semibold text-[#111827]">
-                            {formatCurrency(sub.amountInKRW)}
-                          </div>
-                          <div className="text-xs text-[#6B7280]">
-                            {sub.billingCycle === "monthly" && "/월"}
-                            {sub.billingCycle === "yearly" && "/년"}
-                            {sub.currency !== "KRW" && (
-                              <div className="mt-0.5">
-                                ({sub.amount} {sub.currency})
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-
-              <div className="bg-white rounded-lg border border-[#E5E7EB] p-6">
-                <h2 className="text-lg font-semibold mb-4 text-[#111827]">
-                  최근 구매
-                </h2>
-                {purchases.slice(0, 5).length === 0 ? (
-                  <p className="text-sm text-[#6B7280] text-center py-4">
-                    등록된 구매가 없습니다.
-                  </p>
-                ) : (
-                  <div className="space-y-2">
-                    {purchases.slice(0, 5).map((purchase) => (
-                      <div
-                        key={purchase.id}
-                        className="flex items-center justify-between p-3 bg-[#F9FAFB] rounded border border-[#E5E7EB]"
-                      >
-                        <div className="flex-1 min-w-0">
-                          <div className="font-medium text-[#111827] mb-1">
-                            {purchase.name}
-                          </div>
-                          <div className="text-xs text-[#6B7280]">
-                            {formatDate(purchase.date)} • {purchase.vendor}
-                          </div>
-                        </div>
-                        <div className="font-semibold text-[#111827] ml-4 flex-shrink-0">
-                          {formatCurrency(purchase.amount)}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
-
-          {/* 예산 관리 탭 */}
-          {activeTab === "budgets" && (
-            <div className="bg-white rounded-lg border border-[#E5E7EB] p-6">
-              <h2 className="text-lg font-semibold mb-4 text-[#111827]">
-                예산 관리
+                <span className="text-xl text-slate-300 ml-2">/ {formatCurrency(ncaGrant.max)}</span>
               </h2>
-              <p className="text-sm text-[#6B7280] text-center py-4">
-                예산 관리 기능은 곧 추가될 예정입니다.
-              </p>
+            </div>
+            <div className="text-right">
+              <span className="px-3 py-1 rounded-full bg-indigo-50 text-indigo-600 text-xs font-black">
+                집행률 {Math.round((totalSpent / ncaGrant.max) * 100)}%
+              </span>
+            </div>
+          </div>
+          <div className="h-4 w-full bg-slate-100 rounded-full overflow-hidden shadow-inner p-1">
+            <div className="h-full bg-indigo-500 rounded-full transition-all duration-1000 shadow-lg shadow-indigo-100" style={{ width: `${Math.min((totalSpent / ncaGrant.max) * 100, 100)}%` }} />
+          </div>
+        </div>
+
+        {/* 탭 내비게이션 */}
+        <div className="flex bg-white p-1 rounded-2xl border border-slate-200 shadow-sm w-fit">
+          <button onClick={() => setActiveTab("overview")} className={`px-6 py-2.5 rounded-xl text-xs font-black transition-all ${activeTab === "overview" ? "bg-slate-900 text-white shadow-md" : "text-slate-500 hover:bg-slate-50"}`}>집행 개요</button>
+          <button onClick={() => setActiveTab("subscriptions")} className={`px-6 py-2.5 rounded-xl text-xs font-black transition-all ${activeTab === "subscriptions" ? "bg-indigo-600 text-white shadow-md" : "text-slate-500 hover:bg-slate-50"}`}>정기 구독</button>
+          <button onClick={() => setActiveTab("excel")} className={`px-6 py-2.5 rounded-xl text-xs font-black transition-all ${activeTab === "excel" ? "bg-emerald-600 text-white shadow-md" : "text-slate-500 hover:bg-slate-50"}`}>엑셀 데이터</button>
+        </div>
+
+        <div className="animate-slide-in">
+          {activeTab === "overview" || activeTab === "subscriptions" ? (
+            <div className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
+              <div className="p-6 border-b border-slate-50 flex justify-between items-center bg-slate-50/30 font-sans">
+                <h3 className="text-sm font-black text-slate-900">{activeTab === "overview" ? "전체 집행 내역" : "구독 내역"}</h3>
+                <div className="flex gap-2">
+                  <button onClick={() => { setAddType("구독"); setShowAddModal(true); }} className="px-4 py-2 bg-indigo-50 text-indigo-600 text-[11px] font-black rounded-xl hover:bg-indigo-100">+ 구독 추가</button>
+                  <button onClick={() => { setAddType("일반"); setShowAddModal(true); }} className="px-4 py-2 bg-slate-900 text-white text-[11px] font-black rounded-xl hover:bg-slate-800">+ 지출 등록</button>
+                </div>
+              </div>
+              <div className="divide-y divide-slate-50">
+                {expenditures.filter(e => activeTab === "overview" ? true : e.type === "구독").map(e => (
+                  <div key={e.id} className="p-5 flex items-center justify-between hover:bg-slate-50 transition-colors group">
+                    <div className="flex items-center gap-5">
+                      <div className="text-center min-w-[45px]">
+                        <p className="text-[10px] font-black text-slate-300">{new Date(e.date).getMonth()+1}월</p>
+                        <p className="text-base font-black text-slate-900">{new Date(e.date).getDate()}</p>
+                      </div>
+                      <div className={`w-11 h-11 rounded-xl flex items-center justify-center shadow-sm ${e.type === '구독' ? 'bg-indigo-50 text-indigo-600' : 'bg-slate-50 text-slate-600'}`}>
+                        {e.type === '구독' ? (
+                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" /></svg>
+                        ) : (
+                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1c-1.11 0-2.08.402-2.599 1M12 8v1m0 11c1.11 0 2.08-.402 2.599-1M12 20v1m0-1c-1.11 0-2.08-.402-2.599-1M12 20v-1m9-4a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                        )}
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <h4 className="text-sm font-bold text-slate-900">{e.item_name}</h4>
+                          <span className="text-[9px] px-1.5 py-0.5 bg-slate-100 text-slate-500 rounded-md font-black uppercase">{e.bimok}</span>
+                        </div>
+                        <p className="text-[11px] text-slate-400 font-medium">{e.vendor} • {e.description}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-8">
+                      <div className="text-right">
+                        <p className={`text-sm font-black ${e.type === '구독' ? 'text-indigo-600' : 'text-slate-900'}`}>- {formatCurrency(e.amount_in_krw)}</p>
+                        <button onClick={() => handleDelete(e.id)} className="text-[9px] font-bold text-rose-400 opacity-0 group-hover:opacity-100 transition-all uppercase">Delete</button>
+                      </div>
+                      <button onClick={() => toggleStatus(e.id, e.evidence_status)} className={`px-3 py-1.5 rounded-xl text-[10px] font-black transition-all ${e.evidence_status === '완료' ? 'bg-emerald-50 text-emerald-600' : e.evidence_status === '검토중' ? 'bg-amber-50 text-amber-600' : 'bg-rose-50 text-rose-600'}`}>
+                        {e.evidence_status}
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : (
+            <div className="space-y-4 font-sans">
+              <div className="flex justify-between items-center bg-white p-6 rounded-3xl border border-slate-100 shadow-sm">
+                <div>
+                  <h3 className="text-sm font-black text-slate-900">사용계획서 엑셀 변환</h3>
+                  <p className="text-[11px] text-slate-400 font-medium mt-0.5">DB의 실시간 데이터를 NCA 공식 양식에 채워 넣습니다.</p>
+                </div>
+                <button 
+                  onClick={handleExportExcel}
+                  disabled={isExporting || expenditures.length === 0}
+                  className="flex items-center gap-2 px-5 py-2.5 bg-emerald-600 text-white rounded-xl text-xs font-black shadow-lg shadow-emerald-100 hover:scale-105 transition-all"
+                >
+                  {isExporting ? <div className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>}
+                  {isExporting ? "생성 중..." : "공식 사용계획서 다운로드"}
+                </button>
+              </div>
+              <div className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden overflow-x-auto">
+                <table className="w-full text-left">
+                  <thead className="bg-slate-50 border-b border-slate-100">
+                    <tr className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                      <th className="px-6 py-4">비목</th>
+                      <th className="px-6 py-4">품명</th>
+                      <th className="px-6 py-4 text-right">단가</th>
+                      <th className="px-6 py-4 text-center">수량</th>
+                      <th className="px-6 py-4 text-right">총액(원)</th>
+                      <th className="px-6 py-4">지급처</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-50">
+                    {expenditures.map(e => (
+                      <tr key={e.id} className="text-xs hover:bg-slate-50/50">
+                        <td className="px-6 py-4 font-bold text-indigo-600">{e.bimok}</td>
+                        <td className="px-6 py-4 font-black text-slate-900">{e.item_name}</td>
+                        <td className="px-6 py-4 text-right text-slate-500 font-medium">₩{Math.round(e.amount_in_krw/e.quantity).toLocaleString()}</td>
+                        <td className="px-6 py-4 text-center font-bold">{e.quantity}{e.unit}</td>
+                        <td className="px-6 py-4 text-right font-black text-slate-900">₩{e.amount_in_krw.toLocaleString()}</td>
+                        <td className="px-6 py-4 text-slate-500">{e.vendor}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           )}
         </div>
+
+        {/* 지출/구독 등록 모달 */}
+        {showAddModal && (
+          <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center z-[100] p-4 font-sans">
+            <div className="bg-white rounded-[2.5rem] w-full max-w-2xl shadow-2xl overflow-hidden animate-slide-in">
+              <div className="p-8 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+                <h2 className="text-2xl font-black text-slate-900">NCA {addType === "구독" ? "SaaS 구독" : "지출 내역"} 등록</h2>
+                <button onClick={() => setShowAddModal(false)} className="w-10 h-10 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-400 transition-colors">✕</button>
+              </div>
+              <div className="p-10 space-y-6">
+                <div className="grid grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">공식 비목</label>
+                    <select disabled={addType === "구독"} value={addType === "구독" ? "임차비" : newExp.bimok} onChange={(e) => setNewExp({...newExp, bimok: e.target.value as any})} className="w-full px-5 py-3 bg-white border border-slate-100 rounded-2xl text-sm font-bold shadow-sm outline-none focus:ring-2 focus:ring-indigo-500">
+                      <option value="전문가활용비">전문가활용비</option>
+                      <option value="임차비">임차비</option>
+                      <option value="재료구입비">재료구입비</option>
+                      <option value="외주용역비">외주용역비</option>
+                    </select>
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">품명 (엑셀용)</label>
+                    <input type="text" value={newExp.item_name} onChange={(e) => setNewExp({...newExp, item_name: e.target.value})} placeholder="품명 입력" className="w-full px-5 py-3 bg-slate-50 border-none rounded-2xl text-sm font-bold focus:ring-2 focus:ring-indigo-500 outline-none" />
+                  </div>
+                </div>
+                <div className="grid grid-cols-4 gap-4">
+                  <div className="space-y-2 col-span-2">
+                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">규격/상세</label>
+                    <input type="text" value={newExp.specification} onChange={(e) => setNewExp({...newExp, specification: e.target.value})} className="w-full px-5 py-3 bg-slate-50 border-none rounded-2xl text-sm font-bold outline-none" />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">수량</label>
+                    <input type="number" value={newExp.quantity} onChange={(e) => setNewExp({...newExp, quantity: Number(e.target.value)})} className="w-full px-5 py-3 bg-slate-50 border-none rounded-2xl text-sm font-black outline-none" />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">단위</label>
+                    <input type="text" value={newExp.unit} onChange={(e) => setNewExp({...newExp, unit: e.target.value})} className="w-full px-5 py-3 bg-slate-50 border-none rounded-2xl text-sm font-bold outline-none" />
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">단가</label>
+                    <div className="relative">
+                      <input type="number" value={newExp.unit_price || ""} onChange={(e) => setNewExp({...newExp, unit_price: Number(e.target.value)})} className="w-full px-5 py-3 bg-slate-50 border-none rounded-2xl text-sm font-black outline-none" />
+                      <select value={newExp.currency} onChange={(e) => setNewExp({...newExp, currency: e.target.value as Currency})} className="absolute right-3 top-2 text-[10px] font-bold bg-white border px-2 py-1 rounded-lg">
+                        <option value="KRW">KRW</option>
+                        <option value="USD">USD</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">지급처/성명</label>
+                    <input type="text" value={newExp.vendor} onChange={(e) => setNewExp({...newExp, vendor: e.target.value})} className="w-full px-5 py-3 bg-slate-50 border-none rounded-2xl text-sm font-bold outline-none" />
+                  </div>
+                </div>
+                <textarea rows={3} value={newExp.description} onChange={(e) => setNewExp({...newExp, description: e.target.value})} placeholder="사용 사유 기록" className="w-full px-5 py-4 bg-slate-50 border-none rounded-2xl text-sm font-medium focus:ring-2 focus:ring-indigo-500 outline-none" />
+              </div>
+              <div className="p-8 bg-slate-50 flex gap-4">
+                <button onClick={() => setShowAddModal(false)} className="flex-1 py-4 text-sm font-black text-slate-500 uppercase">Cancel</button>
+                <button onClick={handleAddExpenditure} className="flex-1 py-4 bg-indigo-600 text-white font-black rounded-3xl shadow-xl shadow-indigo-100 transition-all hover:scale-[1.02]">Register & Notify Team</button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
