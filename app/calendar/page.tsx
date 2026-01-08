@@ -40,7 +40,12 @@ export default function CalendarPage() {
 
   const thisMonthEvents = useMemo(() => {
     return events.filter(e => e.month === currentMonth && e.year === currentYear)
-                 .sort((a, b) => a.date - b.date || a.time.localeCompare(b.time));
+                 .sort((a, b) => {
+                   if (a.date !== b.date) return a.date - b.date;
+                   const timeA = (a as any).time || "";
+                   const timeB = (b as any).time || "";
+                   return timeA.localeCompare(timeB);
+                 });
   }, [events, currentMonth, currentYear]);
 
   const selectedDayEvents = useMemo(() => {
