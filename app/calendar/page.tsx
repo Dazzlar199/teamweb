@@ -9,34 +9,32 @@ import {
   removeBookmark,
 } from "@/lib/utils/bookmarks";
 import { exportEventsToICal } from "@/lib/utils/export";
-
-interface Event {
-  id: string;
-  title: string;
-  date: number;
-  time: string;
-  type: string;
-  createdBy: string;
-  location?: string;
-  repeat?: "none" | "daily" | "weekly" | "monthly";
-  repeatEndDate?: string;
-  isBookmarked?: boolean;
-  year?: number; // 년도 (선택적, 없으면 현재 년도로 간주)
-  month?: number; // 월 (선택적, 없으면 현재 월로 간주, 0-11)
-}
+import {
+  deleteEvent,
+  toggleEventParticipation,
+} from "@/lib/utils/event";
+import { useUser } from "@/lib/context/UserContext";
+import { useData } from "@/lib/context/DataContext";
+import { useToast } from "@/lib/context/ToastContext";
+import type { Event } from "@/lib/types/event";
 
 export default function CalendarPage() {
-  const currentUser = "김찬주"; // TODO: 실제 사용자 정보로 교체
+  const { user, canModify } = useUser();
+  const { events, setEvents, refreshEvents } = useData();
+  const { showToast } = useToast();
+  const currentUser = user?.name || "김찬주";
   const today = new Date();
   const [currentYear, setCurrentYear] = useState(today.getFullYear());
   const [currentMonth, setCurrentMonth] = useState(today.getMonth());
   const currentDate = today.getDate();
 
-  const [events, setEvents] = useState<Event[]>([]);
   const [holidays, setHolidays] = useState<Event[]>([]); // 공휴일은 별도 관리
   const [showAddForm, setShowAddForm] = useState(false);
   const [filterBy, setFilterBy] = useState<string>("전체");
   const [selectedDate, setSelectedDate] = useState<number | null>(currentDate);
+  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null); // 선택된 일정 (상세 모달용)
+  const [isEditingEvent, setIsEditingEvent] = useState(false); // 일정 수정 모드
+  const [editEvent, setEditEvent] = useState<Event | null>(null); // 수정 중인 일정
 
   // 작성자 확인 함수
   const isCreator = (event: Event) => {
@@ -47,9 +45,12 @@ export default function CalendarPage() {
     date: currentDate,
     time: "09:00",
     location: "",
+    description: "",
     repeat: "none" as "none" | "daily" | "weekly" | "monthly",
     repeatEndDate: "",
   });
+  const [selectedHour, setSelectedHour] = useState("09");
+  const [selectedMinute, setSelectedMinute] = useState("00");
 
   const monthNames = [
     "1월",
@@ -261,104 +262,16 @@ export default function CalendarPage() {
     return allHolidays;
   };
 
-  // 로컬 스토리지에서 일정 로드
+  // 공휴일 로드
   useEffect(() => {
-    // 공휴일은 별도로 초기화 (일정으로 저장하지 않음)
     const holidays = initializeHolidays2026();
     setHolidays(holidays);
+    refreshEvents(); // 마운트 시 최신 데이터 확인
+  }, [refreshEvents]);
 
-    const savedEvents = localStorage.getItem("team-dashboard-events");
-    if (savedEvents) {
-      try {
-        const loadedEvents = JSON.parse(savedEvents);
-        // 공휴일 제외하고 필터링 (createdBy가 "시스템"이 아닌 것만)
-        const userEvents = loadedEvents.filter(
-          (e: Event) => e.createdBy !== "시스템"
-        );
-        // 북마크 상태 추가
-        const eventsWithBookmarks = userEvents.map((event: Event) => ({
-          ...event,
-          isBookmarked: isBookmarked("event", event.id),
-        }));
-        setEvents(eventsWithBookmarks);
-      } catch (e) {
-        console.error("일정 로드 실패:", e);
-      }
-    } else {
-      // 초기 예시 데이터 (공휴일 제외)
-      const currentYearForInit = today.getFullYear();
-      const currentMonthForInit = today.getMonth();
-      const initialEvents: Event[] = [
-        {
-          id: "1",
-          title: "팀 미팅",
-          date: 7,
-          time: "10:00",
-          type: "meeting",
-          createdBy: "김찬주",
-          location: "회의실 A",
-          year: currentYearForInit,
-          month: currentMonthForInit,
-        },
-        {
-          id: "2",
-          title: "프로젝트 리뷰",
-          date: 8,
-          time: "14:00",
-          type: "review",
-          createdBy: "박건희",
-          year: currentYearForInit,
-          month: currentMonthForInit,
-        },
-        {
-          id: "3",
-          title: "클라이언트 미팅",
-          date: 10,
-          time: "15:00",
-          type: "meeting",
-          createdBy: "김예린",
-          year: currentYearForInit,
-          month: currentMonthForInit,
-        },
-        {
-          id: "4",
-          title: "디자인 리뷰",
-          date: 12,
-          time: "11:00",
-          type: "review",
-          createdBy: "이나영",
-          year: currentYearForInit,
-          month: currentMonthForInit,
-        },
-        {
-          id: "5",
-          title: "스프린트 계획",
-          date: 15,
-          time: "09:00",
-          type: "planning",
-          createdBy: "김예린",
-          year: currentYearForInit,
-          month: currentMonthForInit,
-        },
-      ];
-      setEvents(initialEvents);
-      localStorage.setItem(
-        "team-dashboard-events",
-        JSON.stringify(initialEvents)
-      );
-    }
-  }, []);
-
-  // 일정 저장
-  const saveEvents = (newEvents: Event[]) => {
-    setEvents(newEvents);
-    localStorage.setItem("team-dashboard-events", JSON.stringify(newEvents));
-  };
-
-  // 일정 추가
-  const handleAddEvent = () => {
+  const handleAddEvent = async () => {
     if (!newEvent.title.trim()) {
-      alert("일정 제목을 입력해주세요.");
+      showToast("일정 제목을 입력해주세요.", "warning");
       return;
     }
 
@@ -379,25 +292,31 @@ export default function CalendarPage() {
 
     // 반복 일정 생성
     const generatedEvents = generateRepeatEvents(baseEvent);
-    saveEvents([...events, ...generatedEvents]);
 
-    // 활동 로그 추가
-    addActivityLog({
-      type: "event",
-      action: "일정을 등록했습니다",
-      user: currentUser,
-      targetId: baseEvent.id,
-      targetTitle: baseEvent.title,
-    });
+    try {
+      // 로컬 상태 즉시 업데이트 (UI 반응성)
+      setEvents((prev) => [...prev, ...generatedEvents]);
+      
+      // Supabase 또는 localStorage에 저장
+      await Promise.all(generatedEvents.map((e) => saveEvent(e)));
+      
+      showToast("일정이 추가되었습니다.", "success");
+    } catch (e) {
+      refreshEvents(); // 에러 시 복구
+      showToast("일정 저장에 실패했습니다.", "error");
+    }
 
     setNewEvent({
       title: "",
       date: currentDate,
       time: "09:00",
       location: "",
+      description: "",
       repeat: "none",
       repeatEndDate: "",
     });
+    setSelectedHour("09");
+    setSelectedMinute("00");
     setShowAddForm(false);
     setSelectedDate(null);
   };
@@ -417,24 +336,65 @@ export default function CalendarPage() {
       e.id === eventId ? { ...e, isBookmarked: !e.isBookmarked } : e
     );
     setEvents(updatedEvents);
-    saveEvents(updatedEvents);
+    // 북마크는 로컬 상태만 업데이트 (북마크는 localStorage에 저장)
+    updateLocalEvents(updatedEvents);
   };
 
   // 날짜 클릭 시 일정 추가 폼 표시
   const handleDateClick = (date: number) => {
     setSelectedDate(date);
-    setNewEvent({ ...newEvent, date });
+    setSelectedHour("09");
+    setSelectedMinute("00");
+    setNewEvent({ ...newEvent, date, time: "09:00", description: "" });
     setShowAddForm(true);
   };
 
+  // 일정 완료 상태 토글
+  const handleToggleCompleted = async (event: Event) => {
+    try {
+      const updatedEvent: Event = {
+        ...event,
+        completed: !event.completed,
+      };
+
+      // Supabase 또는 localStorage에 저장
+      await saveEvent(updatedEvent);
+
+      // 로컬 상태 업데이트
+      const updatedEvents = events.map((e) =>
+        e.id === event.id ? updatedEvent : e
+      );
+      updateLocalEvents(updatedEvents);
+
+      // 선택된 이벤트가 있다면 업데이트
+      if (selectedEvent && selectedEvent.id === event.id) {
+        setSelectedEvent(updatedEvent);
+      }
+
+      // 활동 로그 추가
+      addActivityLog({
+        type: "event",
+        action: updatedEvent.completed
+          ? "일정을 완료 처리했습니다"
+          : "일정 완료를 취소했습니다",
+        user: currentUser,
+        targetId: event.id,
+        targetTitle: event.title,
+      });
+    } catch (error) {
+      console.error("완료 상태 변경 실패:", error);
+      alert("완료 상태 변경에 실패했습니다. 다시 시도해주세요.");
+    }
+  };
+
   // 일정 삭제
-  const handleDeleteEvent = (id: string) => {
+  const handleDeleteEvent = async (id: string) => {
     const event = events.find((e) => e.id === id);
     if (!event) return;
 
-    // 작성자 확인
-    if (!isCreator(event)) {
-      alert("작성자만 삭제할 수 있습니다.");
+    // 작성자 또는 관리자 확인
+    if (!canModify(event.createdBy)) {
+      alert("작성자 또는 관리자만 삭제할 수 있습니다.");
       return;
     }
 
@@ -447,7 +407,12 @@ export default function CalendarPage() {
         targetId: id,
         targetTitle: event.title,
       });
-      saveEvents(events.filter((e) => e.id !== id));
+
+      // Supabase 또는 localStorage에서 삭제
+      await deleteEvent(id);
+
+      // 로컬 상태 업데이트
+      updateLocalEvents(events.filter((e) => e.id !== id));
     }
   };
 
@@ -608,7 +573,14 @@ export default function CalendarPage() {
                       ? currentDate
                       : 1; // 다른 월이면 1일로 설정
                   setSelectedDate(dateToUse);
-                  setNewEvent({ ...newEvent, date: dateToUse });
+                  setSelectedHour("09");
+                  setSelectedMinute("00");
+                  setNewEvent({
+                    ...newEvent,
+                    date: dateToUse,
+                    time: "09:00",
+                    description: "",
+                  });
                   setShowAddForm(true);
                 }}
                 className="px-3.5 py-1.5 bg-[#3B82F6] text-white text-sm font-medium rounded-md hover:bg-[#60A5FA] transition-colors leading-tight"
@@ -674,9 +646,12 @@ export default function CalendarPage() {
                           date: currentDate,
                           time: "09:00",
                           location: "",
+                          description: "",
                           repeat: "none",
                           repeatEndDate: "",
                         });
+                        setSelectedHour("09");
+                        setSelectedMinute("00");
                       }}
                       className="text-[#6B7280] hover:text-[#111827] text-lg"
                     >
@@ -726,14 +701,50 @@ export default function CalendarPage() {
                       <label className="block text-xs font-medium text-[#111827] mb-1">
                         시간
                       </label>
-                      <input
-                        type="time"
-                        value={newEvent.time}
-                        onChange={(e) =>
-                          setNewEvent({ ...newEvent, time: e.target.value })
-                        }
-                        className="w-full px-3 py-2 border border-[#E5E7EB] rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
-                      />
+                      <div className="flex gap-2">
+                        <select
+                          value={selectedHour}
+                          onChange={(e) => {
+                            const hour = e.target.value;
+                            setSelectedHour(hour);
+                            setNewEvent({
+                              ...newEvent,
+                              time: `${hour}:${selectedMinute}`,
+                            });
+                          }}
+                          className="flex-1 px-3 py-2 border border-[#E5E7EB] rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
+                        >
+                          {Array.from({ length: 24 }, (_, i) => {
+                            const hour = i.toString().padStart(2, "0");
+                            return (
+                              <option key={hour} value={hour}>
+                                {hour}시
+                              </option>
+                            );
+                          })}
+                        </select>
+                        <select
+                          value={selectedMinute}
+                          onChange={(e) => {
+                            const minute = e.target.value;
+                            setSelectedMinute(minute);
+                            setNewEvent({
+                              ...newEvent,
+                              time: `${selectedHour}:${minute}`,
+                            });
+                          }}
+                          className="flex-1 px-3 py-2 border border-[#E5E7EB] rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
+                        >
+                          {Array.from({ length: 6 }, (_, i) => {
+                            const minute = (i * 10).toString().padStart(2, "0");
+                            return (
+                              <option key={minute} value={minute}>
+                                {minute}분
+                              </option>
+                            );
+                          })}
+                        </select>
+                      </div>
                     </div>
                     <div>
                       <label className="block text-xs font-medium text-[#111827] mb-1">
@@ -747,6 +758,23 @@ export default function CalendarPage() {
                         }
                         className="w-full px-3 py-2 border border-[#E5E7EB] rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
                         placeholder="장소"
+                      />
+                    </div>
+                    <div className="col-span-2">
+                      <label className="block text-xs font-medium text-[#111827] mb-1">
+                        상세 내용 (선택)
+                      </label>
+                      <textarea
+                        value={newEvent.description}
+                        onChange={(e) =>
+                          setNewEvent({
+                            ...newEvent,
+                            description: e.target.value,
+                          })
+                        }
+                        className="w-full px-3 py-2 border border-[#E5E7EB] rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#2563EB] resize-none"
+                        placeholder="일정에 대한 상세 내용을 입력하세요"
+                        rows={3}
                       />
                     </div>
                     <div>
@@ -802,9 +830,12 @@ export default function CalendarPage() {
                           date: currentDate,
                           time: "09:00",
                           location: "",
+                          description: "",
                           repeat: "none",
                           repeatEndDate: "",
                         });
+                        setSelectedHour("09");
+                        setSelectedMinute("00");
                       }}
                       className="flex-1 px-4 py-2 border border-[#E5E7EB] rounded-md text-sm font-medium text-[#6B7280] hover:bg-[#F9FAFB]"
                     >
@@ -922,6 +953,12 @@ export default function CalendarPage() {
                                   e.currentTarget.style.backgroundColor =
                                     memberColor;
                                 }}
+                                onClick={(e) => {
+                                  if (!isHoliday) {
+                                    e.stopPropagation();
+                                    setSelectedEvent(item);
+                                  }
+                                }}
                                 title={
                                   isHoliday
                                     ? item.title
@@ -933,11 +970,22 @@ export default function CalendarPage() {
                                     ⭐
                                   </span>
                                 )}
-                                <span className="truncate flex-1">
+                                <span
+                                  className={`truncate flex-1 ${
+                                    !isHoliday && item.completed
+                                      ? "line-through opacity-60"
+                                      : ""
+                                  }`}
+                                >
                                   {isHoliday ? "" : `${item.time} `}
                                   {item.title}
                                 </span>
-                                {!isHoliday && isCreator(item) && (
+                                {!isHoliday && item.completed && (
+                                  <span className="text-[#10B981] flex-shrink-0 ml-1">
+                                    ✓
+                                  </span>
+                                )}
+                                {!isHoliday && canModify(item.createdBy) && (
                                   <button
                                     onClick={(e) => {
                                       e.stopPropagation();
@@ -992,10 +1040,21 @@ export default function CalendarPage() {
                           }}
                         >
                           <div className="flex items-start justify-between mb-0.5">
-                            <h3 className="text-xs font-medium text-[#111827] leading-tight">
+                            <h3
+                              className={`text-xs font-medium text-[#111827] leading-tight ${
+                                event.completed
+                                  ? "line-through text-gray-400"
+                                  : ""
+                              }`}
+                            >
                               {event.title}
                             </h3>
-                            {isCreator(event) && (
+                            {event.completed && (
+                              <span className="text-[#10B981] text-xs ml-1">
+                                ✓
+                              </span>
+                            )}
+                            {canModify(event.createdBy) && (
                               <button
                                 onClick={() => handleDeleteEvent(event.id)}
                                 className="text-[#6B7280] hover:text-[#EF4444] text-xs"
@@ -1041,6 +1100,7 @@ export default function CalendarPage() {
                           borderRightColor: "#E5E7EB",
                           borderBottomColor: "#E5E7EB",
                         }}
+                        onClick={() => setSelectedEvent(event)}
                         onMouseEnter={(e) => {
                           e.currentTarget.style.borderLeftColor = memberColor;
                           e.currentTarget.style.borderTopColor = memberColor;
@@ -1084,7 +1144,7 @@ export default function CalendarPage() {
                             >
                               ⭐
                             </button>
-                            {isCreator(event) && (
+                            {canModify(event.createdBy) && (
                               <button
                                 onClick={() => handleDeleteEvent(event.id)}
                                 className="text-[#6B7280] hover:text-[#EF4444] text-xs"
@@ -1114,6 +1174,481 @@ export default function CalendarPage() {
           </div>
         </div>
       </div>
+
+      {/* 일정 상세 모달 */}
+      {selectedEvent && (
+        <div
+          className="fixed inset-0 bg-gray-900/40 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+          onClick={() => setSelectedEvent(null)}
+        >
+          <div
+            className="bg-white rounded-xl shadow-2xl max-w-lg w-full max-h-[85vh] overflow-hidden flex flex-col"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* 헤더 */}
+            <div className="px-6 py-4 border-b border-gray-200 flex items-start justify-between">
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-3 mb-3">
+                  <h2
+                    className={`text-lg font-semibold text-gray-900 pr-2 ${
+                      selectedEvent.completed
+                        ? "line-through text-gray-400"
+                        : ""
+                    }`}
+                  >
+                    {selectedEvent.title}
+                  </h2>
+                  {selectedEvent.completed && (
+                    <span className="px-2 py-1 text-xs font-medium bg-green-100 text-green-700 rounded-full">
+                      완료
+                    </span>
+                  )}
+                </div>
+                <div className="space-y-2 text-sm text-gray-600">
+                  <div className="flex items-center gap-2">
+                    <svg
+                      className="w-4 h-4 text-gray-400"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                      />
+                    </svg>
+                    <span>
+                      {currentYear}년 {monthNames[currentMonth]}{" "}
+                      {selectedEvent.date}일
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <svg
+                      className="w-4 h-4 text-gray-400"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    </svg>
+                    <span>{selectedEvent.time}</span>
+                  </div>
+                  {selectedEvent.location && (
+                    <div className="flex items-center gap-2">
+                      <svg
+                        className="w-4 h-4 text-gray-400"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                        />
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                        />
+                      </svg>
+                      <span>{selectedEvent.location}</span>
+                    </div>
+                  )}
+                  <div className="flex items-center gap-2">
+                    <svg
+                      className="w-4 h-4 text-gray-400"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                      />
+                    </svg>
+                    <span>{selectedEvent.createdBy}</span>
+                  </div>
+                </div>
+              </div>
+              <button
+                onClick={() => setSelectedEvent(null)}
+                className="ml-4 text-gray-400 hover:text-gray-600 transition-colors p-1"
+              >
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+            </div>
+
+            {/* 본문 */}
+            <div className="px-6 py-4 overflow-y-auto flex-1">
+              {/* 수정 모드 */}
+              {isEditingEvent && editEvent ? (
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-900 mb-1">
+                      제목
+                    </label>
+                    <input
+                      type="text"
+                      value={editEvent.title}
+                      onChange={(e) =>
+                        setEditEvent({ ...editEvent, title: e.target.value })
+                      }
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-900 mb-1">
+                        날짜
+                      </label>
+                      <input
+                        type="number"
+                        min="1"
+                        max={daysInMonth}
+                        value={editEvent.date}
+                        onChange={(e) =>
+                          setEditEvent({
+                            ...editEvent,
+                            date: parseInt(e.target.value) || 1,
+                          })
+                        }
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-900 mb-1">
+                        시간
+                      </label>
+                      <div className="flex gap-2">
+                        <select
+                          value={editEvent.time.split(":")[0]}
+                          onChange={(e) => {
+                            const hour = e.target.value;
+                            const minute = editEvent.time.split(":")[1];
+                            setEditEvent({
+                              ...editEvent,
+                              time: `${hour}:${minute}`,
+                            });
+                          }}
+                          className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        >
+                          {Array.from({ length: 24 }, (_, i) => {
+                            const hour = i.toString().padStart(2, "0");
+                            return (
+                              <option key={hour} value={hour}>
+                                {hour}시
+                              </option>
+                            );
+                          })}
+                        </select>
+                        <select
+                          value={editEvent.time.split(":")[1]}
+                          onChange={(e) => {
+                            const minute = e.target.value;
+                            const hour = editEvent.time.split(":")[0];
+                            setEditEvent({
+                              ...editEvent,
+                              time: `${hour}:${minute}`,
+                            });
+                          }}
+                          className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        >
+                          {Array.from({ length: 6 }, (_, i) => {
+                            const minute = (i * 10).toString().padStart(2, "0");
+                            return (
+                              <option key={minute} value={minute}>
+                                {minute}분
+                              </option>
+                            );
+                          })}
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-900 mb-1">
+                      장소 (선택)
+                    </label>
+                    <input
+                      type="text"
+                      value={editEvent.location || ""}
+                      onChange={(e) =>
+                        setEditEvent({ ...editEvent, location: e.target.value })
+                      }
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="장소"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-900 mb-1">
+                      상세 내용
+                    </label>
+                    <textarea
+                      value={editEvent.description || ""}
+                      onChange={(e) =>
+                        setEditEvent({
+                          ...editEvent,
+                          description: e.target.value,
+                        })
+                      }
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                      placeholder="일정에 대한 상세 내용을 입력하세요"
+                      rows={4}
+                    />
+                  </div>
+                  <div className="flex items-center gap-3 pt-2 pb-2 border-t border-gray-200">
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={editEvent.completed || false}
+                        onChange={(e) =>
+                          setEditEvent({
+                            ...editEvent,
+                            completed: e.target.checked,
+                          })
+                        }
+                        className="w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500 cursor-pointer"
+                      />
+                      <span className="text-sm font-medium text-gray-900">
+                        완료 처리
+                      </span>
+                    </label>
+                  </div>
+                  <div className="flex gap-2 pt-2">
+                    <button
+                      onClick={async () => {
+                        await saveEvent(editEvent);
+                        setSelectedEvent(editEvent);
+                        setIsEditingEvent(false);
+                        setEditEvent(null);
+                        // 이벤트 목록 새로고침 (강제 새로고침)
+                        const loadedEvents = await getEvents(true);
+                        const userEvents = loadedEvents.filter(
+                          (e: Event) => e.createdBy !== "시스템"
+                        );
+                        const eventsWithBookmarks = userEvents.map(
+                          (event: Event) => ({
+                            ...event,
+                            isBookmarked: isBookmarked("event", event.id),
+                            participants: event.participants || [],
+                            description: event.description || undefined,
+                          })
+                        );
+                        setEvents(eventsWithBookmarks);
+                      }}
+                      className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
+                    >
+                      저장
+                    </button>
+                    <button
+                      onClick={() => {
+                        setIsEditingEvent(false);
+                        setEditEvent(null);
+                      }}
+                      className="flex-1 px-4 py-2 bg-gray-200 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-300 transition-colors"
+                    >
+                      취소
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <>
+                  {/* 완료 체크박스 */}
+                  <div className="mb-4 pb-4 border-b border-gray-200">
+                    <label className="flex items-center gap-3 cursor-pointer group">
+                      <input
+                        type="checkbox"
+                        checked={selectedEvent.completed || false}
+                        onChange={(e) => {
+                          e.stopPropagation();
+                          handleToggleCompleted(selectedEvent);
+                        }}
+                        className="w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500 cursor-pointer"
+                      />
+                      <div className="flex-1">
+                        <span className="text-sm font-medium text-gray-900 group-hover:text-blue-600 transition-colors">
+                          완료 처리
+                        </span>
+                        <p className="text-xs text-gray-500 mt-0.5">
+                          일정이 완료되었는지 표시합니다
+                        </p>
+                      </div>
+                    </label>
+                  </div>
+
+                  {/* 상세 내용 */}
+                  <div className="mb-4">
+                    <h3 className="text-sm font-medium text-gray-900 mb-2">
+                      상세 내용
+                    </h3>
+                    {selectedEvent.description ? (
+                      <p className="text-sm text-gray-600 whitespace-pre-wrap leading-relaxed bg-gray-50 p-3 rounded-lg">
+                        {selectedEvent.description}
+                      </p>
+                    ) : (
+                      <p className="text-sm text-gray-400 italic">
+                        상세 내용이 없습니다
+                      </p>
+                    )}
+                  </div>
+
+                  {/* 참여자 섹션 */}
+                  <div>
+                    <div className="flex items-center justify-between mb-3">
+                      <h3 className="text-sm font-medium text-gray-900">
+                        참여자{" "}
+                        <span className="text-gray-500 font-normal">
+                          ({selectedEvent.participants?.length || 0})
+                        </span>
+                      </h3>
+                      <button
+                        onClick={async (e) => {
+                          e.stopPropagation();
+                          try {
+                            const updatedEvent = await toggleEventParticipation(
+                              selectedEvent.id,
+                              currentUser
+                            );
+                            if (updatedEvent) {
+                              setSelectedEvent(updatedEvent);
+                              // 이벤트 목록도 업데이트
+                              const updatedEvents = events.map((e) =>
+                                e.id === updatedEvent.id ? updatedEvent : e
+                              );
+                              setEvents(updatedEvents);
+                            }
+                          } catch (error) {
+                            console.error("참여하기 실패:", error);
+                            alert(
+                              "참여하기에 실패했습니다. 다시 시도해주세요."
+                            );
+                          }
+                        }}
+                        className={`px-4 py-1.5 text-sm font-medium rounded-lg transition-all ${
+                          selectedEvent.participants?.includes(currentUser)
+                            ? "bg-red-50 text-red-600 hover:bg-red-100 border border-red-200"
+                            : "bg-blue-50 text-blue-600 hover:bg-blue-100 border border-blue-200"
+                        }`}
+                      >
+                        {selectedEvent.participants?.includes(currentUser)
+                          ? "참여 취소"
+                          : "참여하기"}
+                      </button>
+                    </div>
+
+                    {selectedEvent.participants &&
+                    selectedEvent.participants.length > 0 ? (
+                      <div className="space-y-2">
+                        {selectedEvent.participants.map((participant) => {
+                          const member =
+                            TEAM_MEMBERS[
+                              participant as keyof typeof TEAM_MEMBERS
+                            ];
+                          return (
+                            <div
+                              key={participant}
+                              className="flex items-center gap-3 px-3 py-2 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+                            >
+                              <div
+                                className="w-9 h-9 rounded-full flex items-center justify-center text-white text-sm font-semibold flex-shrink-0"
+                                style={{
+                                  backgroundColor: member?.color || "#6B7280",
+                                }}
+                              >
+                                {member?.initial || participant[0]}
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <div className="text-sm font-medium text-gray-900">
+                                  {participant}
+                                </div>
+                                {member && (
+                                  <div className="text-xs text-gray-500">
+                                    {member.role}
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    ) : (
+                      <div className="text-center py-8 text-sm text-gray-400">
+                        아직 참여자가 없습니다
+                      </div>
+                    )}
+                  </div>
+                </>
+              )}
+            </div>
+
+            {/* 푸터 */}
+            {!isEditingEvent && (
+              <div className="px-6 py-4 border-t border-gray-200 flex gap-2">
+                {canModify(selectedEvent.createdBy) && (
+                  <>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setIsEditingEvent(true);
+                        setEditEvent({ ...selectedEvent });
+                      }}
+                      className="px-4 py-2 text-sm font-medium text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                    >
+                      수정
+                    </button>
+                    <button
+                      onClick={async (e) => {
+                        e.stopPropagation();
+                        if (confirm("일정을 삭제하시겠습니까?")) {
+                          await handleDeleteEvent(selectedEvent.id);
+                          setSelectedEvent(null);
+                        }
+                      }}
+                      className="px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                    >
+                      삭제
+                    </button>
+                  </>
+                )}
+                <button
+                  onClick={() => {
+                    setSelectedEvent(null);
+                    setIsEditingEvent(false);
+                    setEditEvent(null);
+                  }}
+                  className="ml-auto px-4 py-2 bg-gray-900 text-white text-sm font-medium rounded-lg hover:bg-gray-800 transition-colors"
+                >
+                  닫기
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

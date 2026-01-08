@@ -6,4 +6,5 @@ export * from "./user";
 export * from "./interview";
 export * from "./survey";
 export * from "./document";
+export * from "./message";
 

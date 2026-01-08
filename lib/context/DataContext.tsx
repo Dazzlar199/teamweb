@@ -1,0 +1,78 @@
+"use client";
+
+import { createContext, useContext, useState, useEffect, ReactNode, useCallback } from "react";
+import { Post } from "@/lib/types/post";
+import { getPosts } from "@/lib/utils/post";
+import { Event, Holiday } from "@/lib/types/event";
+import { getEvents } from "@/lib/utils/event";
+import { Task } from "@/lib/types/task";
+
+interface DataContextType {
+  posts: Post[];
+  events: (Event | Holiday)[];
+  tasks: Task[];
+  refreshPosts: () => Promise<void>;
+  refreshEvents: () => Promise<void>;
+  refreshTasks: () => void;
+  // 로컬 상태 즉시 업데이트용 (낙관적 업데이트)
+  setPosts: React.Dispatch<React.SetStateAction<Post[]>>;
+  setEvents: React.Dispatch<React.SetStateAction<(Event | Holiday)[]>>;
+  setTasks: React.Dispatch<React.SetStateAction<Task[]>>;
+}
+
+const DataContext = createContext<DataContextType | undefined>(undefined);
+
+export function DataProvider({ children }: { children: ReactNode }) {
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [events, setEvents] = useState<(Event | Holiday)[]>([]);
+  const [tasks, setTasks] = useState<Task[]>([]);
+
+  const refreshPosts = useCallback(async () => {
+    const data = await getPosts();
+    setPosts(data);
+  }, []);
+
+  const refreshEvents = useCallback(async () => {
+    const data = await getEvents();
+    setEvents(data);
+  }, []);
+
+  const refreshTasks = useCallback(() => {
+    const savedTasks = localStorage.getItem("team-dashboard-tasks");
+    if (savedTasks) {
+      setTasks(JSON.parse(savedTasks));
+    }
+  }, []);
+
+  useEffect(() => {
+    refreshPosts();
+    refreshEvents();
+    refreshTasks();
+    
+    // 타 탭에서의 변경 감지
+    const handleStorage = (e: StorageEvent) => {
+      if (e.key === "team-posts") refreshPosts();
+      if (e.key === "team-dashboard-events") refreshEvents();
+      if (e.key === "team-dashboard-tasks") refreshTasks();
+    };
+    
+    window.addEventListener("storage", handleStorage);
+    return () => window.removeEventListener("storage", handleStorage);
+  }, [refreshPosts, refreshEvents, refreshTasks]);
+
+  return (
+    <DataContext.Provider value={{ 
+      posts, events, tasks, 
+      refreshPosts, refreshEvents, refreshTasks,
+      setPosts, setEvents, setTasks 
+    }}>
+      {children}
+    </DataContext.Provider>
+  );
+}
+
+export function useData() {
+  const context = useContext(DataContext);
+  if (!context) throw new Error("useData must be used within DataProvider");
+  return context;
+}

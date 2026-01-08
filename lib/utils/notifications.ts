@@ -1,4 +1,6 @@
-// 알림 관리 유틸리티
+// 알림 관리 유틸리티 (사용자별 개별 관리)
+
+import { supabase, isSupabaseConfigured } from "@/lib/supabase/client";
 
 export interface Notification {
   id: string;
@@ -7,18 +9,93 @@ export interface Notification {
   message: string;
   taskId?: string;
   eventId?: string;
-  read: boolean;
   timestamp: string;
+  // 각 사용자별 읽음 상태 관리
+  readBy: { [userName: string]: boolean };
+  // 알림을 받을 사용자 목록 (빈 배열이면 모든 사용자)
+  targetUsers?: string[];
 }
 
-const STORAGE_KEY = 'team-dashboard-notifications';
+const STORAGE_KEY_PREFIX = 'team-dashboard-notifications-';
 
-export function addNotification(notification: Omit<Notification, 'id' | 'read' | 'timestamp'>): void {
-  const notifications = getNotifications();
+// 사용자별 알림 키 가져오기
+function getUserNotificationsKey(userName: string): string {
+  return `${STORAGE_KEY_PREFIX}${userName}`;
+}
+
+// 전역 알림 저장소 (모든 알림 저장)
+const GLOBAL_STORAGE_KEY = 'team-dashboard-notifications-global';
+
+// Supabase Realtime 구독 관리
+let realtimeChannel: any = null;
+let realtimeCallbacks: Set<() => void> = new Set();
+
+/**
+ * Supabase Realtime 구독 시작
+ */
+export function subscribeToNotifications(callback: () => void): () => void {
+  if (!isSupabaseConfigured()) {
+    // Supabase가 없으면 localStorage 이벤트만 사용
+    const handleStorageChange = () => {
+      callback();
+    };
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }
+
+  // 이미 구독이 있으면 콜백만 추가
+  if (realtimeCallbacks.size > 0) {
+    realtimeCallbacks.add(callback);
+    return () => {
+      realtimeCallbacks.delete(callback);
+      if (realtimeCallbacks.size === 0 && realtimeChannel) {
+        realtimeChannel.unsubscribe();
+        realtimeChannel = null;
+      }
+    };
+  }
+
+  // 새 구독 시작
+  realtimeCallbacks.add(callback);
   
-  // 중복 알림 방지: 같은 taskId/eventId와 type을 가진 읽지 않은 알림이 이미 있으면 추가하지 않음
-  const isDuplicate = notifications.some(n => 
-    !n.read && 
+  realtimeChannel = supabase
+    .channel('notifications-changes')
+    .on(
+      'postgres_changes',
+      {
+        event: '*',
+        schema: 'public',
+        table: 'notifications',
+      },
+      () => {
+        // 모든 콜백 실행
+        realtimeCallbacks.forEach(cb => cb());
+      }
+    )
+    .subscribe();
+
+  return () => {
+    realtimeCallbacks.delete(callback);
+    if (realtimeCallbacks.size === 0 && realtimeChannel) {
+      realtimeChannel.unsubscribe();
+      realtimeChannel = null;
+    }
+  };
+}
+
+export function addNotification(
+  notification: Omit<Notification, 'id' | 'readBy' | 'timestamp'>,
+  targetUsers?: string[]
+): void {
+  // 현재 로그인한 사용자 확인
+  const currentUser = getUserFromStorage();
+  if (!currentUser) return;
+
+  // 전역 알림 저장소에서 알림 가져오기
+  const globalNotifications = getGlobalNotifications();
+  
+  // 중복 알림 방지: 같은 taskId/eventId와 type을 가진 알림이 이미 있으면 추가하지 않음
+  const isDuplicate = globalNotifications.some(n => 
     n.type === notification.type &&
     ((notification.taskId && n.taskId === notification.taskId) ||
      (notification.eventId && n.eventId === notification.eventId))
@@ -28,83 +105,144 @@ export function addNotification(notification: Omit<Notification, 'id' | 'read' |
     return;
   }
   
-  // 고유한 ID 생성 (Date.now() + 랜덤 숫자)
+  // 고유한 ID 생성
+  const notificationId = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+  
+  // 새 알림 생성
   const newNotification: Notification = {
     ...notification,
-    id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-    read: false,
+    id: notificationId,
+    readBy: {},
     timestamp: new Date().toISOString(),
+    targetUsers: targetUsers || [], // 빈 배열이면 모든 사용자에게 표시
   };
   
-  notifications.unshift(newNotification);
+  // 전역 알림 저장소에 추가
+  globalNotifications.unshift(newNotification);
+  setGlobalNotifications(globalNotifications);
   
-  // 브라우저 알림 요청
-  if ('Notification' in window && Notification.permission === 'granted') {
-    new Notification(newNotification.title, {
-      body: newNotification.message,
-      icon: '/favicon.ico',
-    });
+  // 대상 사용자들에게 브라우저 알림 표시
+  const usersToNotify = targetUsers && targetUsers.length > 0 ? targetUsers : ['all'];
+  if (usersToNotify.includes('all') || usersToNotify.includes(currentUser)) {
+    if ('Notification' in window && Notification.permission === 'granted') {
+      new Notification(newNotification.title, {
+        body: newNotification.message,
+        icon: '/favicon.ico',
+      });
+    }
   }
-  
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(notifications));
 }
 
-export function getNotifications(): Notification[] {
-  const notificationsJson = localStorage.getItem(STORAGE_KEY);
+// 전역 알림 가져오기
+function getGlobalNotifications(): Notification[] {
+  const notificationsJson = localStorage.getItem(GLOBAL_STORAGE_KEY);
   if (!notificationsJson) return [];
   
   try {
-    const notifications = JSON.parse(notificationsJson) as Notification[];
-    // 중복 ID 제거 (같은 ID를 가진 알림 중 가장 최근 것만 유지)
-    const uniqueNotifications = notifications.reduce((acc, notif) => {
-      const existingIndex = acc.findIndex(n => n.id === notif.id);
-      if (existingIndex === -1) {
-        acc.push(notif);
-      } else {
-        // 같은 ID가 있으면 더 최근 것으로 교체
-        const existing = acc[existingIndex];
-        const existingTime = new Date(existing.timestamp).getTime();
-        const newTime = new Date(notif.timestamp).getTime();
-        if (newTime > existingTime) {
-          acc[existingIndex] = notif;
-        }
-      }
-      return acc;
-    }, [] as Notification[]);
-    
-    // ID로 정렬 (최신순)
-    return uniqueNotifications.sort((a, b) => {
-      const timeA = new Date(a.timestamp).getTime();
-      const timeB = new Date(b.timestamp).getTime();
-      return timeB - timeA;
-    });
-  } catch {
+    return JSON.parse(notificationsJson) as Notification[];
+  } catch (error) {
+    console.error("[getGlobalNotifications] 파싱 에러:", error);
     return [];
   }
 }
 
-export function markAsRead(notificationId: string): void {
-  const notifications = getNotifications();
-  const updated = notifications.map(n => 
-    n.id === notificationId ? { ...n, read: true } : n
-  );
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+// 전역 알림 저장
+function setGlobalNotifications(notifications: Notification[]): void {
+  localStorage.setItem(GLOBAL_STORAGE_KEY, JSON.stringify(notifications));
 }
 
-export function markAllAsRead(): void {
-  const notifications = getNotifications();
-  const updated = notifications.map(n => ({ ...n, read: true }));
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+// 현재 사용자 가져오기 (localStorage에서)
+function getUserFromStorage(): string | null {
+  try {
+    const savedUser = localStorage.getItem("team-dashboard-user");
+    if (savedUser) {
+      const userData = JSON.parse(savedUser);
+      return userData.name || null;
+    }
+  } catch (error) {
+    console.error("[getUserFromStorage] 파싱 에러:", error);
+    return null;
+  }
+  return null;
 }
 
+// 현재 사용자의 알림만 가져오기
+export function getNotifications(userName?: string): Notification[] {
+  const currentUser = userName || getUserFromStorage();
+  if (!currentUser) return [];
+  
+  const globalNotifications = getGlobalNotifications();
+  
+  // 현재 사용자가 볼 수 있는 알림만 필터링
+  const userNotifications = globalNotifications.filter(n => {
+    // targetUsers가 없거나 빈 배열이면 모든 사용자에게 표시
+    if (!n.targetUsers || n.targetUsers.length === 0) {
+      return true;
+    }
+    // targetUsers에 현재 사용자가 포함되어 있으면 표시
+    return n.targetUsers.includes(currentUser);
+  });
+  
+  // 최신순 정렬
+  return userNotifications.sort((a, b) => {
+    const timeA = new Date(a.timestamp).getTime();
+    const timeB = new Date(b.timestamp).getTime();
+    return timeB - timeA;
+  });
+}
+
+// 알림 읽음 표시 (현재 사용자만)
+export function markAsRead(notificationId: string, userName?: string): void {
+  const currentUser = userName || getUserFromStorage();
+  if (!currentUser) return;
+  
+  const globalNotifications = getGlobalNotifications();
+  const updated = globalNotifications.map(n => {
+    if (n.id === notificationId) {
+      return {
+        ...n,
+        readBy: {
+          ...n.readBy,
+          [currentUser]: true,
+        },
+      };
+    }
+    return n;
+  });
+  
+  setGlobalNotifications(updated);
+}
+
+// 모든 알림 읽음 표시 (현재 사용자만)
+export function markAllAsRead(userName?: string): void {
+  const currentUser = userName || getUserFromStorage();
+  if (!currentUser) return;
+  
+  const globalNotifications = getGlobalNotifications();
+  const updated = globalNotifications.map(n => ({
+    ...n,
+    readBy: {
+      ...n.readBy,
+      [currentUser]: true,
+    },
+  }));
+  
+  setGlobalNotifications(updated);
+}
+
+// 알림 삭제 (모든 사용자에게서 삭제)
 export function deleteNotification(notificationId: string): void {
-  const notifications = getNotifications();
-  const updated = notifications.filter(n => n.id !== notificationId);
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+  const globalNotifications = getGlobalNotifications();
+  const updated = globalNotifications.filter(n => n.id !== notificationId);
+  setGlobalNotifications(updated);
 }
 
-export function getUnreadCount(): number {
-  return getNotifications().filter(n => !n.read).length;
+// 미읽음 알림 개수 (현재 사용자만)
+export function getUnreadCount(userName?: string): number {
+  const currentUser = userName || getUserFromStorage();
+  if (!currentUser) return 0;
+  
+  return getNotifications(currentUser).filter(n => !n.readBy[currentUser]).length;
 }
 
 // 브라우저 알림 권한 요청

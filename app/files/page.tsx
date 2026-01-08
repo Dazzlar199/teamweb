@@ -17,6 +17,7 @@ import {
   addBookmark,
   removeBookmark,
 } from "@/lib/utils/bookmarks";
+import { useUser } from "@/lib/context/UserContext";
 
 type FileCategory =
   | "이미지"
@@ -41,7 +42,8 @@ interface FileItem {
 }
 
 export default function FilesPage() {
-  const currentUser = "김찬주"; // TODO: 실제 사용자 정보로 교체
+  const { user, canModify } = useUser();
+  const currentUser = user?.name || "김찬주";
   const [files, setFiles] = useState<FileItem[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [filterBy, setFilterBy] = useState<string>("전체");
@@ -149,7 +151,6 @@ export default function FilesPage() {
     if (!selectedFiles || selectedFiles.length === 0) return;
 
     const newFiles: FileItem[] = [];
-    const currentUser = "김찬주"; // TODO: 실제 사용자 정보로 교체
 
     for (let i = 0; i < selectedFiles.length; i++) {
       const file = selectedFiles[i];
@@ -239,9 +240,9 @@ export default function FilesPage() {
     const file = files.find((f) => f.id === id);
     if (!file) return;
 
-    // 작성자 확인
-    if (!isCreator(file)) {
-      alert("업로드한 사용자만 삭제할 수 있습니다.");
+    // 작성자 또는 관리자 확인
+    if (!canModify(file.uploadedBy)) {
+      alert("업로드한 사용자 또는 관리자만 삭제할 수 있습니다.");
       return;
     }
 
@@ -486,7 +487,7 @@ export default function FilesPage() {
                         >
                           다운로드
                         </button>
-                        {isCreator(file) && (
+                        {canModify(file.uploadedBy) && (
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
@@ -554,7 +555,7 @@ export default function FilesPage() {
                         >
                           ↓
                         </button>
-                        {isCreator(file) && (
+                        {canModify(file.uploadedBy) && (
                           <button
                             onClick={(e) => {
                               e.stopPropagation();

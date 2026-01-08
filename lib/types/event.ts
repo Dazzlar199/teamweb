@@ -12,6 +12,9 @@ export interface Event {
   isBookmarked?: boolean;
   year?: number; // 년도 (선택적, 없으면 현재 년도로 간주)
   month?: number; // 월 (선택적, 없으면 현재 월로 간주, 0-11)
+  participants?: string[]; // 참여자 목록 (팀원 이름 배열)
+  description?: string; // 상세 내용
+  completed?: boolean; // 완료 여부
 }
 
 export interface Holiday {

@@ -14,9 +14,12 @@ import {
   SurveyIcon,
   DocumentIcon,
   CommunicationIcon,
+  MessageIcon,
 } from "../icons/Icon";
 import SearchBar from "./SearchBar";
 import NotificationBell from "./NotificationBell";
+import MessageBell from "./MessageBell";
+import { useUser } from "@/lib/context/UserContext";
 
 const menuItems = [
   { name: "대시보드", href: "/", Icon: DashboardIcon },
@@ -37,6 +40,7 @@ const menuItems = [
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const { user, setUser } = useUser();
 
   return (
     <aside className="w-64 bg-white border-r border-[#E2E8F0] h-screen fixed left-0 top-0 flex flex-col">
@@ -67,6 +71,7 @@ export default function Sidebar() {
       <div className="p-3 border-b border-[#E5E7EB] space-y-2">
         <SearchBar />
         <div className="flex items-center justify-end gap-2">
+          <MessageBell />
           <NotificationBell />
         </div>
       </div>
@@ -121,19 +126,33 @@ export default function Sidebar() {
 
       {/* 하단 사용자 정보 */}
       <div className="p-3 border-t border-[#E2E8F0]">
-        <div className="flex items-center gap-2.5">
-          <div className="w-7 h-7 rounded-full bg-[#3B82F6] flex items-center justify-center flex-shrink-0">
-            <span className="text-xs font-medium text-white leading-none">
-              김
+        <div className="flex items-center gap-2.5 mb-2">
+          <div
+            className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 text-white"
+            style={{ backgroundColor: user?.color || "#3B82F6" }}
+          >
+            <span className="text-xs font-medium leading-none">
+              {user?.initial || "?"}
             </span>
           </div>
           <div className="flex-1 min-w-0">
             <div className="text-sm font-medium text-[#1a1a1a] truncate leading-tight">
-              김찬주
+              {user?.name || "사용자"}
             </div>
-            <div className="text-xs text-[#4a5568] leading-tight">CEO</div>
+            <div className="text-xs text-[#4a5568] leading-tight">
+              {user?.role || ""}
+            </div>
           </div>
         </div>
+        <button
+          onClick={() => {
+            setUser(null);
+            localStorage.removeItem("team-dashboard-user");
+          }}
+          className="w-full px-3 py-1.5 text-xs text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded transition-colors"
+        >
+          로그아웃
+        </button>
       </div>
     </aside>
   );

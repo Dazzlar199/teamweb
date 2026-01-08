@@ -9,6 +9,7 @@ import { addActivityLog } from "@/lib/utils/activityLog";
 import { addNotification } from "@/lib/utils/notifications";
 import { exportTasksToCSV, exportTasksToJSON } from "@/lib/utils/export";
 import { saveFile, getFile, deleteFile, getImageUrl } from "@/lib/utils/storage";
+import { useUser } from "@/lib/context/UserContext";
 
 interface Attachment {
   id: string;
@@ -47,7 +48,8 @@ interface Task {
 }
 
 export default function TasksPage() {
-  const currentUser = "김찬주"; // TODO: 실제 사용자 정보로 교체
+  const { user, canModify } = useUser();
+  const currentUser = user?.name || "김찬주";
   const [tasks, setTasks] = useState<Task[]>([]);
   const [filterBy, setFilterBy] = useState<string>("전체");
   const [statusFilter, setStatusFilter] = useState<string>("전체");
@@ -98,69 +100,12 @@ export default function TasksPage() {
         setTasks(tasksWithBookmarks);
       } catch (e) {
         console.error("작업 로드 실패:", e);
+        setTasks([]);
       }
     } else {
-      // 초기 예시 데이터
-      const initialTasks: Task[] = [
-        {
-          id: "1",
-          title: "대시보드 UI 완성",
-          description: "대시보드 메인 페이지의 UI를 완성하고 통계 카드와 최근 활동 섹션을 구현합니다.",
-          status: "in_progress",
-          priority: "high",
-          assignedTo: "이나영",
-          dueDate: "2025-01-10",
-          comments: [],
-          tags: ["1", "3"], // 프론트엔드, 디자인
-          isBookmarked: false,
-          progress: 75,
-          createdBy: "이나영",
-        },
-        {
-          id: "2",
-          title: "인증 시스템 구현",
-          description: "링크 기반 인증 시스템을 구현하여 팀원만 접근할 수 있도록 합니다.",
-          status: "todo",
-          priority: "high",
-          assignedTo: "박건희",
-          dueDate: "2025-01-12",
-          comments: [],
-          tags: ["2"], // 백엔드
-          isBookmarked: true,
-          progress: 0,
-          createdBy: "김찬주",
-        },
-        {
-          id: "3",
-          title: "일정 관리 기능",
-          description: "캘린더에서 일정을 추가, 수정, 삭제할 수 있는 기능을 구현합니다.",
-          status: "in_progress",
-          priority: "medium",
-          assignedTo: "박건희",
-          dueDate: "2025-01-15",
-          comments: [],
-          tags: ["2"], // 백엔드
-          isBookmarked: false,
-          progress: 50,
-          createdBy: "박건희",
-        },
-        {
-          id: "4",
-          title: "마케팅 전략 수립",
-          description: "2025년 상반기 마케팅 전략을 수립하고 실행 계획을 작성합니다.",
-          status: "done",
-          priority: "low",
-          assignedTo: "김예린",
-          dueDate: "2025-01-08",
-          comments: [],
-          tags: ["6"], // 기획
-          isBookmarked: false,
-          progress: 100,
-          createdBy: "김예린",
-        },
-      ];
-      setTasks(initialTasks);
-      localStorage.setItem("team-dashboard-tasks", JSON.stringify(initialTasks));
+      // 초기 데이터 없음 - 빈 배열로 시작
+      setTasks([]);
+      localStorage.setItem("team-dashboard-tasks", JSON.stringify([]));
     }
   }, []);
 
@@ -330,9 +275,9 @@ export default function TasksPage() {
     const task = tasks.find((t) => t.id === id);
     if (!task) return;
     
-    // 작성자 확인
-    if (!isCreator(task)) {
-      alert("작성자만 삭제할 수 있습니다.");
+    // 작성자 또는 관리자 확인
+    if (!canModify(task.createdBy || "")) {
+      alert("작성자 또는 관리자만 삭제할 수 있습니다.");
       return;
     }
     
@@ -354,9 +299,9 @@ export default function TasksPage() {
     const task = tasks.find(t => t.id === id);
     if (!task) return;
     
-    // 작성자 확인
-    if (!isCreator(task)) {
-      alert("작성자만 상태를 변경할 수 있습니다.");
+    // 작성자 또는 관리자 확인
+    if (!canModify(task.createdBy || "")) {
+      alert("작성자 또는 관리자만 상태를 변경할 수 있습니다.");
       return;
     }
     
@@ -404,9 +349,6 @@ export default function TasksPage() {
       return;
     }
 
-    const currentUser = "김찬주"; // TODO: 실제 사용자 정보로 교체
-    
-    // 첨부파일 처리
     const attachments = commentAttachments.length > 0 
       ? await handleFileUpload(commentAttachments, true)
       : [];
@@ -483,9 +425,9 @@ export default function TasksPage() {
     const comment = task.comments?.find((c) => c.id === commentId);
     if (!comment) return;
     
-    // 작성자 확인
-    if (comment.author !== currentUser) {
-      alert("댓글 작성자만 삭제할 수 있습니다.");
+    // 작성자 또는 관리자 확인
+    if (!canModify(comment.author)) {
+      alert("댓글 작성자 또는 관리자만 삭제할 수 있습니다.");
       return;
     }
     
@@ -1081,7 +1023,7 @@ export default function TasksPage() {
                             >
                               ⭐
                             </button>
-                            {isCreator(task) && (
+                            {canModify(task.createdBy || "") && (
                               <select
                                 value={task.status}
                                 onChange={(e) => {
@@ -1096,7 +1038,7 @@ export default function TasksPage() {
                                 <option value="done">완료</option>
                               </select>
                             )}
-                            {isCreator(task) && (
+                            {canModify(task.createdBy || "") && (
                               <button
                                 onClick={(e) => {
                                   e.stopPropagation();
@@ -1118,7 +1060,7 @@ export default function TasksPage() {
                         return (
                         <div className="px-4 pb-4 border-t border-[#E5E7EB] bg-[#F9FAFB]">
                           {/* 상태 변경 */}
-                          {isCreator(displayTask) && (
+                          {canModify(displayTask.createdBy || "") && (
                             <div className="pt-4 mb-4">
                               <label className="block text-xs font-medium text-[#111827] mb-1">
                                 상태 변경
@@ -1138,7 +1080,7 @@ export default function TasksPage() {
                           )}
 
                           {/* 진척도 수정 */}
-                          {isCreator(displayTask) && (
+                          {canModify(displayTask.createdBy || "") && (
                             <div className="mb-4">
                               <label className="block text-xs font-medium text-[#111827] mb-1">
                                 진척도 ({displayTask.progress || 0}%)
@@ -1151,8 +1093,8 @@ export default function TasksPage() {
                                   step="5"
                                   value={displayTask.progress || 0}
                                   onChange={(e) => {
-                                    if (!isCreator(displayTask)) {
-                                      alert("작성자만 진척도를 수정할 수 있습니다.");
+                                    if (!canModify(displayTask.createdBy || "")) {
+                                      alert("작성자 또는 관리자만 진척도를 수정할 수 있습니다.");
                                       return;
                                     }
                                     const newProgress = parseInt(e.target.value);

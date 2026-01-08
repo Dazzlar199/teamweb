@@ -91,7 +91,28 @@ CREATE TABLE IF NOT EXISTS survey_responses (
   created_timestamp TIMESTAMP DEFAULT NOW()
 );
 
--- 7. 활동 로그 테이블
+-- 7. 일정 테이블 (일정룸)
+CREATE TABLE IF NOT EXISTS events (
+  id TEXT PRIMARY KEY,
+  title TEXT NOT NULL,
+  date INTEGER NOT NULL,
+  time TEXT NOT NULL,
+  type TEXT NOT NULL,
+  created_by TEXT NOT NULL,
+  location TEXT,
+  repeat_type TEXT CHECK (repeat_type IN ('none', 'daily', 'weekly', 'monthly')),
+  repeat_end_date TEXT,
+  year INTEGER,
+  month INTEGER,
+  participants TEXT[] DEFAULT '{}',
+  description TEXT,
+  completed BOOLEAN DEFAULT FALSE,
+  created_at BIGINT NOT NULL,
+  updated_at BIGINT,
+  created_timestamp TIMESTAMP DEFAULT NOW()
+);
+
+-- 8. 활동 로그 테이블
 CREATE TABLE IF NOT EXISTS activity_logs (
   id TEXT PRIMARY KEY,
   user_name TEXT NOT NULL,
@@ -103,7 +124,7 @@ CREATE TABLE IF NOT EXISTS activity_logs (
   created_timestamp TIMESTAMP DEFAULT NOW()
 );
 
--- 8. 알림 테이블
+-- 9. 알림 테이블
 CREATE TABLE IF NOT EXISTS notifications (
   id TEXT PRIMARY KEY,
   user_name TEXT NOT NULL,
@@ -116,7 +137,19 @@ CREATE TABLE IF NOT EXISTS notifications (
   created_timestamp TIMESTAMP DEFAULT NOW()
 );
 
--- 9. 2026 예비창업패키지 로드맵
+-- 10. 메시지 테이블 (1:1 DM)
+CREATE TABLE IF NOT EXISTS messages (
+  id TEXT PRIMARY KEY,
+  sender TEXT NOT NULL,
+  receiver TEXT NOT NULL,
+  content TEXT NOT NULL,
+  timestamp TEXT NOT NULL,
+  read BOOLEAN DEFAULT FALSE,
+  read_at TEXT,
+  created_timestamp TIMESTAMP DEFAULT NOW()
+);
+
+-- 11. 2026 예비창업패키지 로드맵
 CREATE TABLE IF NOT EXISTS yechangpack_roadmap (
   id TEXT PRIMARY KEY,
   user_name TEXT,
@@ -126,7 +159,7 @@ CREATE TABLE IF NOT EXISTS yechangpack_roadmap (
   created_timestamp TIMESTAMP DEFAULT NOW()
 );
 
--- 10. 2026 예비창업패키지 체크리스트
+-- 11. 2026 예비창업패키지 체크리스트
 CREATE TABLE IF NOT EXISTS yechangpack_checklist (
   id TEXT PRIMARY KEY,
   user_name TEXT,
@@ -136,7 +169,7 @@ CREATE TABLE IF NOT EXISTS yechangpack_checklist (
   created_timestamp TIMESTAMP DEFAULT NOW()
 );
 
--- 11. 2026 예비창업패키지 노트
+-- 12. 2026 예비창업패키지 노트
 CREATE TABLE IF NOT EXISTS yechangpack_notes (
   id TEXT PRIMARY KEY,
   user_name TEXT,
@@ -146,7 +179,7 @@ CREATE TABLE IF NOT EXISTS yechangpack_notes (
   created_timestamp TIMESTAMP DEFAULT NOW()
 );
 
--- 12. 2026 예비창업패키지 증빙자료
+-- 13. 2026 예비창업패키지 증빙자료
 CREATE TABLE IF NOT EXISTS yechangpack_evidence (
   id TEXT PRIMARY KEY,
   user_name TEXT,
@@ -169,6 +202,11 @@ CREATE INDEX IF NOT EXISTS idx_comments_created_at ON comments(created_at DESC);
 
 CREATE INDEX IF NOT EXISTS idx_documents_category ON documents(category);
 CREATE INDEX IF NOT EXISTS idx_documents_status ON documents(status);
+
+-- Events 인덱스
+CREATE INDEX IF NOT EXISTS idx_events_year_month ON events(year, month);
+CREATE INDEX IF NOT EXISTS idx_events_date ON events(date);
+CREATE INDEX IF NOT EXISTS idx_events_created_by ON events(created_by);
 
 CREATE INDEX IF NOT EXISTS idx_interviews_status ON interviews(status);
 CREATE INDEX IF NOT EXISTS idx_interviews_type ON interviews(type);
@@ -193,6 +231,7 @@ CREATE INDEX IF NOT EXISTS idx_notifications_created_at ON notifications(created
 ALTER TABLE posts ENABLE ROW LEVEL SECURITY;
 ALTER TABLE comments ENABLE ROW LEVEL SECURITY;
 ALTER TABLE documents ENABLE ROW LEVEL SECURITY;
+ALTER TABLE events ENABLE ROW LEVEL SECURITY;
 ALTER TABLE interviews ENABLE ROW LEVEL SECURITY;
 ALTER TABLE surveys ENABLE ROW LEVEL SECURITY;
 ALTER TABLE survey_responses ENABLE ROW LEVEL SECURITY;
@@ -214,6 +253,11 @@ CREATE POLICY "Allow all operations on posts" ON posts
 -- Comments 정책
 DROP POLICY IF EXISTS "Allow all operations on comments" ON comments;
 CREATE POLICY "Allow all operations on comments" ON comments
+  FOR ALL USING (true) WITH CHECK (true);
+
+-- Events 정책
+DROP POLICY IF EXISTS "Allow all operations on events" ON events;
+CREATE POLICY "Allow all operations on events" ON events
   FOR ALL USING (true) WITH CHECK (true);
 
 -- Documents 정책
@@ -246,6 +290,11 @@ DROP POLICY IF EXISTS "Allow all operations on notifications" ON notifications;
 CREATE POLICY "Allow all operations on notifications" ON notifications
   FOR ALL USING (true) WITH CHECK (true);
 
+-- Messages 정책
+DROP POLICY IF EXISTS "Allow all operations on messages" ON messages;
+CREATE POLICY "Allow all operations on messages" ON messages
+  FOR ALL USING (true) WITH CHECK (true);
+
 -- Yechangpack 정책들
 DROP POLICY IF EXISTS "Allow all operations on yechangpack_roadmap" ON yechangpack_roadmap;
 CREATE POLICY "Allow all operations on yechangpack_roadmap" ON yechangpack_roadmap
@@ -262,6 +311,52 @@ CREATE POLICY "Allow all operations on yechangpack_notes" ON yechangpack_notes
 DROP POLICY IF EXISTS "Allow all operations on yechangpack_evidence" ON yechangpack_evidence;
 CREATE POLICY "Allow all operations on yechangpack_evidence" ON yechangpack_evidence
   FOR ALL USING (true) WITH CHECK (true);
+
+-- =====================================================
+-- 기존 테이블 업데이트 (컬럼 추가)
+-- =====================================================
+
+-- events 테이블에 completed 컬럼 추가 (없는 경우에만)
+DO $$ 
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM information_schema.columns 
+    WHERE table_name = 'events' AND column_name = 'completed'
+  ) THEN
+    ALTER TABLE events ADD COLUMN completed BOOLEAN DEFAULT FALSE;
+    RAISE NOTICE 'events 테이블에 completed 컬럼이 추가되었습니다.';
+  ELSE
+    RAISE NOTICE 'events 테이블에 completed 컬럼이 이미 존재합니다.';
+  END IF;
+END $$;
+
+-- events 테이블에 description 컬럼 추가 (없는 경우에만)
+DO $$ 
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM information_schema.columns 
+    WHERE table_name = 'events' AND column_name = 'description'
+  ) THEN
+    ALTER TABLE events ADD COLUMN description TEXT;
+    RAISE NOTICE 'events 테이블에 description 컬럼이 추가되었습니다.';
+  ELSE
+    RAISE NOTICE 'events 테이블에 description 컬럼이 이미 존재합니다.';
+  END IF;
+END $$;
+
+-- events 테이블에 participants 컬럼 추가 (없는 경우에만)
+DO $$ 
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM information_schema.columns 
+    WHERE table_name = 'events' AND column_name = 'participants'
+  ) THEN
+    ALTER TABLE events ADD COLUMN participants TEXT[] DEFAULT '{}';
+    RAISE NOTICE 'events 테이블에 participants 컬럼이 추가되었습니다.';
+  ELSE
+    RAISE NOTICE 'events 테이블에 participants 컬럼이 이미 존재합니다.';
+  END IF;
+END $$;
 
 -- =====================================================
 -- 완료 메시지

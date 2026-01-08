@@ -1,10 +1,14 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { getNotifications, markAsRead, markAllAsRead, deleteNotification, getUnreadCount, requestNotificationPermission } from "@/lib/utils/notifications";
+import { getNotifications, markAsRead, markAllAsRead, deleteNotification, getUnreadCount, requestNotificationPermission, subscribeToNotifications } from "@/lib/utils/notifications";
 import type { Notification } from "@/lib/utils/notifications";
+import { useUser } from "@/lib/context/UserContext";
 
 export default function NotificationBell() {
+  const { user } = useUser();
+  const currentUser = user?.name;
+  
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [showDropdown, setShowDropdown] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
@@ -12,10 +16,23 @@ export default function NotificationBell() {
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    loadNotifications();
-    const interval = setInterval(loadNotifications, 5000); // 5초마다 업데이트
-    return () => clearInterval(interval);
-  }, []);
+    if (currentUser) {
+      loadNotifications();
+      
+      // Supabase Realtime 구독 (실시간 업데이트)
+      const unsubscribe = subscribeToNotifications(() => {
+        loadNotifications();
+      });
+      
+      // 폴백: 주기적 업데이트 (Realtime이 작동하지 않을 경우를 대비)
+      const interval = setInterval(loadNotifications, 30000); // 30초마다 업데이트 (Realtime이 있으므로 덜 자주)
+      
+      return () => {
+        unsubscribe();
+        clearInterval(interval);
+      };
+    }
+  }, [currentUser]);
 
   useEffect(() => {
     // 브라우저 알림 권한 요청
@@ -23,19 +40,27 @@ export default function NotificationBell() {
   }, []);
 
   const loadNotifications = () => {
-    const notifs = getNotifications();
+    if (!currentUser) return;
+    const notifs = getNotifications(currentUser);
     setNotifications(notifs);
-    setUnreadCount(getUnreadCount());
+    setUnreadCount(getUnreadCount(currentUser));
   };
 
   const handleMarkAsRead = (id: string) => {
-    markAsRead(id);
+    if (!currentUser) return;
+    markAsRead(id, currentUser);
     loadNotifications();
   };
 
   const handleMarkAllAsRead = () => {
-    markAllAsRead();
+    if (!currentUser) return;
+    markAllAsRead(currentUser);
     loadNotifications();
+  };
+
+  const isReadByCurrentUser = (notif: Notification): boolean => {
+    if (!currentUser) return false;
+    return notif.readBy[currentUser] === true;
   };
 
   const handleDelete = (id: string) => {
@@ -158,7 +183,7 @@ export default function NotificationBell() {
                   <div
                     key={notif.id}
                     className={`p-3 hover:bg-[#F9FAFB] transition-colors ${
-                      !notif.read ? "bg-[#EFF6FF]" : ""
+                      !isReadByCurrentUser(notif) ? "bg-[#EFF6FF]" : ""
                     }`}
                   >
                     <div className="flex items-start justify-between gap-2">
@@ -171,7 +196,7 @@ export default function NotificationBell() {
                             <h4 className="text-sm font-medium text-[#111827] leading-tight">
                               {notif.title}
                             </h4>
-                            {!notif.read && (
+                            {!isReadByCurrentUser(notif) && (
                               <span className="w-2 h-2 bg-[#2563EB] rounded-full flex-shrink-0"></span>
                             )}
                           </div>
@@ -184,7 +209,7 @@ export default function NotificationBell() {
                         </div>
                       </div>
                       <div className="flex items-center gap-1 flex-shrink-0">
-                        {!notif.read && (
+                        {!isReadByCurrentUser(notif) && (
                           <button
                             onClick={() => handleMarkAsRead(notif.id)}
                             className="text-xs text-[#2563EB] hover:text-[#1D4ED8] leading-tight"

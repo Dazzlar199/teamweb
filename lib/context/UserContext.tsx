@@ -1,13 +1,15 @@
 "use client";
 
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
-import { User, getUserInfo, TeamMemberName } from "@/lib/types/user";
+import { User, getUserInfo, TeamMemberName, isAdmin as checkIsAdmin, canModify as checkCanModify } from "@/lib/types/user";
 import { TEAM_MEMBERS } from "@/lib/constants/team";
 
 interface UserContextType {
   user: User | null;
   setUser: (user: User | null) => void;
   isAuthenticated: boolean;
+  isAdmin: boolean;
+  canModify: (resourceAuthor: string) => boolean;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -24,13 +26,11 @@ export function UserProvider({ children }: { children: ReactNode }) {
         setUser(getUserInfo(userData.name));
       } catch (e) {
         console.error("사용자 정보 로드 실패:", e);
-        // 기본 사용자로 설정 (임시)
-        setUser(getUserInfo("김찬주"));
+        // 로그인하지 않은 상태로 유지
+        setUser(null);
       }
-    } else {
-      // 기본 사용자로 설정 (임시)
-      setUser(getUserInfo("김찬주"));
     }
+    // 로그인하지 않은 경우 user는 null로 유지
   }, []);
 
   const handleSetUser = (newUser: User | null) => {
@@ -51,6 +51,8 @@ export function UserProvider({ children }: { children: ReactNode }) {
         user,
         setUser: handleSetUser,
         isAuthenticated: user !== null,
+        isAdmin: checkIsAdmin(user),
+        canModify: (resourceAuthor: string) => checkCanModify(user, resourceAuthor),
       }}
     >
       {children}

@@ -378,3 +378,39 @@ export function CommunicationIcon({ className = "w-5 h-5" }: { className?: strin
     </svg>
   );
 }
+
+export function MessageIcon({ className = "w-5 h-5" }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.5}
+      viewBox="0 0 24 24"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375m-13.5 9.75c0 1.217 1.006 2.25 2.25 2.25h15c1.217 0 2.25-1.033 2.25-2.25V6.75c0-1.217-1.033-2.25-2.25-2.25h-15c-1.244 0-2.25 1.033-2.25 2.25v15zm4.5 0V6.75h13.5v13.5H4.5z"
+      />
+    </svg>
+  );
+}
+
+export function PaperPlaneIcon({ className = "w-5 h-5" }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.5}
+      viewBox="0 0 24 24"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5"
+      />
+    </svg>
+  );
+}
