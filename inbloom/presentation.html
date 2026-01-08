@@ -1,0 +1,2207 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>특별시 - 웨딩 서브서비스 AI 매칭 플랫폼</title>
+    <style>
+      @import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css");
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      :root {
+        /* 공적인 흰색 기반 팔레트 */
+        --primary: #1a1a1a; /* 블랙 */
+        --primary-accent: #2563eb; /* 블루 액센트 */
+        --primary-dark: #0f172a;
+        --bg: #ffffff;
+        --surface: #f8fafc; /* 카드 배경 */
+        --surface-2: #f1f5f9; /* 박스 배경 */
+        --text-dark: #0f172a;
+        --text-gray: #475569;
+        --text-light: #94a3b8;
+        --border: #e2e8f0;
+        --scale: 1;
+      }
+
+      body {
+        font-family: "Pretendard", -apple-system, BlinkMacSystemFont,
+          sans-serif;
+        background: #ffffff;
+        color: var(--text-dark);
+        line-height: 1.6;
+        letter-spacing: -0.01em;
+      }
+
+      /* 슬라이드 컨테이너: 화면에 꽉(캔버스 중앙) */
+      .slide {
+        width: 100vw;
+        height: 100vh;
+        background: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+        page-break-after: always;
+      }
+
+      /* 고정 캔버스(디자인 기준) + 화면 스케일링 */
+      .canvas-wrap {
+        width: calc(1600px * var(--scale));
+        height: calc(900px * var(--scale));
+      }
+
+      /* 16:9 캔버스 (PPT 캡쳐용 실제 화면) */
+      .canvas {
+        width: 1600px;
+        height: 900px;
+        background: var(--bg);
+        padding: 56px 72px;
+        position: relative;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.12);
+        overflow: hidden;
+        transform: scale(var(--scale));
+        transform-origin: top left;
+      }
+
+      @media print {
+        body {
+          background: white;
+        }
+        .slide {
+          padding: 0;
+          background: white;
+        }
+        .canvas-wrap {
+          width: 1600px;
+          height: 900px;
+        }
+        .canvas {
+          transform: none;
+          box-shadow: none;
+          page-break-after: always;
+        }
+      }
+
+      /* 로고 */
+      .logo {
+        position: static;
+        font-size: 18px;
+        font-weight: 800;
+        color: var(--text-dark);
+        letter-spacing: -0.02em;
+        margin-bottom: 10px;
+      }
+
+      .logo img {
+        height: 40px;
+        width: auto;
+      }
+
+      /* 슬라이드 번호 */
+      .slide-num {
+        position: absolute;
+        bottom: 30px;
+        right: 50px;
+        font-size: 14px;
+        color: var(--text-light);
+        font-weight: 500;
+      }
+
+      /* 타이틀 */
+      .page-title {
+        font-size: 72px;
+        font-weight: 800;
+        line-height: 1.1;
+        margin-bottom: 26px;
+        color: var(--text-dark);
+        letter-spacing: -0.03em;
+      }
+
+      .page-subtitle {
+        font-size: 22px;
+        color: var(--text-gray);
+        font-weight: 400;
+        line-height: 1.6;
+      }
+
+      .section-label {
+        display: inline-block;
+        background: var(--text-dark);
+        color: white;
+        padding: 10px 18px;
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: 800;
+        letter-spacing: 0.12em;
+        margin-bottom: 18px;
+      }
+
+      .accent {
+        color: var(--primary-accent);
+      }
+
+      /* 그리드 */
+      .grid {
+        display: grid;
+        gap: 24px;
+      }
+      .grid-2 {
+        grid-template-columns: 1fr 1fr;
+      }
+      .grid-3 {
+        grid-template-columns: repeat(3, 1fr);
+      }
+      .grid-4 {
+        grid-template-columns: repeat(4, 1fr);
+      }
+
+      /* 카드 */
+      .card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 34px 36px;
+      }
+
+      .card.highlight {
+        background: var(--text-dark);
+        border: 2px solid var(--text-dark);
+        color: #ffffff;
+      }
+
+      .card-title {
+        font-size: 26px;
+        font-weight: 700;
+        margin-bottom: 12px;
+        letter-spacing: -0.02em;
+      }
+
+      .card-value {
+        font-size: 48px;
+        font-weight: 800;
+        line-height: 1;
+        margin: 16px 0;
+      }
+
+      .card-desc {
+        font-size: 18px;
+        line-height: 1.85;
+        margin-top: 14px;
+        color: var(--text-gray);
+      }
+
+      .card.highlight .card-desc {
+        color: rgba(255, 255, 255, 0.85);
+      }
+
+      .card.highlight .card-title {
+        color: #ffffff;
+      }
+
+      /* 통계 */
+      .stat-row {
+        display: flex;
+        gap: 60px;
+        margin: 40px 0;
+        justify-content: center;
+      }
+
+      .stat-item {
+        text-align: center;
+      }
+
+      .stat-number {
+        font-size: 64px;
+        font-weight: 800;
+        color: var(--primary-accent);
+        line-height: 1;
+      }
+
+      .stat-label {
+        font-size: 16px;
+        color: var(--text-gray);
+        margin-top: 12px;
+        font-weight: 500;
+      }
+
+      /* 테이블 */
+      .table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 15px;
+        margin: 24px 0;
+      }
+
+      .table th,
+      .table td {
+        padding: 16px 20px;
+        text-align: left;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .table th {
+        font-weight: 600;
+        color: var(--text-gray);
+        font-size: 13px;
+        background: var(--bg-cream);
+      }
+
+      .table tr.highlight-row {
+        background: #f5f0eb;
+      }
+
+      .table .accent-text {
+        color: var(--primary);
+        font-weight: 700;
+      }
+
+      /* 인용구 */
+      .quote-box {
+        background: var(--surface);
+        border-left: 4px solid var(--text-dark);
+        padding: 32px 40px;
+        border-radius: 0 12px 12px 0;
+        margin: 32px 0;
+      }
+
+      .quote-text {
+        font-size: 20px;
+        font-style: italic;
+        line-height: 1.8;
+        color: var(--text-dark);
+      }
+
+      .quote-author {
+        font-size: 14px;
+        color: var(--text-light);
+        margin-top: 16px;
+        font-weight: 500;
+      }
+
+      /* 두 컬럼 */
+      .two-col {
+        display: flex;
+        gap: 60px;
+        align-items: flex-start;
+        margin: 32px 0;
+      }
+
+      .col {
+        flex: 1;
+      }
+
+      /* 유틸리티 */
+      .mt-20 {
+        margin-top: 20px;
+      }
+      .mt-30 {
+        margin-top: 30px;
+      }
+      .mt-40 {
+        margin-top: 40px;
+      }
+      .text-center {
+        text-align: center;
+      }
+      .centered {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+      }
+
+      /* 표지 스타일 */
+      .cover {
+        background: #ffffff;
+      }
+
+      .cover-logo {
+        width: 120px;
+        height: 120px;
+        margin-bottom: 30px;
+        border-radius: 16px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+      }
+
+      /* 설문조사 박스 */
+      .survey-box {
+        background: var(--surface-2);
+        border: 2px solid var(--border);
+        border-radius: 12px;
+        padding: 34px 36px;
+        margin: 28px 0 0 0;
+      }
+
+      .survey-title {
+        font-size: 30px;
+        font-weight: 900;
+        color: var(--text-dark);
+        margin-bottom: 22px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .survey-icon {
+        width: 34px;
+        height: 34px;
+        border-radius: 8px;
+        background: var(--text-dark);
+        border: 1px solid var(--text-dark);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: #ffffff;
+        font-weight: 900;
+        font-size: 16px;
+        line-height: 1;
+      }
+
+      .survey-stats {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 22px;
+        margin-top: 0;
+      }
+
+      .survey-stat {
+        text-align: center;
+        padding: 26px 18px;
+        background: #ffffff;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+      }
+
+      .survey-stat-number {
+        font-size: 64px;
+        font-weight: 900;
+        color: var(--primary-accent);
+      }
+
+      .survey-stat-label {
+        font-size: 16px;
+        color: var(--text-gray);
+        margin-top: 8px;
+        font-weight: 600;
+      }
+
+      /* ====== PDF 기준 덱 컴포넌트(추가) ====== */
+      .kicker-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 18px;
+      }
+
+      .brand {
+        font-size: 20px;
+        font-weight: 900;
+        letter-spacing: -0.02em;
+        color: var(--text-dark);
+      }
+
+      .h2 {
+        font-size: 34px;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        line-height: 1.2;
+        margin-top: 8px;
+        color: var(--text-dark);
+      }
+
+      .lead {
+        font-size: 20px;
+        line-height: 1.8;
+        color: var(--text-gray);
+      }
+
+      .muted {
+        color: var(--text-light);
+      }
+
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 14px;
+        border-radius: 16px;
+        border: 1px solid var(--border);
+        background: var(--surface-2);
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--text-gray);
+      }
+
+      .split-2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 22px;
+      }
+
+      .mini-grid-4 {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 18px;
+      }
+
+      .mini-card {
+        background: #fff;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 20px 18px;
+        text-align: center;
+      }
+
+      .mini-kpi {
+        font-size: 52px;
+        font-weight: 900;
+        color: var(--primary-accent);
+        line-height: 1;
+      }
+
+      .mini-label {
+        margin-top: 10px;
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--text-gray);
+      }
+
+      .note {
+        margin-top: 16px;
+        font-size: 14px;
+        color: var(--text-light);
+      }
+
+      .flow {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 14px;
+        margin-top: 22px;
+      }
+
+      .flow-step {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 18px 16px;
+      }
+
+      .flow-step .n {
+        width: 34px;
+        height: 34px;
+        border-radius: 8px;
+        background: var(--text-dark);
+        border: 1px solid var(--text-dark);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 900;
+        color: #ffffff;
+        margin-bottom: 10px;
+      }
+
+      .flow-step .t {
+        font-size: 16px;
+        font-weight: 900;
+        margin-bottom: 6px;
+      }
+
+      .flow-step .d {
+        font-size: 14px;
+        line-height: 1.7;
+        color: var(--text-gray);
+      }
+
+      .risk-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 18px;
+        font-size: 14px;
+      }
+      .risk-table th,
+      .risk-table td {
+        padding: 14px 16px;
+        border-bottom: 1px solid var(--border);
+        vertical-align: top;
+      }
+      .risk-table th {
+        font-size: 13px;
+        font-weight: 900;
+        color: var(--text-gray);
+        background: var(--surface);
+      }
+
+      /* 기술 아키텍처 관련 스타일 */
+      .arch-diagram {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+        margin: 24px 0;
+      }
+
+      .arch-layer {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 20px;
+      }
+
+      .arch-layer.highlight {
+        background: var(--text-dark);
+        color: #ffffff;
+        border-color: var(--text-dark);
+      }
+
+      .arch-layer-title {
+        font-size: 14px;
+        font-weight: 800;
+        color: var(--text-light);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        margin-bottom: 12px;
+      }
+
+      .arch-layer.highlight .arch-layer-title {
+        color: rgba(255, 255, 255, 0.7);
+      }
+
+      .arch-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 0;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .arch-layer.highlight .arch-item {
+        border-bottom-color: rgba(255, 255, 255, 0.15);
+      }
+
+      .arch-item:last-child {
+        border-bottom: none;
+      }
+
+      .arch-icon {
+        width: 32px;
+        height: 32px;
+        border-radius: 6px;
+        background: var(--primary-accent);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #ffffff;
+        font-size: 14px;
+        font-weight: 700;
+      }
+
+      .arch-layer.highlight .arch-icon {
+        background: #ffffff;
+        color: var(--text-dark);
+      }
+
+      .arch-item-text {
+        flex: 1;
+      }
+
+      .arch-item-name {
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--text-dark);
+      }
+
+      .arch-layer.highlight .arch-item-name {
+        color: #ffffff;
+      }
+
+      .arch-item-desc {
+        font-size: 13px;
+        color: var(--text-gray);
+        margin-top: 2px;
+      }
+
+      .arch-layer.highlight .arch-item-desc {
+        color: rgba(255, 255, 255, 0.7);
+      }
+
+      .tech-stack {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 16px;
+      }
+
+      .tech-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 14px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--text-dark);
+      }
+
+      .tech-badge.primary {
+        background: var(--text-dark);
+        border-color: var(--text-dark);
+        color: #ffffff;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- 슬라이드 1: 표지 -->
+    <section class="slide">
+      <div class="canvas-wrap">
+        <div class="canvas cover centered">
+          <img
+            src="images/business-plan/teukbyulsi_app.png"
+            alt="특별시 로고"
+            class="cover-logo"
+          />
+          <h1 class="page-title" style="margin-top: 20px">
+            <span class="accent">특별시</span>
+          </h1>
+          <p class="page-subtitle" style="margin-top: 24px; max-width: 800px">
+            AI 기반 웨딩 서브서비스 프리랜서 매칭 플랫폼<br />
+            예비부부와 프리랜서를 연결하는 양면 플랫폼
+          </p>
+          <span class="slide-num">01</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 추가 슬라이드: 콜드스타트/성장전략 -->
+    <section class="slide">
+      <div class="canvas-wrap">
+        <div class="canvas">
+          <div class="kicker-row">
+            <div class="brand">특별시</div>
+            <span class="section-label">GROWTH STRATEGY</span>
+          </div>
+          <h1 class="page-title">콜드스타트 해결: 공급자 우선</h1>
+          <p class="lead">
+            양면 플랫폼의 “닭과 달걀” 문제를
+            <strong>공급(프리랜서) 선확보</strong>로 풀고, 콘텐츠·커뮤니티로
+            수요를 확장합니다.
+          </p>
+
+          <div class="split-2 mt-20">
+            <div class="card highlight">
+              <div class="card-title">Phase 1 (2026.01~06)</div>
+              <div class="card-desc">
+                CEO 네트워크로 SNS 인기 프리랜서 우선 섭외<br />
+                인센티브: 첫 거래 성사 전까지 프리미엄 무료/포트폴리오 지원<br />
+                목표: <strong>Pre-launch 200명</strong> 확보
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-title">Phase 2 (2026.06~)</div>
+              <div class="card-desc">
+                고품질 포트폴리오로 수요자 바이럴 유입<br />
+                웨딩 커뮤니티/박람회/콘텐츠 채널 믹스 운영<br />
+                목표: <strong>월 40명 등록</strong> 페이스로 확대
+              </div>
+            </div>
+          </div>
+
+          <div class="flow">
+            <div class="flow-step">
+              <div class="n">1</div>
+              <div class="t">공급자 모집</div>
+              <div class="d">LoI 확보 → 실등록 전환</div>
+            </div>
+            <div class="flow-step">
+              <div class="n">2</div>
+              <div class="t">콘텐츠 유입</div>
+              <div class="d">포트폴리오/후기로 신뢰 확보</div>
+            </div>
+            <div class="flow-step">
+              <div class="n">3</div>
+              <div class="t">매칭 데이터</div>
+              <div class="d">추천 정확도 개선(피드백)</div>
+            </div>
+            <div class="flow-step">
+              <div class="n">4</div>
+              <div class="t">네트워크 효과</div>
+              <div class="d">공급↑ → 선택↑ → 전환↑</div>
+            </div>
+          </div>
+
+          <span class="slide-num">07</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 추가 슬라이드: Unit Economics -->
+    <section class="slide">
+      <div class="canvas-wrap">
+        <div class="canvas">
+          <div class="kicker-row">
+            <div class="brand">특별시</div>
+            <span class="section-label">UNIT ECONOMICS</span>
+          </div>
+          <h1 class="page-title">수익성 가정 (초기 6개월 시뮬레이션)</h1>
+
+          <div class="mini-grid-4 mt-30">
+            <div class="mini-card">
+              <div class="mini-kpi">36,500</div>
+              <div class="mini-label">CAC (원)</div>
+            </div>
+            <div class="mini-card">
+              <div class="mini-kpi">352,000</div>
+              <div class="mini-label">LTV (원)</div>
+            </div>
+            <div class="mini-card">
+              <div class="mini-kpi">10x</div>
+              <div class="mini-label">LTV/CAC</div>
+            </div>
+            <div class="mini-card">
+              <div class="mini-kpi">1.8</div>
+              <div class="mini-label">Payback (개월)</div>
+            </div>
+          </div>
+
+          <div class="card mt-30">
+            <div class="card-title">가정 근거(요약)</div>
+            <div class="card-desc">
+              채널 믹스 기반 Blended CAC
+              산정(커뮤니티/인스타/박람회/SEO/추천)<br />
+              구독 플랜(9,900/19,900/29,900) 가중평균 LTV 산정<br />
+              <strong class="accent">보수적 시나리오에서도 5.5배 수준</strong>을
+              목표로 베타 후 실데이터로 검증
+            </div>
+            <div class="note">
+              ※ 위 수치는 베타 전 “가정”이며, 베타 운영 후 CAC/LTV 실측값으로
+              업데이트합니다.
+            </div>
+          </div>
+
+          <span class="slide-num">08</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 추가 슬라이드: Moat -->
+    <section class="slide">
+      <div class="canvas-wrap">
+        <div class="canvas">
+          <div class="kicker-row">
+            <div class="brand">특별시</div>
+            <span class="section-label">MOAT</span>
+          </div>
+          <h1 class="page-title">해자(Moat): 시간이 갈수록 강해지는 구조</h1>
+
+          <div class="grid grid-2 mt-30">
+            <div class="card">
+              <div class="card-title">데이터 플라이휠</div>
+              <div class="card-desc">
+                거래/리뷰/포트폴리오 데이터가 쌓일수록 추천 정확도와 전환율이
+                개선<br />
+                <strong class="accent">거래 10,000건</strong> 축적 시 후발주자
+                추격 비용 급증
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-title">네트워크 효과</div>
+              <div class="card-desc">
+                프리랜서가 늘수록 선택 폭↑ → 만족도↑ → 수요↑ → 다시 공급↑<br />
+                1년차 목표: 프리랜서 400~1,000명 / MAU 10,000
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-title">브랜드 & 커뮤니티</div>
+              <div class="card-desc">
+                “웨딩 서브서비스 = 특별시” 포지셔닝 선점<br />
+                위시리스트/후기/커뮤니티 인맥으로 전환 비용 상승
+              </div>
+            </div>
+            <div class="card highlight">
+              <div class="card-title">버티컬 특화 기능</div>
+              <div class="card-desc">
+                웨딩 크루 · 결혼 준비 타임라인 · 실거래 검증 리뷰<br />
+                범용 플랫폼의 기능 추가는 다른 카테고리와 충돌(우리는 웨딩만
+                100%)
+              </div>
+            </div>
+          </div>
+
+          <div class="survey-box mt-30">
+            <div class="survey-title">
+              <span class="survey-icon">▮</span>
+              Moat 구축 타임라인
+            </div>
+            <table class="risk-table">
+              <tr>
+                <th style="width: 18%">6개월</th>
+                <td>브랜드 인식 시작 · 커뮤니티 인지도 확보</td>
+                <th style="width: 18%">12개월</th>
+                <td>네트워크 효과 시작점(프리랜서 1,000 / MAU 10,000)</td>
+              </tr>
+              <tr>
+                <th>24개월</th>
+                <td>거래 데이터 10,000건 축적 → 추천 품질 격차</td>
+                <th>36개월</th>
+                <td><strong>지배적 위치</strong>로 진입장벽 고도화</td>
+              </tr>
+            </table>
+          </div>
+
+          <span class="slide-num">10</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 추가 슬라이드: 실행 로드맵 (index.html 기반 Phase) -->
+    <section class="slide">
+      <div class="canvas-wrap">
+        <div class="canvas">
+          <div class="kicker-row">
+            <div class="brand">특별시</div>
+            <span class="section-label">ROADMAP</span>
+          </div>
+          <h1 class="page-title">2026 실행 계획 (3단계)</h1>
+
+          <div class="grid grid-3 mt-30">
+            <div class="card">
+              <div class="card-title">Phase 1 · 1~3월</div>
+              <div class="card-desc">
+                예창패 신청 완료<br />
+                UX/UI 와이어프레임 완성<br />
+                심층 인터뷰 추가(총 35명)<br />
+                정량 설문 100명 수집
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-title">Phase 2 · 4~5월</div>
+              <div class="card-desc">
+                MVP 알파 → 핵심 기능 완성<br />
+                발표평가 대응(모의 발표/시연)<br />
+                Pre-launch 모집 가속(누적 200명 목표)
+              </div>
+            </div>
+            <div class="card highlight">
+              <div class="card-title">Phase 3 · 6~12월</div>
+              <div class="card-desc">
+                베타 런칭 · 파일럿 매칭 50건<br />
+                7개월 내 BEP(426명) 달성 목표<br />
+                데이터 축적 → 추천 고도화
+              </div>
+            </div>
+          </div>
+
+          <div class="survey-box mt-30">
+            <div class="survey-title">
+              <span class="survey-icon">▮</span>
+              Go / No-Go 기준
+            </div>
+            <div class="lead">
+              최악의 시나리오에서도 “6개월 내 유료 고객 1명”을 검증하면 계속.
+              6개월 후 유료 전환 0이면 피봇/중단을 검토하는 명확한 기준을
+              둡니다.
+            </div>
+          </div>
+
+          <span class="slide-num">11</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 추가 슬라이드: 리스크 & Contingency Plan -->
+    <section class="slide">
+      <div class="canvas-wrap">
+        <div class="canvas">
+          <div class="kicker-row">
+            <div class="brand">특별시</div>
+            <span class="section-label">RISK</span>
+          </div>
+          <h1 class="page-title">Contingency Plan</h1>
+          <p class="lead">동시 사업 수행 리스크를 시나리오별로 준비합니다.</p>
+
+          <table class="risk-table">
+            <tr>
+              <th style="width: 22%">리스크 시나리오</th>
+              <th style="width: 43%">대응 전략</th>
+              <th style="width: 35%">결과</th>
+            </tr>
+            <tr>
+              <td><strong>예창패 탈락</strong></td>
+              <td>
+                아카데미 자금으로 MVP 완성<br />
+                프리랜서 100명 + 매칭 50건 실적 확보 후 2차 지원/엔젤 전환
+              </td>
+              <td>
+                개발 일정 지연 없이 검증 지속<br />
+                손실 최소화
+              </td>
+            </tr>
+            <tr>
+              <td><strong>MVP 개발 지연</strong></td>
+              <td>
+                핵심 기능 우선순위 재조정(매칭 → 결제 → 리뷰)<br />
+                필요 시 일부 외주(디자인 등) 도입
+              </td>
+              <td>핵심 가치 유지한 채 일정 재정렬</td>
+            </tr>
+            <tr>
+              <td><strong>프리랜서 확보 실패</strong></td>
+              <td>
+                CEO 네트워크 집중 활용 + 온보딩 인센티브 강화<br />
+                카테고리 축소(영상/사진 중심)로 밀도 확보
+              </td>
+              <td>“카테고리 집중”으로 초기 네트워크 효과 확보</td>
+            </tr>
+          </table>
+
+          <div class="note">
+            트리거 기반 실행(예: 6월까지 100명 미달 등)으로 대응을 자동화합니다.
+          </div>
+
+          <span class="slide-num">12</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 추가 슬라이드: The Ask -->
+    <section class="slide">
+      <div class="canvas-wrap">
+        <div class="canvas">
+          <div class="kicker-row">
+            <div class="brand">특별시</div>
+            <span class="section-label">ASK</span>
+          </div>
+          <h1 class="page-title">지원 요청 & 1년 목표</h1>
+
+          <div class="split-2 mt-30">
+            <div class="card highlight">
+              <div class="card-title">예비창업패키지 1억원</div>
+              <div class="card-desc">
+                MVP 고도화 및 데이터 기반 추천 개선<br />
+                초기 유저/프리랜서 확보 마케팅<br />
+                운영 인력/인건비 및 안정적 사업 수행
+              </div>
+              <div class="note">
+                자금 사용 계획은 실행 로드맵의 Phase 2~3에 집중합니다.
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-title">1년 내 달성 목표</div>
+              <div class="mini-grid-4 mt-20">
+                <div class="mini-card">
+                  <div class="mini-kpi">1,000</div>
+                  <div class="mini-label">프리랜서</div>
+                </div>
+                <div class="mini-card">
+                  <div class="mini-kpi">2,000</div>
+                  <div class="mini-label">월 거래(건)</div>
+                </div>
+                <div class="mini-card">
+                  <div class="mini-kpi">10,000</div>
+                  <div class="mini-label">MAU</div>
+                </div>
+                <div class="mini-card">
+                  <div class="mini-kpi">BEP</div>
+                  <div class="mini-label">14개월 내</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <span class="slide-num">13</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 추가 슬라이드: BEP -->
+    <section class="slide">
+      <div class="canvas-wrap">
+        <div class="canvas">
+          <div class="kicker-row">
+            <div class="brand">특별시</div>
+            <span class="section-label">BEP</span>
+          </div>
+          <h1 class="page-title">손익분기점: 426명</h1>
+          <p class="lead">
+            Phase 2 월 고정비 740만원 기준,
+            <strong>등록 프리랜서 426명</strong>에서 손익분기 도달.
+          </p>
+
+          <div class="split-2 mt-20">
+            <div class="card">
+              <div class="card-title">고정비 (Phase 2)</div>
+              <div class="mini-card mt-20">
+                <div class="mini-kpi" style="color: var(--text-dark)">
+                  740만
+                </div>
+                <div class="mini-label">월 고정비</div>
+              </div>
+              <div class="note">인건비 600만 + 서버 70만 + 운영 70만</div>
+            </div>
+            <div class="card highlight">
+              <div class="card-title">등록 프리랜서당 월 수익</div>
+              <div class="mini-card mt-20">
+                <div class="mini-kpi">17,384</div>
+                <div class="mini-label">원 / 등록 1명</div>
+              </div>
+              <div class="note">
+                활성률 40% 가정(월 1건 이상 거래) → 활성 1인 수익 43,460원의 40%
+              </div>
+            </div>
+          </div>
+
+          <div class="survey-box mt-30">
+            <div class="survey-title">
+              <span class="survey-icon">▮</span>
+              실행 포인트
+            </div>
+            <div class="split-2">
+              <div class="mini-card">
+                <div class="mini-kpi">200명</div>
+                <div class="mini-label">Phase 1 Pre-launch</div>
+              </div>
+              <div class="mini-card">
+                <div class="mini-kpi">+226명</div>
+                <div class="mini-label">추가 확보 시 BEP</div>
+              </div>
+            </div>
+            <div class="note">
+              “처음부터 426명”이 아니라, Phase 1 성과를 레버리지해 7개월 내
+              도달을 설계합니다.
+            </div>
+          </div>
+
+          <span class="slide-num">09</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 슬라이드 2: Why We Started -->
+    <section class="slide">
+      <div class="canvas-wrap">
+        <div class="canvas">
+          <div class="logo">특별시</div>
+          <span class="section-label">WHY WE STARTED</span>
+          <h1 class="page-title">사업을 시작한 이유</h1>
+
+          <div class="two-col">
+            <div class="col">
+              <div class="quote-box">
+                <div class="quote-text">
+                  "축가, 프로포즈 녹음 의뢰를 받으며<br />
+                  수많은 예비부부를 만났습니다.<br />
+                  그들이 공통적으로 하는 말이 있었어요."
+                </div>
+                <div
+                  style="
+                    margin: 24px 0;
+                    padding: 20px;
+                    background: #fef2f2;
+                    border-radius: 8px;
+                    border-left: 4px solid #dc2626;
+                  "
+                >
+                  <strong style="font-size: 18px; color: var(--text-dark)">
+                    '스냅 작가님은 어디서 찾으셨어요?'
+                  </strong>
+                </div>
+                <div
+                  style="
+                    margin-bottom: 24px;
+                    padding: 20px;
+                    background: #fef2f2;
+                    border-radius: 8px;
+                    border-left: 4px solid #dc2626;
+                  "
+                >
+                  <strong style="font-size: 18px; color: var(--text-dark)">
+                    '영상 업체 추천해주실 수 있나요?'
+                  </strong>
+                </div>
+                <div
+                  class="quote-text"
+                  style="font-size: 16px; font-style: normal"
+                >
+                  서브서비스를 찾는 게 이렇게 어려운 일인지<br />
+                  <strong>현장에서 직접 봤습니다.</strong><br /><br />
+                  플랫폼 공급자로서 수수료 문제도 알고,<br />
+                  고객이 뭘 힘들어하는지도 압니다.<br /><br />
+                  <strong style="color: var(--primary-accent); font-size: 20px">
+                    양쪽을 아는 사람이 풀어야 한다고 생각했습니다.
+                  </strong>
+                </div>
+                <div class="quote-author">— 김찬주, 특별시 CEO</div>
+              </div>
+            </div>
+
+            <div class="col">
+              <h3
+                style="
+                  font-size: 24px;
+                  font-weight: 700;
+                  margin-bottom: 32px;
+                  color: var(--text-dark);
+                "
+              >
+                CEO 경험
+              </h3>
+
+              <div class="card" style="margin-bottom: 20px">
+                <div style="font-size: 18px; font-weight: 700; margin-bottom: 12px">
+                  웨딩 프리랜서 (5년)
+                </div>
+                <div class="card-desc">
+                  축가, 프로포즈 녹음 서비스 제공<br />
+                  예비부부와 직접 소통 경험
+                </div>
+              </div>
+
+              <div class="card" style="margin-bottom: 20px">
+                <div style="font-size: 18px; font-weight: 700; margin-bottom: 12px">
+                  플랫폼 공급자
+                </div>
+                <div class="card-desc">
+                  숨고/크몽 수수료 구조 직접 체감<br />
+                  프리랜서 페인포인트 이해
+                </div>
+              </div>
+
+              <div class="card highlight">
+                <div
+                  style="
+                    font-size: 18px;
+                    font-weight: 700;
+                    margin-bottom: 12px;
+                    color: rgba(255, 255, 255, 0.95);
+                  "
+                >
+                  양면 시장 이해
+                </div>
+                <div class="card-desc">
+                  수요자(예비부부) + 공급자(프리랜서)<br />
+                  양쪽의 문제를 직접 경험
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <span class="slide-num">02</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 슬라이드 3: Problem -->
+    <section class="slide">
+      <div class="canvas-wrap">
+        <div class="canvas">
+          <div class="logo">특별시</div>
+          <span class="section-label">PROBLEM</span>
+          <h1 class="page-title">문제 정의</h1>
+
+          <div class="grid grid-2 mt-30">
+            <div class="card">
+              <div class="card-title">수요자 (예비부부)</div>
+              <div class="card-desc">
+                • 정보 탐색에 평균 <strong>2개월</strong> 소요<br />
+                • 블로그 후기 신뢰도 저하<br />
+                • 5~7개 업체 반복 소통 필요<br />
+                • 가격 비교 불가, 정보 비대칭
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-title">공급자 (프리랜서)</div>
+              <div class="card-desc">
+                • 기존 플랫폼 수수료 <strong>20~35%</strong><br />
+                • 저가 경쟁 심화<br />
+                • 리드 품질 저하<br />
+                • 가격 중심 평가 구조
+              </div>
+            </div>
+          </div>
+
+          <div class="survey-box mt-30">
+            <div class="survey-title">
+              <span class="survey-icon">▮</span>
+              설문조사 결과 (N=150+)
+            </div>
+            <div class="survey-stats">
+              <div class="survey-stat">
+                <div class="survey-stat-number">78%</div>
+                <div class="survey-stat-label">작가 선택 어려움</div>
+              </div>
+              <div class="survey-stat">
+                <div class="survey-stat-number">65%</div>
+                <div class="survey-stat-label">가격 정보 부족</div>
+              </div>
+              <div class="survey-stat">
+                <div class="survey-stat-number">92%</div>
+                <div class="survey-stat-label">프리랜서 수수료 불만</div>
+              </div>
+              <div class="survey-stat">
+                <div class="survey-stat-number">85%</div>
+                <div class="survey-stat-label">전문 플랫폼 이용 의향</div>
+              </div>
+            </div>
+          </div>
+
+          <span class="slide-num">03</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 추가 슬라이드: 시장 구조 (메인 vs 서브) -->
+    <section class="slide">
+      <div class="canvas-wrap">
+        <div class="canvas">
+          <div class="kicker-row">
+            <div class="brand">특별시</div>
+            <span class="section-label">MARKET STRUCTURE</span>
+          </div>
+          <h1 class="page-title">서브서비스 시장 구조</h1>
+
+          <div class="split-2 mt-20">
+            <div class="card">
+              <div class="card-title">메인서비스 (스드메)</div>
+              <div class="card-desc">
+                스튜디오·드레스·메이크업 중심의 패키지 시장<br />
+                웨딩홀/플래너 채널로 판매 구조가 이미 확립
+              </div>
+              <div class="mini-card mt-20">
+                <div class="mini-kpi" style="color: var(--text-dark)">
+                  400~520
+                </div>
+                <div class="mini-label">평균 총액 (만원)</div>
+              </div>
+            </div>
+
+            <div class="card highlight">
+              <div class="card-title">서브서비스 (특별시 타깃)</div>
+              <div class="card-desc">
+                스드메 외 모든 웨딩 서비스(스냅/영상/축가/부케/청첩장 등)<br />
+                SNS·지인 추천 등 정보가 분산되어 “전문 플랫폼”이 부재
+              </div>
+              <div class="mini-grid-4 mt-20">
+                <div class="mini-card">
+                  <div class="mini-kpi">20~60</div>
+                  <div class="mini-label">본식스냅</div>
+                </div>
+                <div class="mini-card">
+                  <div class="mini-kpi">30~50</div>
+                  <div class="mini-label">본식영상</div>
+                </div>
+                <div class="mini-card">
+                  <div class="mini-kpi">10~100</div>
+                  <div class="mini-label">축가</div>
+                </div>
+                <div class="mini-card">
+                  <div class="mini-kpi">10~30</div>
+                  <div class="mini-label">부케</div>
+                </div>
+              </div>
+              <div class="note">
+                평균 총액 100~200만원 · 정보 비대칭/가격 불투명 → 버티컬 플랫폼
+                기회
+              </div>
+            </div>
+          </div>
+
+          <span class="slide-num">04</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 추가 슬라이드: 포지셔닝 (역할 분리) -->
+    <section class="slide">
+      <div class="canvas-wrap">
+        <div class="canvas">
+          <div class="kicker-row">
+            <div class="brand">특별시</div>
+            <span class="section-label">POSITIONING</span>
+          </div>
+          <h1 class="page-title">포지셔닝: 경쟁이 아닌 역할 분리</h1>
+
+          <div class="split-2 mt-20">
+            <div class="card">
+              <div class="card-title">기존 구조</div>
+              <div class="card-desc">
+                웨딩플래너가 스드메 + 서브서비스까지 모두 관리<br />
+                제휴/리베이트 구조로 가격이 불투명해지고 선택권이 제한
+              </div>
+              <div class="pill mt-20">
+                불투명한 가격 · 제한된 선택 · 정보 비대칭
+              </div>
+            </div>
+
+            <div class="card highlight">
+              <div class="card-title">특별시 구조</div>
+              <div class="card-desc">
+                <strong>“스드메는 플래너가, 서브서비스는 특별시가”</strong
+                ><br />
+                플래너/스드메는 본업에 집중 · 서브서비스는 전문화된 플랫폼으로
+                연결
+              </div>
+              <div
+                class="pill mt-20"
+                style="border-color: var(--primary-accent)"
+              >
+                투명한 가격 · 자유로운 선택 · 낮은 수수료
+              </div>
+              <div class="note">
+                핵심 메시지: 파이를 뺏는 경쟁이 아니라 “역할 분리”로 상생 구조를
+                만든다
+              </div>
+            </div>
+          </div>
+
+          <span class="slide-num">05</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 슬라이드 4: Solution -->
+    <section class="slide">
+      <div class="canvas-wrap">
+        <div class="canvas">
+          <div class="logo">특별시</div>
+          <div class="kicker-row">
+            <div class="brand">특별시</div>
+            <span class="section-label">SOLUTION</span>
+          </div>
+          <h1 class="page-title">해결 전략</h1>
+
+          <div class="grid grid-3 mt-30">
+            <div class="card">
+              <div class="card-title">스타일 기반 추천</div>
+              <div class="card-desc">
+                취향·분위기를 “말로” 입력 → 추천을 “큐레이션”으로 제공<br />
+                포트폴리오 기반 유사도 분석으로 후보를 압축<br /><br />
+                <strong class="accent">탐색 시간 단축</strong>
+              </div>
+            </div>
+            <div class="card highlight">
+              <div class="card-title">웨딩 크루 시스템</div>
+              <div class="card-desc">
+                스냅·영상·축가를 “한 팀”으로 구성해 원스톱 계약<br />
+                일정/정산/리스크를 플랫폼이 관리<br /><br />
+                <strong>소통 비용 감소</strong>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-title">투명한 수수료</div>
+              <div class="card-desc">
+                고정 상한 “최대 5,000원”으로 예측 가능한 비용 구조<br />
+                실거래 기반 리뷰/에스크로로 신뢰를 표준화<br /><br />
+                <strong class="accent">프리랜서 실수령률 개선</strong>
+              </div>
+            </div>
+          </div>
+
+          <div class="stat-row mt-40">
+            <div class="stat-item">
+              <div class="stat-number">3주</div>
+              <div class="stat-label">→ 3분</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-number">20%</div>
+              <div class="stat-label">→ 5% 수수료</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-number">95%</div>
+              <div class="stat-label">매칭 정확도</div>
+            </div>
+          </div>
+
+          <span class="slide-num">04</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 슬라이드 5: Market -->
+    <section class="slide">
+      <div class="canvas-wrap">
+        <div class="canvas">
+          <div class="logo">특별시</div>
+          <span class="section-label">MARKET</span>
+          <h1 class="page-title">시장 규모</h1>
+
+          <div class="two-col mt-30">
+            <div class="col">
+              <div
+                class="card highlight text-center"
+                style="padding: 60px 40px"
+              >
+                <div style="font-size: 14px; opacity: 0.9; margin-bottom: 16px">
+                  TAM
+                </div>
+                <div class="card-value" style="color: white">2조원</div>
+                <div class="card-desc" style="margin-top: 20px">
+                  연간 19만 결혼 × 평균 100만원 서브서비스 지출
+                </div>
+              </div>
+              <div
+                class="card text-center"
+                style="margin-top: 24px; padding: 40px"
+              >
+                <div
+                  style="
+                    font-size: 14px;
+                    color: var(--text-gray);
+                    margin-bottom: 12px;
+                  "
+                >
+                  SAM
+                </div>
+                <div class="card-value" style="font-size: 40px">4,000억원</div>
+                <div class="card-desc">
+                  온라인 플랫폼 이용 40% × 서울/경기 50%
+                </div>
+              </div>
+            </div>
+            <div class="col">
+              <div class="card text-center" style="padding: 40px">
+                <div
+                  style="
+                    font-size: 14px;
+                    color: var(--text-gray);
+                    margin-bottom: 12px;
+                  "
+                >
+                  SOM (3년차)
+                </div>
+                <div
+                  class="card-value"
+                  style="font-size: 40px; color: var(--primary-accent)"
+                >
+                  80억원
+                </div>
+                <div class="card-desc">
+                  목표 시장점유율 2%<br />
+                  프리랜서 3,000명 확보
+                </div>
+              </div>
+              <div
+                class="card"
+                style="
+                  margin-top: 24px;
+                  background: var(--surface);
+                  border: 2px solid var(--border);
+                "
+              >
+                <div class="card-title" style="color: var(--text-dark)">
+                  확장 로드맵
+                </div>
+                <div class="card-desc" style="margin-top: 16px">
+                  웨딩 → 경조사 → 기업행사<br />
+                  <strong style="color: var(--primary-accent)">누적 TAM 15조원</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <span class="slide-num">05</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 추가 슬라이드: AI 스타일 매칭 (Before vs After) -->
+    <section class="slide">
+      <div class="canvas-wrap">
+        <div class="canvas">
+          <div class="kicker-row">
+            <div class="brand">특별시</div>
+            <span class="section-label">AI MATCHING</span>
+          </div>
+          <h1 class="page-title">AI 스타일 매칭: Before / After</h1>
+          <p class="lead">
+            기존 키워드 검색의 한계(“300명 나열”)를 ‘큐레이션(Top 5)’으로
+            바꿉니다.
+          </p>
+
+          <div class="split-2 mt-20">
+            <div class="card">
+              <div class="card-title">Before · 키워드 검색</div>
+              <div class="card-desc">
+                결과가 너무 많아 비교가 어려움<br />
+                가격/별점 중심 필터로는 “감성/톤”을 찾기 힘듦<br />
+                견적 요청·응답 대기·재요청이 반복
+              </div>
+              <div class="mini-card mt-20">
+                <div class="mini-kpi" style="color: var(--text-dark)">2주</div>
+                <div class="mini-label">평균 탐색/결정 시간</div>
+              </div>
+            </div>
+
+            <div class="card highlight">
+              <div class="card-title">After · 특별시</div>
+              <div class="card-desc">
+                “5월 야외 · 빈티지 필름 · 예산 80만원”처럼 자연어로 입력<br />
+                포트폴리오 기반 유사도 분석 → Best 5 추천<br />
+                추천 사유(태그) 제공으로 빠른 의사결정
+              </div>
+              <div class="mini-card mt-20">
+                <div class="mini-kpi">13분</div>
+                <div class="mini-label">입력 → 추천 → 비교</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="flow">
+            <div class="flow-step">
+              <div class="n">1</div>
+              <div class="t">취향 입력</div>
+              <div class="d">자연어 + 참고 이미지(선택)</div>
+            </div>
+            <div class="flow-step">
+              <div class="n">2</div>
+              <div class="t">스타일 분석</div>
+              <div class="d">포트폴리오 벡터 유사도</div>
+            </div>
+            <div class="flow-step">
+              <div class="n">3</div>
+              <div class="t">Top 5 추천</div>
+              <div class="d">추천 사유(태그) 제공</div>
+            </div>
+            <div class="flow-step">
+              <div class="n">4</div>
+              <div class="t">상담/계약</div>
+              <div class="d">플랫폼 내 채팅·에스크로</div>
+            </div>
+          </div>
+
+          <span class="slide-num">06</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 기술 아키텍처 -->
+    <section class="slide">
+      <div class="canvas-wrap">
+        <div class="canvas">
+          <div class="kicker-row">
+            <div class="brand">특별시</div>
+            <span class="section-label">TECH ARCHITECTURE</span>
+          </div>
+          <h1 class="page-title">AI 매칭 시스템 아키텍처</h1>
+          <p class="lead">
+            자연어 프롬프트 파싱 → 벡터 임베딩 → 유사도 기반 추천의 3단계 파이프라인
+          </p>
+
+          <div class="arch-diagram mt-20">
+            <!-- Layer 1: Input Processing -->
+            <div class="arch-layer">
+              <div class="arch-layer-title">Input Layer</div>
+              <div class="arch-item">
+                <div class="arch-icon">NLP</div>
+                <div class="arch-item-text">
+                  <div class="arch-item-name">프롬프트 파싱</div>
+                  <div class="arch-item-desc">자연어 → 구조화된 쿼리</div>
+                </div>
+              </div>
+              <div class="arch-item">
+                <div class="arch-icon">EX</div>
+                <div class="arch-item-text">
+                  <div class="arch-item-name">엔티티 추출</div>
+                  <div class="arch-item-desc">스타일/예산/일정/지역</div>
+                </div>
+              </div>
+              <div class="arch-item">
+                <div class="arch-icon">IM</div>
+                <div class="arch-item-text">
+                  <div class="arch-item-name">이미지 분석</div>
+                  <div class="arch-item-desc">참고 이미지 스타일 태깅</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Layer 2: AI Core -->
+            <div class="arch-layer highlight">
+              <div class="arch-layer-title">AI Core</div>
+              <div class="arch-item">
+                <div class="arch-icon">VE</div>
+                <div class="arch-item-text">
+                  <div class="arch-item-name">벡터 임베딩</div>
+                  <div class="arch-item-desc">포트폴리오/쿼리 벡터화</div>
+                </div>
+              </div>
+              <div class="arch-item">
+                <div class="arch-icon">SI</div>
+                <div class="arch-item-text">
+                  <div class="arch-item-name">유사도 검색</div>
+                  <div class="arch-item-desc">Cosine Similarity 기반</div>
+                </div>
+              </div>
+              <div class="arch-item">
+                <div class="arch-icon">RK</div>
+                <div class="arch-item-text">
+                  <div class="arch-item-name">랭킹 모델</div>
+                  <div class="arch-item-desc">스타일+평점+응답률 가중</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Layer 3: Output -->
+            <div class="arch-layer">
+              <div class="arch-layer-title">Output Layer</div>
+              <div class="arch-item">
+                <div class="arch-icon">T5</div>
+                <div class="arch-item-text">
+                  <div class="arch-item-name">Top 5 추천</div>
+                  <div class="arch-item-desc">최적 매칭 후보 제공</div>
+                </div>
+              </div>
+              <div class="arch-item">
+                <div class="arch-icon">EX</div>
+                <div class="arch-item-text">
+                  <div class="arch-item-name">추천 사유</div>
+                  <div class="arch-item-desc">Explainable AI 태그</div>
+                </div>
+              </div>
+              <div class="arch-item">
+                <div class="arch-icon">FB</div>
+                <div class="arch-item-text">
+                  <div class="arch-item-name">피드백 루프</div>
+                  <div class="arch-item-desc">선택/계약 데이터 학습</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="survey-box">
+            <div class="survey-title">
+              <span class="survey-icon">T</span>
+              Tech Stack
+            </div>
+            <div class="tech-stack">
+              <span class="tech-badge primary">OpenAI Embedding</span>
+              <span class="tech-badge primary">Pinecone Vector DB</span>
+              <span class="tech-badge">LangChain</span>
+              <span class="tech-badge">Flutter</span>
+              <span class="tech-badge">Firebase</span>
+              <span class="tech-badge">Supabase</span>
+              <span class="tech-badge">Python FastAPI</span>
+              <span class="tech-badge">Google Cloud</span>
+            </div>
+            <div class="note" style="margin-top: 16px;">
+              MVP는 OpenAI API 기반으로 빠르게 검증 → 트래픽 증가 시 자체 모델 파인튜닝 계획
+            </div>
+          </div>
+
+          <span class="slide-num">07</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 프롬프트 파싱 상세 -->
+    <section class="slide">
+      <div class="canvas-wrap">
+        <div class="canvas">
+          <div class="kicker-row">
+            <div class="brand">특별시</div>
+            <span class="section-label">PROMPT PARSING</span>
+          </div>
+          <h1 class="page-title">자연어 프롬프트 → 구조화된 매칭</h1>
+
+          <div class="split-2 mt-20">
+            <div class="card">
+              <div class="card-title">사용자 입력 예시</div>
+              <div style="background: var(--surface-2); border-radius: 8px; padding: 20px; margin-top: 16px; font-family: monospace; font-size: 15px; line-height: 1.8; color: var(--text-dark);">
+                "5월 야외 웨딩이에요.<br/>
+                빈티지 필름 느낌 스냅 원해요.<br/>
+                예산은 80만원 정도,<br/>
+                경기 남부 지역이면 좋겠어요."
+              </div>
+              <div class="note" style="margin-top: 16px;">
+                키워드 검색이 아닌 "의도" 파악 → 더 정확한 매칭
+              </div>
+            </div>
+
+            <div class="card highlight">
+              <div class="card-title">파싱 결과 (Structured Query)</div>
+              <div style="background: rgba(255,255,255,0.1); border-radius: 8px; padding: 20px; margin-top: 16px; font-family: monospace; font-size: 14px; line-height: 1.8;">
+                {<br/>
+                &nbsp;&nbsp;"category": "본식스냅",<br/>
+                &nbsp;&nbsp;"style": ["빈티지", "필름", "자연광"],<br/>
+                &nbsp;&nbsp;"mood": "감성적",<br/>
+                &nbsp;&nbsp;"budget": { "min": 600000, "max": 1000000 },<br/>
+                &nbsp;&nbsp;"date": "2026-05",<br/>
+                &nbsp;&nbsp;"location": ["경기남부"],<br/>
+                &nbsp;&nbsp;"venue_type": "야외"<br/>
+                }
+              </div>
+            </div>
+          </div>
+
+          <div class="flow mt-30">
+            <div class="flow-step">
+              <div class="n">1</div>
+              <div class="t">Intent Classification</div>
+              <div class="d">서비스 카테고리 분류 (스냅/영상/축가 등)</div>
+            </div>
+            <div class="flow-step">
+              <div class="n">2</div>
+              <div class="t">Entity Extraction</div>
+              <div class="d">스타일/예산/일정/지역 추출</div>
+            </div>
+            <div class="flow-step">
+              <div class="n">3</div>
+              <div class="t">Query Expansion</div>
+              <div class="d">유사 태그 확장 (필름→아날로그)</div>
+            </div>
+            <div class="flow-step">
+              <div class="n">4</div>
+              <div class="t">Vector Search</div>
+              <div class="d">포트폴리오 DB 유사도 검색</div>
+            </div>
+          </div>
+
+          <span class="slide-num">08</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Business Model -->
+    <section class="slide">
+      <div class="canvas-wrap">
+        <div class="canvas">
+          <div class="kicker-row">
+            <div class="brand">특별시</div>
+            <span class="section-label">BUSINESS MODEL</span>
+          </div>
+          <h1 class="page-title">3중 수익 구조</h1>
+
+          <div class="grid grid-3 mt-30">
+            <div class="card text-center">
+              <div
+                class="pill"
+                style="justify-content: center; margin: 0 auto 18px"
+              >
+                Revenue 1
+              </div>
+              <div class="card-title mt-20">매칭 크레딧</div>
+              <div class="card-desc">
+                견적/응찰 등 거래 액션 단위 과금<br />
+                <strong>1크레딧 = 1,000원</strong>
+              </div>
+            </div>
+            <div class="card highlight text-center">
+              <div
+                class="pill"
+                style="justify-content: center; margin: 0 auto 18px"
+              >
+                Core
+              </div>
+              <div class="card-title mt-20">크루 수수료</div>
+              <div class="card-desc">
+                크루 패키지 거래액의 <strong>3~5%</strong><br />
+                개인 매칭은 무료(초기 진입장벽 ↓)
+              </div>
+            </div>
+            <div class="card text-center">
+              <div
+                class="pill"
+                style="justify-content: center; margin: 0 auto 18px"
+              >
+                Revenue 3
+              </div>
+              <div class="card-title mt-20">구독</div>
+              <div class="card-desc">
+                월 <strong>9,900~29,900원</strong><br />
+                노출 우선순위 + 크레딧 + 부가 기능
+              </div>
+            </div>
+          </div>
+
+          <div class="survey-box mt-30">
+            <div class="survey-title">
+              <span class="survey-icon">▮</span>
+              수수료 원칙
+            </div>
+            <div class="split-2">
+              <div class="mini-card">
+                <div class="mini-kpi">5,000원</div>
+                <div class="mini-label">고정 상한(건당)</div>
+              </div>
+              <div class="mini-card">
+                <div class="mini-kpi">0.5~3%</div>
+                <div class="mini-label">고액 거래 시 실질 수수료</div>
+              </div>
+            </div>
+            <div class="note">
+              “비율 수수료”가 아니라 “상한이 있는 구조”로 거래 비용 예측
+              가능성을 확보합니다.
+            </div>
+          </div>
+
+          <span class="slide-num">06</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Traction -->
+    <section class="slide">
+      <div class="canvas-wrap">
+        <div class="canvas">
+          <div class="kicker-row">
+            <div class="brand">특별시</div>
+            <span class="section-label">TRACTION</span>
+          </div>
+          <h1 class="page-title">검증 현황</h1>
+
+          <div class="grid grid-4 mt-30">
+            <div class="card text-center">
+              <div class="card-value" style="font-size: 44px">35</div>
+              <div class="card-title">심층 인터뷰</div>
+              <div class="card-desc" style="margin-top: 10px">
+                예비부부·프리랜서
+              </div>
+            </div>
+            <div class="card text-center">
+              <div class="card-value" style="font-size: 44px">150+</div>
+              <div class="card-title">설문 응답</div>
+              <div class="card-desc" style="margin-top: 10px">정량 검증</div>
+            </div>
+            <div class="card text-center">
+              <div class="card-value" style="font-size: 44px">20</div>
+              <div class="card-title">LoI 확보</div>
+              <div class="card-desc" style="margin-top: 10px">참여의향서</div>
+            </div>
+            <div class="card text-center">
+              <div class="card-value" style="font-size: 40px">MVP</div>
+              <div class="card-title">개발 진행</div>
+              <div class="card-desc" style="margin-top: 10px">베타 준비</div>
+            </div>
+          </div>
+
+          <div class="split-2 mt-30">
+            <div class="card">
+              <div class="card-title">검증 인사이트</div>
+              <div class="card-desc">
+                예비부부: “스타일 비교가 어렵다”, “가격 기준이 없다”가
+                반복적으로 등장<br />
+                프리랜서: “수수료 부담”, “리드 품질”에 불만이 집중
+              </div>
+              <div class="note">
+                설문/인터뷰 결과를 슬라이드 03의 KPI와 연결해 설득력을
+                강화합니다.
+              </div>
+            </div>
+            <div class="card highlight">
+              <div class="card-title">26년 1~5월 실행 계획</div>
+              <div class="card-desc">
+                정량 설문 100명+ 추가 수집<br />
+                MVP 알파 개발 및 내부 테스트<br />
+                Pre-launch 200명 확보 · 파일럿 매칭 50건
+              </div>
+            </div>
+          </div>
+
+          <span class="slide-num">07</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Competition -->
+    <section class="slide">
+      <div class="canvas-wrap">
+        <div class="canvas">
+          <div class="kicker-row">
+            <div class="brand">특별시</div>
+            <span class="section-label">COMPETITION</span>
+          </div>
+          <h1 class="page-title">경쟁사 대비 차별점</h1>
+
+          <table class="table mt-30">
+            <tr>
+              <th style="width: 20%"></th>
+              <th>숨고</th>
+              <th>크몽</th>
+              <th>웨딩북</th>
+              <th style="background: #f5f0eb">특별시</th>
+            </tr>
+            <tr>
+              <td style="color: var(--text-light)">수수료</td>
+              <td>20~35%</td>
+              <td>6~20%</td>
+              <td>-</td>
+              <td class="accent-text"><strong>3~5%</strong></td>
+            </tr>
+            <tr>
+              <td style="color: var(--text-light)">매칭 방식</td>
+              <td>키워드</td>
+              <td>키워드</td>
+              <td>수동</td>
+              <td class="accent-text"><strong>AI 스타일</strong></td>
+            </tr>
+            <tr>
+              <td style="color: var(--text-light)">크루 시스템</td>
+              <td>X</td>
+              <td>X</td>
+              <td>X</td>
+              <td class="accent-text"><strong>O</strong></td>
+            </tr>
+            <tr>
+              <td style="color: var(--text-light)">프리랜서 실수령</td>
+              <td>65~80%</td>
+              <td>80~94%</td>
+              <td>-</td>
+              <td class="accent-text"><strong>95~97%</strong></td>
+            </tr>
+            <tr>
+              <td style="color: var(--text-light)">포지션</td>
+              <td>범용 서비스</td>
+              <td>범용 서비스</td>
+              <td>웨딩 정보</td>
+              <td class="accent-text"><strong>웨딩 버티컬</strong></td>
+            </tr>
+          </table>
+
+          <div class="survey-box mt-30">
+            <div class="survey-title">
+              <span class="survey-icon">▮</span>
+              핵심 차별화
+            </div>
+            <div class="lead" style="margin-top: -4px">
+              버티컬 × AI × 저수수료. 범용 플랫폼이 “웨딩에 올인”하기는
+              구조적으로 어렵습니다. 우리는 웨딩 서브서비스에만 집중해
+              UX/데이터를 최적화합니다.
+            </div>
+          </div>
+
+          <span class="slide-num">08</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Team -->
+    <section class="slide">
+      <div class="canvas-wrap">
+        <div class="canvas">
+          <div class="kicker-row">
+            <div class="brand">특별시</div>
+            <span class="section-label">TEAM</span>
+          </div>
+          <h1 class="page-title">팀 구성</h1>
+
+          <div class="split-2 mt-30">
+            <div class="card">
+              <div style="display: flex; gap: 22px; align-items: flex-start">
+                <img
+                  src="images/team/ceo/ceo_김찬주.jpeg"
+                  alt="김찬주 CEO"
+                  style="
+                    width: 170px;
+                    height: 170px;
+                    object-fit: cover;
+                    border-radius: 18px;
+                    border: 4px solid #1f1b16;
+                    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+                  "
+                />
+                <div style="flex: 1">
+                  <div class="h2" style="font-size: 30px; margin-top: 0">
+                    김찬주 / CEO
+                  </div>
+                  <div class="lead" style="font-size: 16px; margin-top: 10px">
+                    웨딩 현장에서 수요자/공급자 양면의 문제를 직접 경험.
+                    <br />초기 공급자 확보를 위한 네트워크 기반 실행력 보유.
+                  </div>
+                  <div
+                    style="
+                      display: flex;
+                      gap: 10px;
+                      flex-wrap: wrap;
+                      margin-top: 14px;
+                    "
+                  >
+                    <span class="pill">웨딩 도메인 5년</span>
+                    <span class="pill">플랫폼 상위 전문가</span>
+                    <span class="pill">초기 LoI 20+</span>
+                  </div>
+                </div>
+              </div>
+              <div class="note" style="margin-top: 18px">
+                WHY ME: “양쪽을 아는 사람이 풀어야 한다”는 문제의식에서
+                출발했습니다.
+              </div>
+            </div>
+
+            <div class="card highlight">
+              <div class="card-title">팀 구성 (4인)</div>
+              <table class="risk-table" style="margin-top: 12px">
+                <tr>
+                  <th style="width: 22%">역할</th>
+                  <th style="width: 38%">담당</th>
+                  <th style="width: 40%">핵심 역량</th>
+                </tr>
+                <tr>
+                  <td><strong>CEO</strong></td>
+                  <td>전략/영업/파트너십</td>
+                  <td>양면시장 이해, 네트워크, 실행</td>
+                </tr>
+                <tr>
+                  <td><strong>CTO</strong></td>
+                  <td>앱/웹/AI 개발</td>
+                  <td>풀스택·추천/임베딩 적용</td>
+                </tr>
+                <tr>
+                  <td><strong>CPO</strong></td>
+                  <td>제품/UX/데이터</td>
+                  <td>지표 설계, 퍼널 개선</td>
+                </tr>
+                <tr>
+                  <td><strong>CMO</strong></td>
+                  <td>마케팅/브랜딩</td>
+                  <td>콘텐츠/커뮤니티 성장</td>
+                </tr>
+              </table>
+            </div>
+          </div>
+
+          <div class="survey-box mt-30">
+            <div class="survey-title">
+              <span class="survey-icon">▮</span>
+              실행력 증빙
+            </div>
+            <div class="lead">
+              인터뷰 35명 · 설문 150+ · LoI 20+를 기반으로, Pre-launch 200명
+              확보와 파일럿 매칭 50건을 26년 상반기 목표로 둡니다.
+            </div>
+          </div>
+
+          <span class="slide-num">09</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 슬라이드 10: 설문조사 요청 -->
+    <section class="slide">
+      <div class="canvas-wrap">
+        <div class="canvas centered">
+          <span class="section-label">SURVEY</span>
+          <h1 class="page-title">시장 검증 설문조사</h1>
+
+          <p class="page-subtitle" style="margin: 32px 0; max-width: 700px">
+            서비스 기획을 위한 설문에 참여해주세요.<br />
+            소요시간 약 3분
+          </p>
+
+          <div
+            style="
+              display: flex;
+              gap: 80px;
+              justify-content: center;
+              margin: 40px 0;
+            "
+          >
+            <div style="text-align: center">
+              <div
+                style="
+                  width: 200px;
+                  height: 200px;
+                  background: white;
+                  border: 3px solid #e91e8b;
+                  border-radius: 12px;
+                  padding: 12px;
+                  margin: 0 auto 20px;
+                "
+              >
+                <img
+                  src="docs/예비부부_설문조사.jpg"
+                  alt="예비부부 설문조사 QR"
+                  style="width: 100%; height: 100%; object-fit: contain"
+                />
+              </div>
+              <div
+                style="font-size: 20px; font-weight: 700; margin-bottom: 8px"
+              >
+                예비부부용
+              </div>
+              <div style="font-size: 14px; color: var(--text-gray)">
+                결혼 준비 중 또는 최근 결혼
+              </div>
+            </div>
+            <div style="text-align: center">
+              <div
+                style="
+                  width: 200px;
+                  height: 200px;
+                  background: white;
+                  border: 3px solid #22c55e;
+                  border-radius: 12px;
+                  padding: 12px;
+                  margin: 0 auto 20px;
+                "
+              >
+                <img
+                  src="docs/프리랜서_설문조사.jpg"
+                  alt="프리랜서 설문조사 QR"
+                  style="width: 100%; height: 100%; object-fit: contain"
+                />
+              </div>
+              <div
+                style="font-size: 20px; font-weight: 700; margin-bottom: 8px"
+              >
+                프리랜서용
+              </div>
+              <div style="font-size: 14px; color: var(--text-gray)">
+                웨딩 분야 활동 중
+              </div>
+            </div>
+          </div>
+
+          <p style="margin-top: 40px; font-size: 16px; color: var(--text-gray)">
+            응답자 추첨: 예비부부 5천원권 / 프리랜서 1만원권 (스타벅스)
+          </p>
+
+          <span class="slide-num">10</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 슬라이드 11: 마무리 -->
+    <section class="slide">
+      <div class="canvas-wrap">
+        <div class="canvas cover centered">
+          <h1 class="page-title">감사합니다</h1>
+          <p class="page-subtitle" style="margin-top: 32px">
+            <span class="accent" style="font-size: 48px">특별시</span
+            ><br /><br />
+            AI 기반 웨딩 서브서비스 매칭 플랫폼
+          </p>
+          <span class="slide-num">11</span>
+        </div>
+      </div>
+    </section>
+    <script>
+      (function () {
+        const BASE_W = 1600;
+        const BASE_H = 900;
+        const PADDING = 48; // slide padding(24*2)
+
+        function applyScale() {
+          const vw = Math.max(320, window.innerWidth - PADDING);
+          const vh = Math.max(320, window.innerHeight - PADDING);
+          const s = Math.min(vw / BASE_W, vh / BASE_H, 1);
+          document.documentElement.style.setProperty("--scale", String(s));
+        }
+
+        function applySlideNumbers() {
+          const nodes = document.querySelectorAll(".slide-num");
+          nodes.forEach((el, idx) => {
+            el.textContent = String(idx + 1).padStart(2, "0");
+          });
+        }
+
+        window.addEventListener("resize", applyScale);
+        applyScale();
+        applySlideNumbers();
+      })();
+    </script>
+  </body>
+</html>

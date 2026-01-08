@@ -7,8 +7,8 @@
 ## 2. 다음 내용을 복사해서 붙여넣기
 
 ```bash
-NEXT_PUBLIC_SUPABASE_URL=https://ldvfagbaxlispvhygpip.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxkdmZhZ2JheGxpc3B2aHlncGlwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc2ODA2MjAsImV4cCI6MjA4MzI1NjYyMH0.KCXo2DjcCo1sNL-8YUCrBzvmqoaWVqACWH_JinBOL5s
+NEXT_PUBLIC_SUPABASE_URL=your-supabase-project-url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
 ```
 
 ## 3. 파일 저장
@@ -51,8 +51,8 @@ Vercel에 배포할 때도 환경 변수를 설정해야 합니다:
 
 1. Vercel 프로젝트 → **Settings** → **Environment Variables**
 2. 다음 변수 추가:
-   - `NEXT_PUBLIC_SUPABASE_URL`: `https://ldvfagbaxlispvhygpip.supabase.co`
-   - `NEXT_PUBLIC_SUPABASE_ANON_KEY`: `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...`
+   - `NEXT_PUBLIC_SUPABASE_URL`: `your-supabase-project-url`
+   - `NEXT_PUBLIC_SUPABASE_ANON_KEY`: `your-supabase-anon-key`
 3. **Redeploy** 클릭
 
 ---

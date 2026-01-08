@@ -1,12 +1,15 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { TEAM_MEMBERS } from "@/lib/constants/team";
 import { useUser } from "@/lib/context/UserContext";
 import { useData } from "@/lib/context/DataContext";
 import { useToast } from "@/lib/context/ToastContext";
 import { saveEvent, deleteEvent, toggleEventParticipation } from "@/lib/utils/event";
-import type { Event } from "@/lib/types/event";
+import type { Event, Holiday } from "@/lib/types/event";
+
+const monthNames = ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"];
+const dayNames = ["일", "월", "화", "수", "목", "금", "토"];
 
 export default function CalendarPage() {
   const { user } = useUser();
@@ -14,29 +17,37 @@ export default function CalendarPage() {
   const { showToast } = useToast();
   const currentUser = user?.name || "김찬주";
   
-  const today = new Date();
-  const [currentYear, setCurrentYear] = useState(today.getFullYear());
-  const [currentMonth, setCurrentMonth] = useState(today.getMonth());
-  const currentDate = today.getDate();
+  const today = useMemo(() => new Date(), []);
+  const todayYear = today.getFullYear();
+  const todayMonth = today.getMonth();
+  const todayDate = today.getDate();
+
+  const [currentYear, setCurrentYear] = useState(todayYear);
+  const [currentMonth, setCurrentMonth] = useState(todayMonth);
 
   const [showAddForm, setShowAddForm] = useState(false);
-  const [selectedDate, setSelectedDate] = useState<number>(currentDate);
-  const [viewEvent, setViewEvent] = useState<any | null>(null); // 일정 및 공휴일 통합 수용 (타입 오류 방지)
+  const [selectedDate, setSelectedDate] = useState<number>(todayDate);
+  const [viewEvent, setViewEvent] = useState<Event | Holiday | null>(null);
 
   const [newEvent, setNewEvent] = useState({
     title: "",
-    date: currentDate,
+    date: todayDate,
     time: "09:00",
     location: "",
     description: "",
   });
 
-  const monthNames = ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"];
-  const dayNames = ["일", "월", "화", "수", "목", "금", "토"];
-
   useEffect(() => {
     refreshEvents();
   }, [refreshEvents]);
+
+  // 월 변경 시 선택된 날짜 유효성 검사
+  useEffect(() => {
+    const daysInNewMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+    if (selectedDate > daysInNewMonth) {
+      setSelectedDate(daysInNewMonth);
+    }
+  }, [currentYear, currentMonth, selectedDate]);
 
   const thisMonthEvents = useMemo(() => {
     return events.filter(e => e.month === currentMonth && e.year === currentYear)
@@ -53,12 +64,26 @@ export default function CalendarPage() {
   }, [thisMonthEvents, selectedDate]);
 
   const upcomingEvents = useMemo(() => {
-    return thisMonthEvents.filter(e => e.date >= currentDate);
-  }, [thisMonthEvents, currentDate]);
+    return thisMonthEvents.filter(e => {
+      // 현재 보고 있는 달이 오늘이 포함된 달보다 미래인 경우
+      if (currentYear > todayYear) return true;
+      if (currentYear < todayYear) return false;
+      if (currentMonth > todayMonth) return true;
+      if (currentMonth < todayMonth) return false;
+      
+      // 같은 달인 경우 오늘 날짜 이후만 표시
+      return e.date >= todayDate;
+    });
+  }, [thisMonthEvents, currentYear, currentMonth, todayYear, todayMonth, todayDate]);
 
   const handleAddEvent = async () => {
     if (!newEvent.title.trim()) {
       showToast("제목을 입력해주세요.", "warning");
+      return;
+    }
+
+    if (isNaN(newEvent.date) || newEvent.date < 1 || newEvent.date > 31) {
+      showToast("올바른 날짜를 입력해주세요.", "warning");
       return;
     }
 
@@ -103,6 +128,24 @@ export default function CalendarPage() {
     }
   };
 
+  const handlePrevMonth = useCallback(() => {
+    if (currentMonth === 0) {
+      setCurrentYear(v => v - 1);
+      setCurrentMonth(11);
+    } else {
+      setCurrentMonth(v => v - 1);
+    }
+  }, [currentMonth]);
+
+  const handleNextMonth = useCallback(() => {
+    if (currentMonth === 11) {
+      setCurrentYear(v => v + 1);
+      setCurrentMonth(0);
+    } else {
+      setCurrentMonth(v => v + 1);
+    }
+  }, [currentMonth]);
+
   const firstDay = new Date(currentYear, currentMonth, 1).getDay();
   const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
   const calendarDays = [];
@@ -121,13 +164,13 @@ export default function CalendarPage() {
           </div>
           <div className="flex items-center gap-3">
             <div className="bg-white border border-slate-200 rounded-xl p-1 flex shadow-sm">
-              <button onClick={() => { if (currentMonth === 0) { setCurrentYear(v => v - 1); setCurrentMonth(11); } else { setCurrentMonth(v => v - 1); } }} className="p-2 hover:bg-slate-50 rounded-lg text-slate-400">
+              <button onClick={handlePrevMonth} className="p-2 hover:bg-slate-50 rounded-lg text-slate-400">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
               </button>
               <div className="px-4 py-2 text-sm font-black text-slate-900 min-w-[100px] text-center">
                 {currentYear}년 {monthNames[currentMonth]}
               </div>
-              <button onClick={() => { if (currentMonth === 11) { setCurrentYear(v => v + 1); setCurrentMonth(0); } else { setCurrentMonth(v => v + 1); } }} className="p-2 hover:bg-slate-50 rounded-lg text-slate-400">
+              <button onClick={handleNextMonth} className="p-2 hover:bg-slate-50 rounded-lg text-slate-400">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
               </button>
             </div>
@@ -153,7 +196,7 @@ export default function CalendarPage() {
                 if (date === null) return <div key={`empty-${idx}`} className="aspect-square bg-slate-50/30 rounded-2xl border border-transparent" />;
                 
                 const dayEvents = thisMonthEvents.filter(e => e.date === date);
-                const isCurrentToday = date === today.getDate() && currentMonth === today.getMonth() && currentYear === today.getFullYear();
+                const isCurrentToday = date === todayDate && currentMonth === todayMonth && currentYear === todayYear;
                 const isSelected = selectedDate === date;
 
                 return (
@@ -196,27 +239,30 @@ export default function CalendarPage() {
               <div className="space-y-3">
                 {selectedDayEvents.map(event => {
                   const creator = TEAM_MEMBERS[event.createdBy as keyof typeof TEAM_MEMBERS] || { color: "#64748b" };
-                  const isParticipating = event.participants?.includes(currentUser);
+                  const eventWithParticipants = event as any;
+                  const isParticipating = eventWithParticipants.participants?.includes(currentUser);
                   return (
                     <div key={event.id} onClick={() => setViewEvent(event)} className="p-4 bg-slate-50/50 rounded-2xl border border-slate-100 transition-all hover:bg-white hover:shadow-md cursor-pointer group">
                       <div className="flex items-center justify-between mb-2">
-                        <span className="text-[9px] font-black text-indigo-600 bg-white px-1.5 py-0.5 rounded border border-indigo-100">{event.time}</span>
+                        <span className="text-[9px] font-black text-indigo-600 bg-white px-1.5 py-0.5 rounded border border-indigo-100">{eventWithParticipants.time || "종일"}</span>
                         <div className="w-2 h-2 rounded-full shadow-sm" style={{ backgroundColor: creator.color }} />
                       </div>
                       <h3 className="text-xs font-bold text-slate-800 leading-snug group-hover:text-indigo-600 transition-colors">{event.title}</h3>
                       <div className="mt-3 flex items-center justify-between">
                         <div className="flex -space-x-1.5 overflow-hidden">
-                          {event.participants?.slice(0, 3).map((p, i) => (
+                          {eventWithParticipants.participants?.slice(0, 3).map((p: string, i: number) => (
                             <div key={i} className="w-5 h-5 rounded-full border border-white bg-slate-200 flex items-center justify-center text-[8px] font-bold text-white shadow-sm" style={{ backgroundColor: TEAM_MEMBERS[p as keyof typeof TEAM_MEMBERS]?.color }}>{p[0]}</div>
                           ))}
-                          {(event.participants?.length || 0) > 3 && <div className="w-5 h-5 rounded-full bg-slate-100 border border-white flex items-center justify-center text-[7px] font-black text-slate-400">+{(event.participants?.length || 0) - 3}</div>}
+                          {(eventWithParticipants.participants?.length || 0) > 3 && <div className="w-5 h-5 rounded-full bg-slate-100 border border-white flex items-center justify-center text-[7px] font-black text-slate-400">+{(eventWithParticipants.participants?.length || 0) - 3}</div>}
                         </div>
-                        <button 
-                          onClick={(e) => { e.stopPropagation(); handleToggleParticipation(event.id); }}
-                          className={`text-[9px] font-black px-2 py-1 rounded-lg transition-all ${isParticipating ? "bg-rose-50 text-rose-600 hover:bg-rose-100" : "bg-indigo-50 text-indigo-600 hover:bg-indigo-100"}`}
-                        >
-                          {isParticipating ? "취소" : "참여"}
-                        </button>
+                        {event.createdBy !== "시스템" && (
+                          <button 
+                            onClick={(e) => { e.stopPropagation(); handleToggleParticipation(event.id); }}
+                            className={`text-[9px] font-black px-2 py-1 rounded-lg transition-all ${isParticipating ? "bg-rose-50 text-rose-600 hover:bg-rose-100" : "bg-indigo-50 text-indigo-600 hover:bg-indigo-100"}`}
+                          >
+                            {isParticipating ? "취소" : "참여"}
+                          </button>
+                        )}
                       </div>
                     </div>
                   );
@@ -233,11 +279,12 @@ export default function CalendarPage() {
                     <div className="absolute -left-[4.5px] top-1 w-2 h-2 rounded-full bg-slate-200 border-2 border-white" style={{ backgroundColor: TEAM_MEMBERS[event.createdBy as keyof typeof TEAM_MEMBERS]?.color }} />
                     <div className="flex items-center gap-2 mb-1">
                       <span className="text-[10px] font-black text-slate-400">{event.date}일</span>
-                      <span className="text-[10px] font-bold text-indigo-500">{event.time}</span>
+                      <span className="text-[10px] font-bold text-indigo-500">{(event as any).time || "종일"}</span>
                     </div>
                     <p className="text-[12px] font-bold text-slate-700 truncate">{event.title}</p>
                   </div>
                 ))}
+                {upcomingEvents.length === 0 && <div className="py-10 text-center opacity-30"><p className="text-[11px] font-bold">다가오는 일정이 없습니다</p></div>}
               </div>
             </div>
           </div>
@@ -250,8 +297,8 @@ export default function CalendarPage() {
               <div className="p-6 border-b border-slate-100 flex justify-between items-center" style={{ borderLeft: `8px solid ${viewEvent.createdBy === "시스템" ? "#f43f5e" : (TEAM_MEMBERS[viewEvent.createdBy as keyof typeof TEAM_MEMBERS]?.color || "#64748b")}` }}>
                 <div>
                   <div className="flex items-center gap-2 mb-1">
-                    {viewEvent.time && <span className="px-2 py-0.5 bg-slate-100 text-slate-500 text-[10px] font-black rounded">{viewEvent.time}</span>}
-                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{viewEvent.location || (viewEvent.createdBy === "시스템" ? "법정공휴일" : "장소 미정")}</span>
+                    {(viewEvent as any).time && <span className="px-2 py-0.5 bg-slate-100 text-slate-500 text-[10px] font-black rounded">{(viewEvent as any).time}</span>}
+                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{(viewEvent as any).location || (viewEvent.createdBy === "시스템" ? "법정공휴일" : "장소 미정")}</span>
                   </div>
                   <h2 className="text-xl font-black text-slate-900">{viewEvent.title}</h2>
                 </div>
@@ -260,13 +307,13 @@ export default function CalendarPage() {
               <div className="p-8 space-y-6">
                 <div>
                   <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest block mb-2">일정 내용</label>
-                  <p className="text-sm text-slate-600 font-medium leading-relaxed bg-slate-50 p-4 rounded-2xl">{viewEvent.description || (viewEvent.createdBy === "시스템" ? "공식 공휴일입니다." : "상세 설명이 없습니다.")}</p>
+                  <p className="text-sm text-slate-600 font-medium leading-relaxed bg-slate-50 p-4 rounded-2xl">{(viewEvent as any).description || (viewEvent.createdBy === "시스템" ? "공식 공휴일입니다." : "상세 설명이 없습니다.")}</p>
                 </div>
                 {viewEvent.createdBy !== "시스템" && (
                   <div>
-                    <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest block mb-3">참여자 ({viewEvent.participants?.length || 0}명)</label>
+                    <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest block mb-3">참여자 ({(viewEvent as any).participants?.length || 0}명)</label>
                     <div className="flex flex-wrap gap-2">
-                      {viewEvent.participants?.map((p: string) => (
+                      {(viewEvent as any).participants?.map((p: string) => (
                         <div key={p} className="flex items-center gap-2 px-3 py-1.5 bg-white border border-slate-100 rounded-xl shadow-sm">
                           <div className="w-5 h-5 rounded-full flex items-center justify-center text-[8px] font-bold text-white" style={{ backgroundColor: TEAM_MEMBERS[p as keyof typeof TEAM_MEMBERS]?.color }}>{p[0]}</div>
                           <span className="text-xs font-bold text-slate-700">{p}</span>
@@ -280,8 +327,8 @@ export default function CalendarPage() {
                 {viewEvent.createdBy !== "시스템" ? (
                   <>
                     <button onClick={async () => { if(confirm('일정을 삭제할까요?')) { await deleteEvent(viewEvent.id); setViewEvent(null); refreshEvents(); showToast('삭제되었습니다.', 'info'); } }} className="px-4 py-3 text-sm font-bold text-rose-500 hover:bg-rose-50 rounded-2xl transition-all">삭제</button>
-                    <button onClick={() => handleToggleParticipation(viewEvent.id)} className={`flex-1 py-3 font-black text-white rounded-2xl shadow-lg transition-all ${viewEvent.participants?.includes(currentUser) ? "bg-rose-500 hover:bg-rose-600 shadow-rose-100" : "bg-indigo-600 hover:bg-indigo-700 shadow-indigo-100"}`}>
-                      {viewEvent.participants?.includes(currentUser) ? "일정 참여 취소" : "이 일정에 참여하기"}
+                    <button onClick={() => handleToggleParticipation(viewEvent.id)} className={`flex-1 py-3 font-black text-white rounded-2xl shadow-lg transition-all ${(viewEvent as any).participants?.includes(currentUser) ? "bg-rose-500 hover:bg-rose-600 shadow-rose-100" : "bg-indigo-600 hover:bg-indigo-700 shadow-indigo-100"}`}>
+                      {(viewEvent as any).participants?.includes(currentUser) ? "일정 참여 취소" : "이 일정에 참여하기"}
                     </button>
                   </>
                 ) : (

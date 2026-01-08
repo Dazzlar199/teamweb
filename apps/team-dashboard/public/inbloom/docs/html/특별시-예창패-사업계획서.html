@@ -1,0 +1,1607 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>특별시 - 2026 예비창업패키지 사업계획서</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap');
+
+        :root {
+            --primary: #1f2937;
+            --accent: #1f2937;
+            --success: #374151;
+            --danger: #4b5563;
+            --warning: #6b7280;
+            --gray-100: #f9fafb;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-500: #6b7280;
+            --gray-700: #374151;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: #e5e5e5;
+            color: var(--primary);
+            line-height: 1.7;
+            font-size: 13px;
+        }
+
+        /* A4 페이지 */
+        .page {
+            width: 210mm;
+            min-height: 297mm;
+            padding: 20mm;
+            margin: 15px auto;
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            page-break-after: always;
+        }
+
+        @media print {
+            body { background: white; }
+            .page { margin: 0; box-shadow: none; }
+        }
+
+        /* 표지 */
+        .cover {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 257mm;
+            text-align: center;
+        }
+
+        .cover-logo {
+            width: 100px;
+            height: 100px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+        }
+
+        .cover h1 {
+            font-size: 36px;
+            font-weight: 900;
+            margin-bottom: 10px;
+        }
+
+        .cover .subtitle {
+            font-size: 18px;
+            color: var(--gray-500);
+            margin-bottom: 50px;
+        }
+
+        .cover .tagline {
+            font-size: 14px;
+            color: var(--gray-700);
+            max-width: 500px;
+            line-height: 1.8;
+            padding: 20px;
+            background: var(--gray-100);
+            border-radius: 8px;
+        }
+
+        .cover .info {
+            margin-top: 60px;
+            font-size: 12px;
+            color: var(--gray-500);
+        }
+
+        /* 섹션 헤더 */
+        .section-header {
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--primary);
+        }
+
+        .section-num {
+            font-size: 11px;
+            color: var(--gray-500);
+            margin-bottom: 5px;
+        }
+
+        .section-title {
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        /* 본문 */
+        h3 {
+            font-size: 15px;
+            font-weight: 700;
+            margin: 25px 0 12px;
+            padding-left: 12px;
+            border-left: 3px solid var(--accent);
+        }
+
+        h4 {
+            font-size: 13px;
+            font-weight: 600;
+            margin: 18px 0 10px;
+            color: var(--gray-700);
+        }
+
+        p { margin-bottom: 12px; }
+
+        /* 테이블 */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            font-size: 12px;
+        }
+
+        th, td {
+            padding: 10px 12px;
+            border: 1px solid var(--gray-200);
+            text-align: left;
+        }
+
+        th {
+            background: var(--primary);
+            color: white;
+            font-weight: 600;
+        }
+
+        tr:nth-child(even) { background: var(--gray-100); }
+
+        /* 하이라이트 박스 */
+        .highlight {
+            padding: 15px 18px;
+            border-radius: 6px;
+            margin: 15px 0;
+        }
+
+        .highlight.blue {
+            background: #f9fafb;
+            border-left: 4px solid #1f2937;
+        }
+
+        .highlight.green {
+            background: #f9fafb;
+            border-left: 4px solid #374151;
+        }
+
+        .highlight.red {
+            background: #f3f4f6;
+            border-left: 4px solid #4b5563;
+        }
+
+        .highlight.yellow {
+            background: #f3f4f6;
+            border-left: 4px solid #6b7280;
+        }
+
+        .highlight strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        /* 비교 박스 */
+        .compare-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 15px 0;
+        }
+
+        .compare-box {
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .compare-box.problem {
+            background: #f9fafb;
+            border: 1px solid #d1d5db;
+        }
+
+        .compare-box.solution {
+            background: #f9fafb;
+            border: 1px solid #1f2937;
+        }
+
+        .compare-box h5 {
+            font-size: 12px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .compare-box.problem h5 { color: #4b5563; }
+        .compare-box.solution h5 { color: #1f2937; }
+
+        .compare-box ul {
+            font-size: 11px;
+            padding-left: 16px;
+            color: var(--gray-700);
+        }
+
+        .compare-box li { margin-bottom: 5px; }
+
+        /* 경쟁사 카드 */
+        .competitor-card {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: var(--gray-100);
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+
+        .competitor-card img {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            object-fit: contain;
+        }
+
+        .competitor-card .info h5 {
+            font-size: 14px;
+            margin-bottom: 3px;
+        }
+
+        .competitor-card .info p {
+            font-size: 11px;
+            color: var(--gray-500);
+            margin: 0;
+        }
+
+        /* 수식 박스 */
+        .formula {
+            background: var(--gray-100);
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            text-align: center;
+        }
+
+        .formula .equation {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 10px;
+        }
+
+        .formula .description {
+            font-size: 11px;
+            color: var(--gray-500);
+        }
+
+        /* 플로우 차트 */
+        .flow-chart {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 20px 0;
+        }
+
+        .flow-step {
+            flex: 1;
+            text-align: center;
+            padding: 15px 10px;
+            background: var(--gray-100);
+            border-radius: 8px;
+        }
+
+        .flow-step .icon {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        .flow-step .label {
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .flow-step .desc {
+            font-size: 10px;
+            color: var(--gray-500);
+            margin-top: 5px;
+        }
+
+        .flow-arrow {
+            font-size: 20px;
+            color: #374151;
+            padding: 0 5px;
+        }
+
+        /* 목업 */
+        .mockup-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .mockup-phone {
+            width: 140px;
+            height: 280px;
+            background: var(--gray-100);
+            border-radius: 20px;
+            border: 3px solid var(--gray-200);
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .mockup-screen {
+            flex: 1;
+            background: white;
+            border-radius: 12px;
+            padding: 8px;
+            font-size: 8px;
+            overflow: hidden;
+        }
+
+        .mockup-header {
+            background: #1f2937;
+            color: white;
+            padding: 5px;
+            border-radius: 6px;
+            text-align: center;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .mockup-item {
+            display: flex;
+            gap: 5px;
+            padding: 5px;
+            background: var(--gray-100);
+            border-radius: 4px;
+            margin-bottom: 4px;
+        }
+
+        .mockup-item .avatar {
+            width: 20px;
+            height: 20px;
+            background: var(--gray-200);
+            border-radius: 4px;
+        }
+
+        .mockup-item .text {
+            flex: 1;
+        }
+
+        .mockup-item .name {
+            font-weight: 600;
+            font-size: 7px;
+        }
+
+        .mockup-item .score {
+            font-size: 6px;
+            color: #374151;
+        }
+
+        /* 통계 카드 */
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin: 15px 0;
+        }
+
+        .stat-card {
+            background: var(--gray-100);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-card .number {
+            font-size: 24px;
+            font-weight: 900;
+            color: #1f2937;
+        }
+
+        .stat-card .label {
+            font-size: 10px;
+            color: var(--gray-500);
+            margin-top: 5px;
+        }
+
+        /* 타임라인 */
+        .timeline {
+            position: relative;
+            padding-left: 25px;
+            margin: 20px 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 6px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--gray-200);
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-bottom: 20px;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -22px;
+            top: 3px;
+            width: 10px;
+            height: 10px;
+            background: #1f2937;
+            border-radius: 50%;
+        }
+
+        .timeline-item .period {
+            font-size: 11px;
+            color: #1f2937;
+            font-weight: 600;
+        }
+
+        .timeline-item .content {
+            font-size: 12px;
+        }
+
+        /* 리스트 */
+        ul, ol {
+            padding-left: 20px;
+            margin: 10px 0;
+        }
+
+        li { margin-bottom: 6px; }
+
+        /* 인용문 */
+        .quote {
+            background: var(--gray-100);
+            padding: 15px 20px;
+            border-left: 3px solid var(--gray-500);
+            font-style: italic;
+            margin: 15px 0;
+        }
+
+        .quote .author {
+            font-size: 11px;
+            color: var(--gray-500);
+            font-style: normal;
+            margin-top: 8px;
+        }
+
+        /* 페이지 번호 */
+        .page-num {
+            position: absolute;
+            bottom: 15mm;
+            right: 20mm;
+            font-size: 10px;
+            color: var(--gray-500);
+        }
+
+        /* 팀 카드 */
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin: 15px 0;
+        }
+
+        .team-card {
+            background: var(--gray-100);
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .team-card .avatar {
+            width: 60px;
+            height: 60px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: 700;
+            margin: 0 auto 10px;
+        }
+
+        .team-card .role {
+            font-size: 10px;
+            color: #374151;
+            font-weight: 600;
+        }
+
+        .team-card .name {
+            font-size: 14px;
+            font-weight: 700;
+            margin: 5px 0;
+        }
+
+        .team-card .desc {
+            font-size: 10px;
+            color: var(--gray-500);
+        }
+
+        /* 예산 테이블 */
+        .budget-bar {
+            display: flex;
+            height: 30px;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .budget-bar > div {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 10px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+<!-- 표지 -->
+<div class="page">
+    <div class="cover">
+        <img src="../images/business-plan/teukbyulsi_app.png" alt="특별시" class="cover-logo">
+        <h1>특별시</h1>
+        <p class="subtitle">2026 예비창업패키지 사업계획서</p>
+        <div class="tagline">
+            웨딩 서브서비스 프리랜서와 예비부부를<br>
+            <strong>AI 스타일 매칭</strong>으로 연결하고,<br>
+            <strong>구독 + 크루 수수료(3~5%)</strong>로 수익을 창출하는<br>
+            버티컬 플랫폼
+        </div>
+        <div class="info">
+            <p>특별시 | AI 기반 웨딩 서브서비스 프리랜서 매칭 플랫폼</p>
+            <p>2025.12</p>
+        </div>
+    </div>
+</div>
+
+<!-- 요약 -->
+<div class="page" style="position: relative;">
+    <div class="section-header">
+        <div class="section-num">Executive Summary</div>
+        <h2 class="section-title">사업 개요</h2>
+    </div>
+
+    <div class="highlight blue">
+        <strong>한 줄 정의</strong>
+        특별시는 웨딩 서브서비스(스냅, 영상, 축가 등) 프리랜서와 예비부부를 AI 스타일 매칭으로 연결하고, 구독료 + 크루 수수료(3~5%)로 수익을 창출하는 버티컬 플랫폼이다.
+    </div>
+
+    <h3>핵심 문제와 해결책</h3>
+
+    <div class="compare-grid">
+        <div class="compare-box problem">
+            <h5>기존 시장의 문제</h5>
+            <ul>
+                <li><strong>탐색 시간 과다:</strong> 작가 찾는 데 평균 3주 소요</li>
+                <li><strong>가격 불투명:</strong> 동일 서비스 2~3배 가격 차이</li>
+                <li><strong>높은 수수료:</strong> 숨고 10~20%, 크몽 20%</li>
+                <li><strong>웨딩 비특화:</strong> 범용 플랫폼의 한계</li>
+            </ul>
+        </div>
+        <div class="compare-box solution">
+            <h5>특별시의 해결책</h5>
+            <ul>
+                <li><strong>AI 매칭:</strong> 3주 → 3분 (99% 단축)</li>
+                <li><strong>명확한 패키지:</strong> 스타일별 가격 표준화</li>
+                <li><strong>합리적 수수료:</strong> 크루 3~5% (개인 매칭 무료)</li>
+                <li><strong>웨딩 버티컬:</strong> 50+ 카테고리 특화</li>
+            </ul>
+        </div>
+    </div>
+
+    <h3>시장 규모</h3>
+
+    <div class="stat-grid">
+        <div class="stat-card">
+            <div class="number">19만</div>
+            <div class="label">연간 결혼 건수</div>
+        </div>
+        <div class="stat-card">
+            <div class="number">2조</div>
+            <div class="label">서브서비스 TAM</div>
+        </div>
+        <div class="stat-card">
+            <div class="number">4천억</div>
+            <div class="label">온라인 SAM</div>
+        </div>
+        <div class="stat-card">
+            <div class="number">80억</div>
+            <div class="label">3년차 SOM</div>
+        </div>
+    </div>
+
+    <h3>예창패 기간 내 핵심 목표 (8개월)</h3>
+
+    <table>
+        <tr>
+            <th>지표</th>
+            <th>목표</th>
+            <th>측정 방법</th>
+        </tr>
+        <tr>
+            <td>프리랜서 확보</td>
+            <td><strong>150명</strong></td>
+            <td>가입자 수</td>
+        </tr>
+        <tr>
+            <td>베타 매칭</td>
+            <td><strong>100건</strong></td>
+            <td>거래 완료 건수</td>
+        </tr>
+        <tr>
+            <td>월 매출</td>
+            <td><strong>500만원</strong></td>
+            <td>매출 집계</td>
+        </tr>
+        <tr>
+            <td>고객 만족도</td>
+            <td><strong>4.5/5.0</strong></td>
+            <td>리뷰 평점</td>
+        </tr>
+    </table>
+
+    <div class="page-num">1</div>
+</div>
+
+<!-- 문제 인식 -->
+<div class="page" style="position: relative;">
+    <div class="section-header">
+        <div class="section-num">Section 1</div>
+        <h2 class="section-title">문제 인식</h2>
+    </div>
+
+    <h3>웨딩 서브서비스 시장의 문제</h3>
+
+    <p>연간 19만 쌍이 결혼하며, 서브서비스(스냅, 영상, 축가 등)에 평균 100만원을 지출한다. 그러나 예비부부의 78%가 "적합한 작가를 찾기 어렵다"고 응답했다.</p>
+
+    <div class="quote">
+        "숨고에서 축가 작가를 찾는 데만 3주가 걸렸고, 가격 비교가 안 돼서 결국 더 비싸게 계약했어요."
+        <div class="author">- 인터뷰 참여자 A (30대, 2024년 결혼)</div>
+    </div>
+
+    <h3>기존 플랫폼의 한계</h3>
+
+    <div class="competitor-card">
+        <img src="../images/business-plan/soomgo.jpg" alt="숨고">
+        <div class="info">
+            <h5>숨고 - 범용 서비스 플랫폼</h5>
+            <p>MAU 300만+, 누적 거래 2조원+</p>
+        </div>
+    </div>
+
+    <table>
+        <tr>
+            <th style="width:30%">문제점</th>
+            <th>상세 내용</th>
+            <th>영향</th>
+        </tr>
+        <tr>
+            <td>저품질 리드</td>
+            <td>견적만 받고 연락 두절 비율 높음</td>
+            <td>프리랜서 ROI 불확실</td>
+        </tr>
+        <tr>
+            <td>스팸성 연락</td>
+            <td>요청서 등록 후 10+ 명이 동시 연락</td>
+            <td>고객 피로도 증가</td>
+        </tr>
+        <tr>
+            <td>가격 불투명</td>
+            <td>견적이 2~3배 차이</td>
+            <td>선택 어려움</td>
+        </tr>
+        <tr>
+            <td>웨딩 비특화</td>
+            <td>1,000개 카테고리 중 웨딩 우선순위 낮음</td>
+            <td>UX 최적화 부족</td>
+        </tr>
+    </table>
+
+    <div class="competitor-card">
+        <img src="../images/business-plan/kmong.jpg" alt="크몽">
+        <div class="info">
+            <h5>크몽 - 디지털 프리랜서 플랫폼</h5>
+            <p>MAU 200만+, 누적 거래 600만건+</p>
+        </div>
+    </div>
+
+    <table>
+        <tr>
+            <th style="width:30%">문제점</th>
+            <th>상세 내용</th>
+            <th>영향</th>
+        </tr>
+        <tr>
+            <td>높은 수수료</td>
+            <td>판매자 20% + 구매자 5.5%</td>
+            <td>프리랜서 실수령 감소</td>
+        </tr>
+        <tr>
+            <td>가격 하향 압력</td>
+            <td>카테고리 포화 시 최저가 경쟁</td>
+            <td>품질 저하 악순환</td>
+        </tr>
+        <tr>
+            <td>오프라인 약함</td>
+            <td>현장 방문 서비스 매칭 부족</td>
+            <td>웨딩 서비스 부적합</td>
+        </tr>
+        <tr>
+            <td>긴급 대응 불가</td>
+            <td>타이트한 웨딩 일정에 부적합</td>
+            <td>결혼식 당일 차질</td>
+        </tr>
+    </table>
+
+    <div class="highlight red">
+        <strong>핵심 문제</strong>
+        기존 플랫폼은 <strong>"웨딩 비특화"</strong>라는 공통된 한계를 가진다. 1,000개 카테고리 중 하나인 웨딩은 우선순위가 낮고, 스타일 기반 매칭이 불가능하며, 웨딩 특유의 긴급성/감성을 반영하지 못한다.
+    </div>
+
+    <div class="page-num">2</div>
+</div>
+
+<!-- 해결 방안 -->
+<div class="page" style="position: relative;">
+    <div class="section-header">
+        <div class="section-num">Section 2</div>
+        <h2 class="section-title">해결 방안</h2>
+    </div>
+
+    <h3>특별시의 차별화 전략</h3>
+
+    <table>
+        <tr>
+            <th>차별점</th>
+            <th>기존 플랫폼</th>
+            <th>특별시</th>
+            <th>고객 가치</th>
+        </tr>
+        <tr>
+            <td><strong>매칭 방식</strong></td>
+            <td>키워드 검색</td>
+            <td>AI 스타일 매칭</td>
+            <td>탐색 시간 99% 단축</td>
+        </tr>
+        <tr>
+            <td><strong>수수료</strong></td>
+            <td>10~20%</td>
+            <td>크루 3~5% (개인 무료)</td>
+            <td>프리랜서 수익 극대화</td>
+        </tr>
+        <tr>
+            <td><strong>결제</strong></td>
+            <td>외부/직거래</td>
+            <td>에스크로</td>
+            <td>피해 원천 차단</td>
+        </tr>
+        <tr>
+            <td><strong>특화</strong></td>
+            <td>범용</td>
+            <td>웨딩 버티컬</td>
+            <td>맞춤형 UX</td>
+        </tr>
+    </table>
+
+    <h3>핵심 기능 1: AI 스타일 매칭</h3>
+
+    <div class="flow-chart">
+        <div class="flow-step">
+            <div class="icon">1</div>
+            <div class="label">스타일 선택</div>
+            <div class="desc">예비부부가 선호<br>스타일 입력</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step">
+            <div class="icon">2</div>
+            <div class="label">AI 분석</div>
+            <div class="desc">이미지 임베딩<br>스타일 벡터 매칭</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step">
+            <div class="icon">3</div>
+            <div class="label">추천</div>
+            <div class="desc">매칭 점수 상위<br>5명 프리랜서</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step">
+            <div class="icon">4</div>
+            <div class="label">계약</div>
+            <div class="desc">에스크로 결제<br>안전 거래</div>
+        </div>
+    </div>
+
+    <div class="formula">
+        <div class="equation">매칭 점수 = 스타일 유사도(60%) + 리뷰 점수(25%) + 가격 적합도(15%)</div>
+        <div class="description">CLIP 기반 이미지 임베딩 + 협업 필터링으로 개인화 추천</div>
+    </div>
+
+    <h3>핵심 기능 2: 크루 시스템</h3>
+
+    <p>크루는 2인 이상의 프리랜서가 팀을 구성하여 예비부부에게 패키지 서비스를 제공하는 시스템이다.</p>
+
+    <table>
+        <tr>
+            <th>구분</th>
+            <th>개인 매칭</th>
+            <th>크루 매칭</th>
+        </tr>
+        <tr>
+            <td>구성</td>
+            <td>프리랜서 1인</td>
+            <td>프리랜서 2인 이상</td>
+        </tr>
+        <tr>
+            <td>수수료</td>
+            <td>무료</td>
+            <td>거래액의 3~5%</td>
+        </tr>
+        <tr>
+            <td>장점</td>
+            <td>부담 없는 진입</td>
+            <td>패키지 판매, 단가 상승</td>
+        </tr>
+        <tr>
+            <td>예시</td>
+            <td>축가만 의뢰</td>
+            <td>스냅+영상+축가 패키지</td>
+        </tr>
+    </table>
+
+    <p style="font-size: 11px; color: #6b7280;">* 크루 수수료는 팀 전체 거래액에서 플랫폼에 납부 (프리랜서 개인별 정산)</p>
+
+    <h3>목업: AI 매칭 결과 화면</h3>
+
+    <div class="mockup-container">
+        <div class="mockup-phone">
+            <div class="mockup-screen">
+                <div class="mockup-header">AI 매칭 결과</div>
+                <div class="mockup-item">
+                    <div class="avatar"></div>
+                    <div class="text">
+                        <div class="name">스냅작가 A</div>
+                        <div class="score">매칭 95% | 모던</div>
+                    </div>
+                </div>
+                <div class="mockup-item">
+                    <div class="avatar"></div>
+                    <div class="text">
+                        <div class="name">스냅작가 B</div>
+                        <div class="score">매칭 92% | 내추럴</div>
+                    </div>
+                </div>
+                <div class="mockup-item">
+                    <div class="avatar"></div>
+                    <div class="text">
+                        <div class="name">스냅작가 C</div>
+                        <div class="score">매칭 88% | 클래식</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="mockup-phone">
+            <div class="mockup-screen">
+                <div class="mockup-header">프리랜서 상세</div>
+                <div style="padding: 5px;">
+                    <div style="height: 60px; background: var(--gray-200); border-radius: 4px; margin-bottom: 5px;"></div>
+                    <div style="font-size: 9px; font-weight: 600;">스냅작가 A</div>
+                    <div style="font-size: 7px; color: var(--gray-500);">리뷰 4.9 (128) | 50만원~</div>
+                    <div style="font-size: 7px; margin-top: 5px;">#모던 #감성 #자연스러운</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="page-num">3</div>
+</div>
+
+<!-- 시장 분석 -->
+<div class="page" style="position: relative;">
+    <div class="section-header">
+        <div class="section-num">Section 3</div>
+        <h2 class="section-title">시장 분석 및 성장 전략</h2>
+    </div>
+
+    <h3>시장 규모 산출</h3>
+
+    <table>
+        <tr>
+            <th>구분</th>
+            <th>규모</th>
+            <th>산출 근거</th>
+        </tr>
+        <tr>
+            <td><strong>TAM</strong></td>
+            <td>2조원</td>
+            <td>연 19만 쌍 × 평균 100만원 서브서비스 지출</td>
+        </tr>
+        <tr>
+            <td><strong>SAM</strong></td>
+            <td>4,000억원</td>
+            <td>온라인 플랫폼 이용 40% × 수도권 50%</td>
+        </tr>
+        <tr>
+            <td><strong>SOM (3년차)</strong></td>
+            <td>80억원</td>
+            <td>목표 점유율 2%</td>
+        </tr>
+    </table>
+
+    <h3>서브서비스 카테고리별 시장</h3>
+
+    <table>
+        <tr>
+            <th>카테고리</th>
+            <th>평균 단가</th>
+            <th>시장 비중</th>
+            <th>데이터 출처</th>
+        </tr>
+        <tr>
+            <td>본식스냅/영상</td>
+            <td>50~150만원</td>
+            <td>40%</td>
+            <td>숨고 2024</td>
+        </tr>
+        <tr>
+            <td>축가/공연</td>
+            <td>20~50만원</td>
+            <td>20%</td>
+            <td>크몽 2024</td>
+        </tr>
+        <tr>
+            <td>사회/진행</td>
+            <td>20~40만원</td>
+            <td>15%</td>
+            <td>자체 조사</td>
+        </tr>
+        <tr>
+            <td>플라워/데코</td>
+            <td>10~30만원</td>
+            <td>15%</td>
+            <td>숨고 2024</td>
+        </tr>
+        <tr>
+            <td>기타</td>
+            <td>5~30만원</td>
+            <td>10%</td>
+            <td>-</td>
+        </tr>
+    </table>
+
+    <h3>콜드스타트 전략: 공급자 우선</h3>
+
+    <div class="highlight yellow">
+        <strong>원칙</strong>
+        양면시장에서는 공급자(프리랜서)를 먼저 확보해야 수요자(예비부부)가 유입된다. 배달의민족이 음식점을 먼저 확보한 것과 같은 전략이다.
+    </div>
+
+    <table>
+        <tr>
+            <th>단계</th>
+            <th>채널</th>
+            <th>목표</th>
+            <th>방법</th>
+        </tr>
+        <tr>
+            <td>Phase 1</td>
+            <td>CEO 네트워크</td>
+            <td>50명</td>
+            <td>웨딩 업계 5년 경력 활용, 직접 섭외</td>
+        </tr>
+        <tr>
+            <td>Phase 2</td>
+            <td>SNS 인기 작가</td>
+            <td>50명</td>
+            <td>인스타 팔로워 1만+ 타겟</td>
+        </tr>
+        <tr>
+            <td>Phase 3</td>
+            <td>커뮤니티</td>
+            <td>50명</td>
+            <td>더웨딩/맥마웨 카페 활동 작가</td>
+        </tr>
+    </table>
+
+    <h4>초기 인센티브</h4>
+    <ul>
+        <li>첫 거래 성사까지 Premium 등급 무료 (29,900원/월 상당)</li>
+        <li>포트폴리오 제작 지원 (30만원 상당)</li>
+        <li>초기 100명 "파운더스 클럽" 영구 혜택</li>
+    </ul>
+
+    <h3>3년 성장 로드맵</h3>
+
+    <table>
+        <tr>
+            <th>연도</th>
+            <th>목표</th>
+            <th>프리랜서</th>
+            <th>매칭 건수</th>
+            <th>매출</th>
+        </tr>
+        <tr>
+            <td><strong>1년차</strong></td>
+            <td>시장 진입 및 검증</td>
+            <td>300명</td>
+            <td>1,500건</td>
+            <td>2억</td>
+        </tr>
+        <tr>
+            <td><strong>2년차</strong></td>
+            <td>성장 가속화</td>
+            <td>1,000명</td>
+            <td>6,000건</td>
+            <td>7억</td>
+        </tr>
+        <tr>
+            <td><strong>3년차</strong></td>
+            <td>수익성 확보</td>
+            <td>2,500명</td>
+            <td>15,000건</td>
+            <td>15억</td>
+        </tr>
+    </table>
+
+    <div class="page-num">4</div>
+</div>
+
+<!-- 사업 모델 -->
+<div class="page" style="position: relative;">
+    <div class="section-header">
+        <div class="section-num">Section 4</div>
+        <h2 class="section-title">사업 모델 및 수익성</h2>
+    </div>
+
+    <h3>수익 구조</h3>
+
+    <table>
+        <tr>
+            <th>수익원</th>
+            <th>내용</th>
+            <th>단가</th>
+            <th>예상 비중</th>
+        </tr>
+        <tr>
+            <td><strong>구독료</strong></td>
+            <td>프리랜서 월정액 (프로필 노출, AI 매칭 우선권)</td>
+            <td>9,900~29,900원/월</td>
+            <td>60%</td>
+        </tr>
+        <tr>
+            <td><strong>크루 수수료</strong></td>
+            <td>크루(팀) 생성 시 거래액 기반</td>
+            <td>거래액의 3~5%</td>
+            <td>40%</td>
+        </tr>
+    </table>
+
+    <p style="font-size: 11px; color: #6b7280; margin-top: 8px;">* 크루: 2인 이상의 프리랜서가 팀을 구성하여 패키지 서비스를 제공하는 단위 (예: 스냅+영상+축가 팀)</p>
+
+    <h3>단위 경제 (Unit Economics)</h3>
+
+    <div class="formula">
+        <div class="equation">LTV / CAC = 5 : 1</div>
+        <div class="description">투자 적격 기준 3:1 초과 달성</div>
+    </div>
+
+    <table>
+        <tr>
+            <th>지표</th>
+            <th>수치</th>
+            <th>산출 근거</th>
+        </tr>
+        <tr>
+            <td>평균 크루 거래액</td>
+            <td><strong>150만원</strong></td>
+            <td>스냅+영상+축가 패키지 기준</td>
+        </tr>
+        <tr>
+            <td>크루 건당 수익</td>
+            <td><strong>6만원</strong></td>
+            <td>150만원 × 4% (평균)</td>
+        </tr>
+        <tr>
+            <td>구독 ARPU</td>
+            <td><strong>15,000원/월</strong></td>
+            <td>Basic/Premium 가중평균</td>
+        </tr>
+        <tr>
+            <td>CAC (프리랜서)</td>
+            <td><strong>30,000원</strong></td>
+            <td>콘텐츠 마케팅 중심</td>
+        </tr>
+        <tr>
+            <td>LTV (프리랜서)</td>
+            <td><strong>150,000원</strong></td>
+            <td>평균 10개월 구독 유지</td>
+        </tr>
+    </table>
+
+    <h3>손익분기점(BEP) 분석</h3>
+
+    <div class="compare-grid">
+        <div>
+            <h4>월간 고정비</h4>
+            <table>
+                <tr><td>인건비</td><td style="text-align:right;">700만원</td></tr>
+                <tr><td>서버/인프라</td><td style="text-align:right;">50만원</td></tr>
+                <tr><td>마케팅</td><td style="text-align:right;">200만원</td></tr>
+                <tr><td>기타 운영비</td><td style="text-align:right;">100만원</td></tr>
+                <tr style="background: var(--gray-200);"><td><strong>합계</strong></td><td style="text-align:right;"><strong>1,050만원</strong></td></tr>
+            </table>
+        </div>
+        <div>
+            <h4>BEP 산출</h4>
+            <div class="formula" style="text-align: left; padding: 15px;">
+                <p>월 고정비: 1,050만원</p>
+                <p>구독 수익 (400명 × 15,000원): 600만원</p>
+                <p>필요 거래 수수료: 450만원</p>
+                <p>필요 월 매칭 건수: <strong>1,000건</strong></p>
+                <p style="margin-top: 10px; color: var(--accent); font-weight: 700;">BEP 달성: 12개월차</p>
+            </div>
+        </div>
+    </div>
+
+    <h3>3개년 재무계획</h3>
+
+    <table>
+        <tr>
+            <th>항목</th>
+            <th>1년차</th>
+            <th>2년차</th>
+            <th>3년차</th>
+        </tr>
+        <tr>
+            <td>매출</td>
+            <td>2억</td>
+            <td>7억</td>
+            <td>15억</td>
+        </tr>
+        <tr>
+            <td>인건비</td>
+            <td>1억</td>
+            <td>2억</td>
+            <td>4억</td>
+        </tr>
+        <tr>
+            <td>마케팅비</td>
+            <td>0.5억</td>
+            <td>1.5억</td>
+            <td>3억</td>
+        </tr>
+        <tr>
+            <td>운영비</td>
+            <td>0.3억</td>
+            <td>0.8억</td>
+            <td>1.5억</td>
+        </tr>
+        <tr style="background: var(--gray-200);">
+            <td><strong>영업이익</strong></td>
+            <td style="color: var(--danger);">-0.8억</td>
+            <td style="color: var(--success);">+2.7억</td>
+            <td style="color: var(--success);">+6.5억</td>
+        </tr>
+    </table>
+
+    <div class="page-num">5</div>
+</div>
+
+<!-- 팀 구성 -->
+<div class="page" style="position: relative;">
+    <div class="section-header">
+        <div class="section-num">Section 5</div>
+        <h2 class="section-title">사업 추진체계 및 팀 역량</h2>
+    </div>
+
+    <h3>핵심 팀 구성</h3>
+
+    <div class="team-grid">
+        <div class="team-card">
+            <div class="avatar">C</div>
+            <div class="role">CEO</div>
+            <div class="name">대표</div>
+            <div class="desc">
+                웨딩 업계 5년 경력<br>
+                프리랜서 네트워크<br>
+                전담도 100%
+            </div>
+        </div>
+        <div class="team-card">
+            <div class="avatar">T</div>
+            <div class="role">CTO</div>
+            <div class="name">기술총괄</div>
+            <div class="desc">
+                풀스택 개발 경력<br>
+                AI/ML 프로젝트<br>
+                전담도 100%
+            </div>
+        </div>
+        <div class="team-card">
+            <div class="avatar">D</div>
+            <div class="role">CDO</div>
+            <div class="name">디자인</div>
+            <div class="desc">
+                UI/UX 디자인 경력<br>
+                브랜딩 프로젝트<br>
+                전담도 100%
+            </div>
+        </div>
+        <div class="team-card">
+            <div class="avatar">M</div>
+            <div class="role">CMO</div>
+            <div class="name">마케팅</div>
+            <div class="desc">
+                퍼포먼스 마케팅<br>
+                SNS 커뮤니티 운영<br>
+                전담도 100%
+            </div>
+        </div>
+    </div>
+
+    <h3>역량 증빙</h3>
+
+    <table>
+        <tr>
+            <th>역량</th>
+            <th>증빙 내용</th>
+            <th>담당</th>
+        </tr>
+        <tr>
+            <td><strong>도메인 전문성</strong></td>
+            <td>웨딩 업계 5년 근무, 프리랜서 30명 인터뷰 완료</td>
+            <td>CEO</td>
+        </tr>
+        <tr>
+            <td><strong>기술 역량</strong></td>
+            <td>풀스택 개발, AI/ML 추천 시스템 구현 경험</td>
+            <td>CTO</td>
+        </tr>
+        <tr>
+            <td><strong>디자인 역량</strong></td>
+            <td>UI/UX 디자인, 앱 서비스 브랜딩 프로젝트 경험</td>
+            <td>CDO</td>
+        </tr>
+        <tr>
+            <td><strong>마케팅 역량</strong></td>
+            <td>그로스 해킹, SNS 팔로워 1만+ 운영 이력</td>
+            <td>CMO</td>
+        </tr>
+    </table>
+
+    <div class="highlight green">
+        <strong>Why Us?</strong>
+        <ul style="margin: 10px 0 0 0; padding-left: 18px;">
+            <li><strong>도메인 + 기술 + 디자인 + 마케팅</strong> 4박자가 갖춰진 팀</li>
+            <li>이미 <strong>35명 인터뷰, 150명 설문</strong> 완료 (실행력 증명)</li>
+            <li>전원 <strong>100% 전담</strong> (풀타임 몰입)</li>
+        </ul>
+    </div>
+
+    <h3>현재까지 성과 vs 향후 계획</h3>
+
+    <table>
+        <tr>
+            <th>항목</th>
+            <th>현재까지 성과</th>
+            <th>예창패 기간 계획</th>
+        </tr>
+        <tr>
+            <td>고객 인터뷰</td>
+            <td>35명 완료</td>
+            <td>+20명 추가</td>
+        </tr>
+        <tr>
+            <td>설문조사</td>
+            <td>150명 완료</td>
+            <td>+100명 추가</td>
+        </tr>
+        <tr>
+            <td>프리랜서 네트워크</td>
+            <td>30명 확보</td>
+            <td>150명 확보</td>
+        </tr>
+        <tr>
+            <td>MVP</td>
+            <td>기획 완료</td>
+            <td>개발 및 런칭</td>
+        </tr>
+        <tr>
+            <td>매칭 건수</td>
+            <td>0건</td>
+            <td>100건+</td>
+        </tr>
+    </table>
+
+    <h3>외부 협력 계획</h3>
+
+    <table>
+        <tr>
+            <th>영역</th>
+            <th>협력 방식</th>
+            <th>비용</th>
+        </tr>
+        <tr>
+            <td>법률/세무</td>
+            <td>외부 자문 계약</td>
+            <td>월 30만원</td>
+        </tr>
+        <tr>
+            <td>대규모 개발</td>
+            <td>필요시 외주 용역</td>
+            <td>건당 협의</td>
+        </tr>
+        <tr>
+            <td>디자인</td>
+            <td>프리랜서 협업</td>
+            <td>건당 협의</td>
+        </tr>
+    </table>
+
+    <div class="page-num">6</div>
+</div>
+
+<!-- 자금 계획 -->
+<div class="page" style="position: relative;">
+    <div class="section-header">
+        <div class="section-num">Section 6</div>
+        <h2 class="section-title">추진 일정 및 자금 활용 계획</h2>
+    </div>
+
+    <h3>예창패 협약기간 마일스톤 (8개월)</h3>
+
+    <div class="timeline">
+        <div class="timeline-item">
+            <div class="period">1~2월 | 알파 개발</div>
+            <div class="content">MVP 개발, 프리랜서 50명 확보, AI 매칭 프로토타입</div>
+        </div>
+        <div class="timeline-item">
+            <div class="period">3~4월 | 베타 테스트</div>
+            <div class="content">베타 오픈, 매칭 50건, 피드백 수집 및 개선</div>
+        </div>
+        <div class="timeline-item">
+            <div class="period">5~6월 | 개선 및 확장</div>
+            <div class="content">AI 매칭 고도화, 프리랜서 100명, 마케팅 시작</div>
+        </div>
+        <div class="timeline-item">
+            <div class="period">7~8월 | 정식 런칭</div>
+            <div class="content">정식 서비스 오픈, 매칭 100건, 월 매출 500만원</div>
+        </div>
+    </div>
+
+    <h3>자금 활용 계획</h3>
+
+    <div class="highlight blue">
+        <strong>정부 지원금: 1억원</strong>
+    </div>
+
+    <div class="budget-bar">
+        <div style="width: 50%; background: #1f2937;">인건비 50%</div>
+        <div style="width: 25%; background: #374151;">개발비 25%</div>
+        <div style="width: 15%; background: #6b7280;">마케팅 15%</div>
+        <div style="width: 10%; background: #9ca3af;">운영 10%</div>
+    </div>
+
+    <table>
+        <tr>
+            <th>항목</th>
+            <th>금액</th>
+            <th>비중</th>
+            <th>상세 용도</th>
+        </tr>
+        <tr>
+            <td><strong>인건비</strong></td>
+            <td>5,000만원</td>
+            <td>50%</td>
+            <td>개발자 인건비 (8개월), 마케터 인건비 (6개월)</td>
+        </tr>
+        <tr>
+            <td><strong>개발비</strong></td>
+            <td>2,500만원</td>
+            <td>25%</td>
+            <td>서버 인프라 (AWS), AI 모델 개발, 외주 개발</td>
+        </tr>
+        <tr>
+            <td><strong>마케팅비</strong></td>
+            <td>1,500만원</td>
+            <td>15%</td>
+            <td>콘텐츠 제작, SNS 광고, 웨딩박람회 참가</td>
+        </tr>
+        <tr>
+            <td><strong>운영비</strong></td>
+            <td>1,000만원</td>
+            <td>10%</td>
+            <td>사무실, 법률/세무 자문, 기타 운영</td>
+        </tr>
+        <tr style="background: var(--gray-200);">
+            <td><strong>합계</strong></td>
+            <td><strong>1억원</strong></td>
+            <td><strong>100%</strong></td>
+            <td></td>
+        </tr>
+    </table>
+
+    <h3>민간부담</h3>
+
+    <table>
+        <tr>
+            <th>항목</th>
+            <th>금액</th>
+            <th>내용</th>
+        </tr>
+        <tr>
+            <td>자기자본</td>
+            <td>2,000만원</td>
+            <td>초기 운영비, 법인 설립 비용</td>
+        </tr>
+        <tr>
+            <td>팀 기여</td>
+            <td>-</td>
+            <td>초기 3개월 무급 기간 감수</td>
+        </tr>
+    </table>
+
+    <h3>예상 성과 (예창패 종료 시점)</h3>
+
+    <div class="stat-grid">
+        <div class="stat-card">
+            <div class="number">150</div>
+            <div class="label">프리랜서</div>
+        </div>
+        <div class="stat-card">
+            <div class="number">100</div>
+            <div class="label">매칭 건수</div>
+        </div>
+        <div class="stat-card">
+            <div class="number">500만</div>
+            <div class="label">월 매출</div>
+        </div>
+        <div class="stat-card">
+            <div class="number">4.5</div>
+            <div class="label">만족도</div>
+        </div>
+    </div>
+
+    <div class="page-num">7</div>
+</div>
+
+<!-- 파급효과 -->
+<div class="page" style="position: relative;">
+    <div class="section-header">
+        <div class="section-num">Section 7</div>
+        <h2 class="section-title">예상 성과 및 파급효과</h2>
+    </div>
+
+    <h3>단기 성과 (1년차)</h3>
+
+    <table>
+        <tr>
+            <th>지표</th>
+            <th>목표</th>
+            <th>측정 방법</th>
+        </tr>
+        <tr>
+            <td>프리랜서 확보</td>
+            <td>300명</td>
+            <td>가입자 수</td>
+        </tr>
+        <tr>
+            <td>연간 매칭</td>
+            <td>1,500건</td>
+            <td>거래 완료 건수</td>
+        </tr>
+        <tr>
+            <td>연 매출</td>
+            <td>2억원</td>
+            <td>매출 집계</td>
+        </tr>
+        <tr>
+            <td>고객 만족도</td>
+            <td>4.5/5.0</td>
+            <td>리뷰 평점</td>
+        </tr>
+        <tr>
+            <td>재구매율</td>
+            <td>30%+</td>
+            <td>2회 이상 이용 비율</td>
+        </tr>
+    </table>
+
+    <h3>장기 확장 로드맵</h3>
+
+    <table>
+        <tr>
+            <th>단계</th>
+            <th>시기</th>
+            <th>확장 시장</th>
+            <th>누적 TAM</th>
+        </tr>
+        <tr>
+            <td>Phase 1</td>
+            <td>2026~2027</td>
+            <td>웨딩 서브서비스</td>
+            <td>2조원</td>
+        </tr>
+        <tr>
+            <td>Phase 2</td>
+            <td>2028</td>
+            <td>경조사/이벤트 (돌잔치, 환갑, 프로포즈)</td>
+            <td>5조원</td>
+        </tr>
+        <tr>
+            <td>Phase 3</td>
+            <td>2029~</td>
+            <td>기업 이벤트 (컨퍼런스, 세미나, 시상식)</td>
+            <td>15조원</td>
+        </tr>
+    </table>
+
+    <h3>사회적/경제적 파급효과</h3>
+
+    <div class="compare-grid">
+        <div class="highlight green">
+            <strong>프리랜서 경제</strong>
+            <ul style="margin-top: 10px; padding-left: 18px; font-size: 12px;">
+                <li>수수료 절감으로 실수령액 증가</li>
+                <li>안정적인 고객 확보 채널 제공</li>
+                <li>포트폴리오 관리 툴 지원</li>
+                <li>신규 프리랜서 진입 장벽 완화</li>
+            </ul>
+        </div>
+        <div class="highlight blue">
+            <strong>결혼 문화</strong>
+            <ul style="margin-top: 10px; padding-left: 18px; font-size: 12px;">
+                <li>결혼 비용 부담 경감</li>
+                <li>피해 사례 감소 (에스크로)</li>
+                <li>맞춤형 서비스 접근성 향상</li>
+                <li>시장 투명화 기여</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="highlight yellow">
+        <strong>국가적 과제 기여</strong>
+        저출산 문제 해결을 위해 결혼 비용 부담 완화가 필요하다. 특별시는 웨딩 서브서비스 비용을 평균 10~20% 절감하여 예비부부의 경제적 부담을 줄이고, 결혼에 대한 긍정적 인식 확산에 기여한다.
+    </div>
+
+    <h3>Exit 전략</h3>
+
+    <table>
+        <tr>
+            <th>옵션</th>
+            <th>시기</th>
+            <th>예상 가치</th>
+            <th>잠재 인수자</th>
+        </tr>
+        <tr>
+            <td>M&A</td>
+            <td>3~5년</td>
+            <td>100~300억원</td>
+            <td>네이버, 카카오, 야놀자</td>
+        </tr>
+        <tr>
+            <td>IPO</td>
+            <td>7~10년</td>
+            <td>500억원+</td>
+            <td>-</td>
+        </tr>
+    </table>
+
+    <div class="page-num">8</div>
+</div>
+
+</body>
+</html>

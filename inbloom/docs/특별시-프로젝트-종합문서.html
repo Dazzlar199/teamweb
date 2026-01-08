@@ -1,0 +1,2388 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>특별시 (The Special Time) - 프로젝트 종합 문서</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap");
+
+      :root {
+        --primary: #18181b;
+        --primary-light: #3f3f46;
+        --primary-dark: #09090b;
+        --accent: #52525b;
+        --accent-light: #71717a;
+        --bg-light: #fafafa;
+        --bg-dark: #18181b;
+        --text-dark: #18181b;
+        --text-gray: #52525b;
+        --text-light: #a1a1aa;
+        --border: #e4e4e7;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+        --info: #3b82f6;
+        --gradient-primary: linear-gradient(135deg, #18181b 0%, #3f3f46 100%);
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        font-family: "Inter", "Noto Sans KR", -apple-system, BlinkMacSystemFont,
+          sans-serif;
+        background: #f4f4f5;
+        color: var(--text-dark);
+        line-height: 1.7;
+        letter-spacing: -0.02em;
+      }
+
+      /* 페이지 레이아웃 */
+      .page {
+        width: 210mm;
+        min-height: 297mm;
+        padding: 20mm 25mm 25mm 25mm;
+        margin: 20px auto;
+        background: white;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        page-break-after: always;
+        border-radius: 4px;
+        position: relative;
+      }
+
+      @media print {
+        body {
+          background: white;
+        }
+        .page {
+          margin: 0;
+          box-shadow: none;
+        }
+      }
+
+      /* 표지 */
+      .cover {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        min-height: 257mm;
+      }
+
+      .cover-badge {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--text-gray);
+        letter-spacing: 2px;
+        margin-bottom: 24px;
+        text-transform: uppercase;
+      }
+
+      .cover-title {
+        font-size: 48px;
+        font-weight: 800;
+        color: var(--text-dark);
+        margin-bottom: 16px;
+        letter-spacing: -1px;
+      }
+
+      .cover-subtitle {
+        font-size: 20px;
+        color: var(--text-gray);
+        margin-bottom: 60px;
+        font-weight: 400;
+      }
+
+      .cover-info {
+        margin-top: 60px;
+        padding-top: 40px;
+        border-top: 1px solid var(--border);
+        color: var(--text-gray);
+        font-size: 14px;
+      }
+
+      /* 섹션 헤더 */
+      .section-header {
+        margin-bottom: 32px;
+        padding-bottom: 16px;
+        border-bottom: 2px solid var(--primary);
+      }
+
+      .section-badge {
+        display: inline-block;
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--primary);
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        margin-bottom: 8px;
+      }
+
+      .section-title {
+        font-size: 32px;
+        font-weight: 800;
+        color: var(--text-dark);
+        margin-bottom: 8px;
+        letter-spacing: -0.5px;
+      }
+
+      .section-desc {
+        font-size: 16px;
+        color: var(--text-gray);
+        font-weight: 400;
+      }
+
+      /* 타이포그래피 */
+      h2 {
+        font-size: 28px;
+        font-weight: 700;
+        color: var(--text-dark);
+        margin: 32px 0 16px 0;
+        letter-spacing: -0.3px;
+      }
+
+      h3 {
+        font-size: 22px;
+        font-weight: 600;
+        color: var(--text-dark);
+        margin: 24px 0 12px 0;
+      }
+
+      h4 {
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--text-dark);
+        margin: 20px 0 10px 0;
+      }
+
+      p {
+        margin-bottom: 12px;
+        font-size: 15px;
+        line-height: 1.8;
+      }
+
+      ul,
+      ol {
+        margin: 12px 0 12px 24px;
+        padding-left: 8px;
+      }
+
+      li {
+        margin-bottom: 8px;
+        font-size: 15px;
+        line-height: 1.8;
+      }
+
+      /* 테이블 */
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+        font-size: 14px;
+      }
+
+      table thead {
+        background: var(--bg-light);
+      }
+
+      table th {
+        padding: 12px 16px;
+        text-align: left;
+        font-weight: 600;
+        color: var(--text-dark);
+        border-bottom: 2px solid var(--border);
+        font-size: 13px;
+      }
+
+      table td {
+        padding: 12px 16px;
+        border-bottom: 1px solid var(--border);
+        color: var(--text-gray);
+      }
+
+      table tbody tr:hover {
+        background: var(--bg-light);
+      }
+
+      /* 코드 블록 */
+      pre {
+        background: var(--bg-light);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 16px;
+        margin: 16px 0;
+        overflow-x: auto;
+        font-size: 13px;
+        font-family: "Monaco", "Menlo", "Courier New", monospace;
+        line-height: 1.6;
+      }
+
+      code {
+        background: var(--bg-light);
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-size: 13px;
+        font-family: "Monaco", "Menlo", "Courier New", monospace;
+        color: var(--danger);
+      }
+
+      pre code {
+        background: transparent;
+        padding: 0;
+        color: var(--text-dark);
+      }
+
+      /* Alert 박스 */
+      .alert {
+        padding: 16px 20px;
+        border-radius: 8px;
+        margin: 20px 0;
+        border-left: 4px solid;
+      }
+
+      .alert-info {
+        background: #eff6ff;
+        border-color: var(--info);
+        color: #1e40af;
+      }
+
+      .alert-success {
+        background: #ecfdf5;
+        border-color: var(--success);
+        color: #065f46;
+      }
+
+      .alert-warning {
+        background: #fffbeb;
+        border-color: var(--warning);
+        color: #92400e;
+      }
+
+      .alert-title {
+        font-weight: 700;
+        margin-bottom: 8px;
+        font-size: 15px;
+      }
+
+      /* 하이라이트 박스 */
+      .highlight-box {
+        background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 24px;
+        margin: 24px 0;
+      }
+
+      .highlight-title {
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--text-dark);
+        margin-bottom: 12px;
+      }
+
+      /* 페이지 번호 */
+      .page-number {
+        position: absolute;
+        bottom: 20px;
+        right: 25px;
+        font-size: 12px;
+        color: var(--text-light);
+      }
+
+      /* 두 컬럼 레이아웃 */
+      .two-columns {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 24px;
+        margin: 20px 0;
+      }
+
+      @media (max-width: 768px) {
+        .two-columns {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      /* 통계 박스 */
+      .stat-box {
+        background: white;
+        border: 2px solid var(--border);
+        border-radius: 8px;
+        padding: 20px;
+        text-align: center;
+      }
+
+      .stat-value {
+        font-size: 32px;
+        font-weight: 800;
+        color: var(--primary);
+        margin-bottom: 4px;
+      }
+
+      .stat-label {
+        font-size: 14px;
+        color: var(--text-gray);
+        font-weight: 500;
+      }
+
+      /* 구분선 */
+      .divider {
+        height: 1px;
+        background: var(--border);
+        margin: 32px 0;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- 표지 -->
+    <div class="page">
+      <div class="cover">
+        <div class="cover-badge">Project Overview</div>
+        <h1 class="cover-title">특별시</h1>
+        <p class="cover-subtitle">The Special Time</p>
+        <div
+          style="
+            margin-top: 40px;
+            font-size: 16px;
+            color: var(--text-gray);
+            line-height: 2;
+          "
+        >
+          <p><strong>AI 기반 웨딩 프리랜서 매칭 플랫폼</strong></p>
+          <p>+</p>
+          <p><strong>웨딩 상품 마켓플레이스</strong></p>
+        </div>
+        <div class="cover-info">
+          <p><strong>버전:</strong> 1.0 (종합 문서)</p>
+          <p><strong>작성일:</strong> 2026년 1월 2일</p>
+          <p><strong>팀:</strong> 특별시 개발팀 (4명)</p>
+        </div>
+      </div>
+      <div class="page-number">1</div>
+    </div>
+
+    <!-- 1. 프로젝트 개요 -->
+    <div class="page">
+      <div class="section-header">
+        <div class="section-badge">Chapter 01</div>
+        <h2 class="section-title">프로젝트 개요</h2>
+        <p class="section-desc">
+          특별시 (The Special Time) 서비스 정의 및 비전
+        </p>
+      </div>
+
+      <h3>1.1. 서비스 정의</h3>
+      <p>
+        <strong>특별시 (The Special Time)</strong>는 AI 기반 웨딩 서브서비스
+        프리랜서 매칭 플랫폼으로, 예비부부와 웨딩 전문 프리랜서를 연결합니다.
+      </p>
+
+      <div class="highlight-box">
+        <div class="highlight-title">One-Liner</div>
+        <p style="font-size: 18px; font-weight: 600; color: var(--primary)">
+          "인생의 특별한 시간을 더 특별하게 - AI 기반 웨딩 프리랜서 매칭 플랫폼"
+        </p>
+      </div>
+
+      <h3>1.2. 브랜드 의미</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>요소</th>
+            <th>의미</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>특별시 (ㅌㅂㅅ)</strong></td>
+            <td>
+              인생에서 가장 특별한 시간(결혼식)을 더 특별하게 만드는 서비스
+            </td>
+          </tr>
+          <tr>
+            <td><strong>The Special Time</strong></td>
+            <td>영문명으로 글로벌 확장 가능, 모든 특별한 순간을 위한 플랫폼</td>
+          </tr>
+          <tr>
+            <td><strong>확장 비전</strong></td>
+            <td>웨딩 → 경조사 → 기업행사 → All Events (TAM 15조원)</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>1.3. 핵심 가치</h3>
+      <div class="two-columns">
+        <div>
+          <h4>예비부부 (수요자)</h4>
+          <ul>
+            <li>AI 매칭으로 탐색 시간 99% 단축 (3주 → 3분)</li>
+            <li>투명한 가격 정보</li>
+            <li>에스크로 안전 결제</li>
+            <li>검증된 프리랜서</li>
+          </ul>
+        </div>
+        <div>
+          <h4>프리랜서 (공급자)</h4>
+          <ul>
+            <li>고정 수수료 (건당 최대 5,000원)</li>
+            <li>숨고/크몽 대비 70% 비용 절감</li>
+            <li>웨딩 특화 플랫폼</li>
+            <li>AI 추천 노출</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3>1.4. 시장 규모</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>시장</th>
+            <th>규모</th>
+            <th>설명</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>웨딩 서브서비스</strong></td>
+            <td>약 2조원</td>
+            <td>연간 19만 쌍 × 평균 100만원</td>
+          </tr>
+          <tr>
+            <td><strong>웨딩 전체 시장</strong></td>
+            <td>약 6조원</td>
+            <td>스드메, 예식장 포함</td>
+          </tr>
+          <tr>
+            <td><strong>확장 시장 (경조사/이벤트)</strong></td>
+            <td>약 15조원</td>
+            <td>Phase 2~4 확장 목표</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="page-number">2</div>
+    </div>
+
+    <!-- 2. 핵심 기능 -->
+    <div class="page">
+      <div class="section-header">
+        <div class="section-badge">Chapter 02</div>
+        <h2 class="section-title">핵심 기능</h2>
+        <p class="section-desc">프리랜서 매칭 + 웨딩 상품 마켓플레이스</p>
+      </div>
+
+      <h3>2.1. 프리랜서 매칭 플랫폼</h3>
+
+      <h4>주요 기능</h4>
+      <table>
+        <thead>
+          <tr>
+            <th>기능</th>
+            <th>설명</th>
+            <th>플랫폼</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>AI 스타일 매칭</strong></td>
+            <td>포트폴리오 이미지 분석 → 스타일 유사도 기반 추천</td>
+            <td>Flutter 앱 + FastAPI</td>
+          </tr>
+          <tr>
+            <td><strong>프리랜서 검색</strong></td>
+            <td>카테고리, 지역, 가격 필터링</td>
+            <td>Flutter 앱</td>
+          </tr>
+          <tr>
+            <td><strong>포트폴리오 갤러리</strong></td>
+            <td>작품 이미지, 스타일 태그, 가격 정보</td>
+            <td>Flutter 앱 + Next.js 웹 (SEO)</td>
+          </tr>
+          <tr>
+            <td><strong>실시간 채팅</strong></td>
+            <td>예비부부 ↔ 프리랜서 견적 협상</td>
+            <td>Flutter 앱 (Supabase Realtime)</td>
+          </tr>
+          <tr>
+            <td><strong>리뷰 시스템</strong></td>
+            <td>별점, 텍스트 리뷰, 사진 리뷰</td>
+            <td>Flutter 앱 + Next.js 웹</td>
+          </tr>
+          <tr>
+            <td><strong>에스크로 결제</strong></td>
+            <td>서비스 완료 후 정산 (안전 결제)</td>
+            <td>Flutter 앱 (토스페이먼츠)</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h4>웨딩 크루 시스템 (차별화 기능)</h4>
+      <div class="alert alert-info">
+        <div class="alert-title">웨딩 크루</div>
+        <p>
+          스냅+영상+축가+사회자 등을 팀으로 묶어 한 번에 매칭하는 패키지 서비스
+        </p>
+        <ul style="margin-top: 8px">
+          <li>예비부부: 개별 섭외 시간 80% 절감, 통일된 스타일, 패키지 할인</li>
+          <li>프리랜서: 교차 판매 기회, 협업 네트워킹</li>
+          <li>특별시: 객단가 3배 증가</li>
+        </ul>
+      </div>
+
+      <h3>2.2. 웨딩 상품 마켓플레이스 (통합 예정)</h3>
+
+      <h4>상품 카테고리</h4>
+      <table>
+        <thead>
+          <tr>
+            <th>카테고리</th>
+            <th>시장 규모</th>
+            <th>우선순위</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>청첩장</strong></td>
+            <td>높음</td>
+            <td>Phase 1 (최우선)</td>
+          </tr>
+          <tr>
+            <td><strong>답례품</strong></td>
+            <td>높음</td>
+            <td>Phase 2</td>
+          </tr>
+          <tr>
+            <td><strong>감사카드/초대장</strong></td>
+            <td>중간</td>
+            <td>Phase 2</td>
+          </tr>
+          <tr>
+            <td><strong>웨딩 소품</strong></td>
+            <td>중간</td>
+            <td>Phase 2</td>
+          </tr>
+          <tr>
+            <td><strong>웨딩 굿즈</strong></td>
+            <td>낮음</td>
+            <td>Phase 3</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h4>주요 기능</h4>
+      <ul>
+        <li>상품 등록/관리 (판매자 대시보드)</li>
+        <li>카테고리별 탐색 및 검색</li>
+        <li>장바구니 및 주문 관리</li>
+        <li>맞춤 제작 옵션 (색상, 사이즈 등)</li>
+        <li>상품 리뷰 및 평점</li>
+        <li>결제 시스템 통합 (토스페이먼츠)</li>
+      </ul>
+
+      <div class="alert alert-success">
+        <div class="alert-title">통합 전략</div>
+        <p>
+          마켓플레이스는 <strong>완전히 독립된 모듈</strong>로 개발되어 기존
+          기능에 성능 영향을 주지 않습니다.
+        </p>
+        <ul style="margin-top: 8px">
+          <li>기술 구현 난이도: 보통 (6/10)</li>
+          <li>앱 속도 영향: 거의 없음 (모듈 분리)</li>
+          <li>개발 기간: 2~3개월 (MVP 기준)</li>
+        </ul>
+      </div>
+
+      <div class="page-number">3</div>
+    </div>
+
+    <!-- 3. 기술 스택 -->
+    <div class="page">
+      <div class="section-header">
+        <div class="section-badge">Chapter 03</div>
+        <h2 class="section-title">기술 스택 및 아키텍처</h2>
+        <p class="section-desc">각 플랫폼의 역할과 기술 선택 이유</p>
+      </div>
+
+      <h3>3.1. 전체 아키텍처</h3>
+      <pre><code>Frontend:
+├── Flutter 3.x (iOS + Android 앱)
+│   ├── Riverpod (상태관리)
+│   ├── GoRouter (라우팅)
+│   └── Cached Network Image (이미지 캐싱)
+│
+├── Next.js 16 (웹)
+│   ├── SEO 최적화
+│   └── Tailwind CSS
+│
+Backend:
+├── Supabase (70%)
+│   ├── PostgreSQL (데이터베이스)
+│   ├── Auth (JWT 인증)
+│   ├── Storage (이미지/파일)
+│   └── Realtime (채팅)
+│
+└── FastAPI (30%)
+    ├── AI 처리 (이미지 분석, 매칭 알고리즘)
+    ├── 결제 웹훅 처리
+    └── 복잡한 비즈니스 로직
+
+External Services:
+├── OpenAI GPT-4o-mini (AI 상담, 키워드 추출)
+├── Hugging Face CLIP (이미지 임베딩 - Phase 2)
+├── 토스페이먼츠 (결제)
+└── Vercel (Next.js 배포)</code></pre>
+
+      <h3>3.2. 플랫폼별 역할</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>플랫폼</th>
+            <th>역할</th>
+            <th>주요 기능</th>
+            <th>배포</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Flutter 앱</strong></td>
+            <td>핵심 사용자 경험</td>
+            <td>매칭, 채팅, 결제, 푸시 알림</td>
+            <td>App Store, Play Store</td>
+          </tr>
+          <tr>
+            <td><strong>Next.js 웹</strong></td>
+            <td>SEO 최적화</td>
+            <td>랜딩 페이지, 프리랜서 프로필 (공개), 블로그</td>
+            <td>Vercel</td>
+          </tr>
+          <tr>
+            <td><strong>FastAPI</strong></td>
+            <td>AI 백엔드</td>
+            <td>이미지 분석, 매칭 알고리즘, 결제 웹훅</td>
+            <td>Railway / Render</td>
+          </tr>
+          <tr>
+            <td><strong>Supabase</strong></td>
+            <td>공통 백엔드</td>
+            <td>DB, Auth, Storage, Realtime</td>
+            <td>Supabase Cloud</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>3.3. 데이터베이스 설계</h3>
+      <h4>핵심 테이블</h4>
+      <ul>
+        <li><code>users</code> - 예비부부 정보</li>
+        <li><code>providers</code> - 프리랜서 정보</li>
+        <li><code>portfolios</code> - 포트폴리오 (이미지, 스타일 태그)</li>
+        <li><code>matchings</code> - 매칭/거래 정보</li>
+        <li><code>messages</code> - 채팅 메시지</li>
+        <li><code>reviews</code> - 리뷰</li>
+        <li><code>products</code> - 마켓플레이스 상품 (신규)</li>
+        <li><code>orders</code> - 마켓플레이스 주문 (신규)</li>
+      </ul>
+
+      <h3>3.4. 기술 선택 이유</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>기술</th>
+            <th>선택 이유</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Flutter</strong></td>
+            <td>단일 코드로 iOS/Android 동시 개발, 개발비 70% 절감</td>
+          </tr>
+          <tr>
+            <td><strong>Next.js</strong></td>
+            <td>
+              SEO 최적화 (프리랜서 프로필 검색 노출), Flutter Web 대비 우수
+            </td>
+          </tr>
+          <tr>
+            <td><strong>Supabase</strong></td>
+            <td>
+              PostgreSQL + pgvector (AI 매칭 필수), 무료 티어 넉넉, 빠른 개발
+            </td>
+          </tr>
+          <tr>
+            <td><strong>FastAPI</strong></td>
+            <td>Python 기반 AI 처리, 무료 (MIT 라이선스), 빠른 성능</td>
+          </tr>
+          <tr>
+            <td><strong>토스페이먼츠</strong></td>
+            <td>에스크로 지원, 한국 시장 점유율 1위, API 간편</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="page-number">4</div>
+    </div>
+
+    <!-- 4. 비즈니스 모델 -->
+    <div class="page">
+      <div class="section-header">
+        <div class="section-badge">Chapter 04</div>
+        <h2 class="section-title">비즈니스 모델</h2>
+        <p class="section-desc">수익 구조 및 수익성 분석</p>
+      </div>
+
+      <h3>4.1. 수익 구조</h3>
+
+      <h4>수익원 4가지</h4>
+      <table>
+        <thead>
+          <tr>
+            <th>수익원</th>
+            <th>금액/비율</th>
+            <th>설명</th>
+            <th>비중</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>매칭 수수료</strong></td>
+            <td>1,000원/건</td>
+            <td>매칭 성사 시</td>
+            <td>8%</td>
+          </tr>
+          <tr>
+            <td><strong>거래 성사 수수료</strong></td>
+            <td>5,000원/건</td>
+            <td>최종 예약 확정 시</td>
+            <td>5%</td>
+          </tr>
+          <tr>
+            <td><strong>프리랜서 구독</strong></td>
+            <td>9,900~29,900원/월</td>
+            <td>Free, Basic, Pro, Premium</td>
+            <td>32%</td>
+          </tr>
+          <tr>
+            <td><strong>협업 광고</strong></td>
+            <td>변동</td>
+            <td>배너 광고, 파트너십</td>
+            <td>16%</td>
+          </tr>
+          <tr>
+            <td><strong>마켓플레이스 수수료</strong></td>
+            <td>판매가의 10%</td>
+            <td>상품 판매 수수료 (Phase 2)</td>
+            <td>13% (추가)</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>4.2. 구독 모델 (프리랜서)</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>플랜</th>
+            <th>월 요금</th>
+            <th>주요 혜택</th>
+            <th>예상 전환율</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Free</strong></td>
+            <td>0원</td>
+            <td>기본 프로필, 제한된 노출</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td><strong>Basic</strong></td>
+            <td>9,900원</td>
+            <td>AI 추천 노출, 월 5크레딧</td>
+            <td>15%</td>
+          </tr>
+          <tr>
+            <td><strong>Pro</strong></td>
+            <td>19,900원</td>
+            <td>우선 노출, 월 15크레딧, 분석</td>
+            <td>8%</td>
+          </tr>
+          <tr>
+            <td><strong>Premium</strong></td>
+            <td>29,900원</td>
+            <td>최상위 노출, 월 30크레딧, 전담 매니저</td>
+            <td>2%</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>4.3. 수익성 분석 (직원 4명 기준)</h3>
+
+      <h4>안정화 단계 (프리랜서 800명, MAU 10,000명)</h4>
+      <div class="two-columns">
+        <div class="stat-box">
+          <div class="stat-value">1,380만원</div>
+          <div class="stat-label">월 매출</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-value">620만원</div>
+          <div class="stat-label">월 순이익</div>
+        </div>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>수익원</th>
+            <th>월 수익</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>매칭 수익 (1,500건 × 1,000원)</td>
+            <td>150만원</td>
+          </tr>
+          <tr>
+            <td>거래 성사 (262건 × 5,000원)</td>
+            <td>131만원</td>
+          </tr>
+          <tr>
+            <td>프리랜서 구독 (800명 × 25% × 29,900원)</td>
+            <td>599만원</td>
+          </tr>
+          <tr>
+            <td>협업 광고</td>
+            <td>500만원</td>
+          </tr>
+          <tr style="background: var(--bg-light); font-weight: 600">
+            <td>총 수익</td>
+            <td>1,380만원</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <table style="margin-top: 20px">
+        <thead>
+          <tr>
+            <th>비용 항목</th>
+            <th>월 비용</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>인건비 (4명)</td>
+            <td>600만원</td>
+          </tr>
+          <tr>
+            <td>서버/인프라</td>
+            <td>50만원</td>
+          </tr>
+          <tr>
+            <td>사무실/운영비</td>
+            <td>50만원</td>
+          </tr>
+          <tr>
+            <td>AI 매칭 비용</td>
+            <td>30만원</td>
+          </tr>
+          <tr>
+            <td>마케팅</td>
+            <td>200만원</td>
+          </tr>
+          <tr>
+            <td>기타</td>
+            <td>30만원</td>
+          </tr>
+          <tr style="background: var(--bg-light); font-weight: 600">
+            <td>총 비용</td>
+            <td>960만원</td>
+          </tr>
+          <tr
+            style="background: #ecfdf5; font-weight: 700; color: var(--success)"
+          >
+            <td>순이익</td>
+            <td>+620만원</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="alert alert-success">
+        <div class="alert-title">수익성 평가</div>
+        <p>
+          <strong>직원 4명 기준 연 순이익: 7,440만원 (순이익률 45%)</strong>
+        </p>
+        <ul style="margin-top: 8px">
+          <li>초창기 스타트업 기준 매우 양호한 수익률</li>
+          <li>재투자 여력 충분 (성장 투자 가능)</li>
+          <li>규모 확대 시 더 큰 이익 가능</li>
+        </ul>
+      </div>
+
+      <div class="page-number">5</div>
+    </div>
+
+    <!-- 5. 손익분기점 및 성장 시나리오 -->
+    <div class="page">
+      <div class="section-header">
+        <div class="section-badge">Chapter 05</div>
+        <h2 class="section-title">손익분기점 및 성장 시나리오</h2>
+        <p class="section-desc">단계별 목표 및 BEP 달성 전략</p>
+      </div>
+
+      <h3>5.1. 손익분기점 (BEP)</h3>
+
+      <div class="highlight-box">
+        <div class="highlight-title">BEP 달성 조건 (직원 4명 기준)</div>
+        <div class="two-columns" style="margin-top: 16px">
+          <div>
+            <p><strong>필요 수익:</strong> 월 960만원</p>
+            <p><strong>필요 프리랜서:</strong> 500명 이상</p>
+            <p><strong>필요 구독 전환율:</strong> 25% 이상</p>
+            <p><strong>필요 광고 수익:</strong> 300만원 이상</p>
+          </div>
+          <div>
+            <p><strong>예상 시점:</strong> 4~6개월차</p>
+            <p><strong>MAU 목표:</strong> 7,000명 이상</p>
+            <p><strong>월 매칭:</strong> 1,000건 이상</p>
+          </div>
+        </div>
+      </div>
+
+      <h3>5.2. 단계별 성장 시나리오</h3>
+
+      <table>
+        <thead>
+          <tr>
+            <th>단계</th>
+            <th>프리랜서</th>
+            <th>MAU</th>
+            <th>월 매칭</th>
+            <th>월 매출</th>
+            <th>월 순이익</th>
+            <th>상태</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>초기</strong><br />(1~3개월)</td>
+            <td>300명</td>
+            <td>3,000명</td>
+            <td>500건</td>
+            <td>295만원</td>
+            <td>-465만원</td>
+            <td>적자</td>
+          </tr>
+          <tr>
+            <td><strong>성장</strong><br />(4~6개월)</td>
+            <td>600명</td>
+            <td>8,000명</td>
+            <td>1,200건</td>
+            <td>870만원</td>
+            <td>+110만원</td>
+            <td>흑자 (BEP)</td>
+          </tr>
+          <tr>
+            <td><strong>안정화</strong><br />(7~12개월)</td>
+            <td>800명</td>
+            <td>10,000명</td>
+            <td>1,500건</td>
+            <td>1,380만원</td>
+            <td>+620만원</td>
+            <td>흑자 (안정)</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>5.3. 연간 수익 예측</h3>
+
+      <table>
+        <thead>
+          <tr>
+            <th>연도</th>
+            <th>프리랜서</th>
+            <th>연 매출</th>
+            <th>연 순이익</th>
+            <th>순이익률</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>1년차</strong></td>
+            <td>800명</td>
+            <td>1.656억원</td>
+            <td>7,440만원</td>
+            <td>45%</td>
+          </tr>
+          <tr>
+            <td><strong>2년차</strong></td>
+            <td>1,500명</td>
+            <td>3.5억원</td>
+            <td>1.8억원</td>
+            <td>51%</td>
+          </tr>
+          <tr>
+            <td><strong>3년차</strong></td>
+            <td>2,500명</td>
+            <td>6억원</td>
+            <td>3.2억원</td>
+            <td>53%</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>5.4. 성공 요인</h3>
+      <ul>
+        <li><strong>구독 수익 중심:</strong> 전체 수익의 60%+ (안정적 수익)</li>
+        <li><strong>고정비 최소화:</strong> 직원 4명으로 효율적 운영</li>
+        <li>
+          <strong>다각화 수익원:</strong> 매칭+거래+구독+광고+마켓플레이스
+        </li>
+        <li>
+          <strong>규모 확장 가능:</strong> 프리랜서 확대 시 수익 선형 증가
+        </li>
+      </ul>
+
+      <div class="page-number">6</div>
+    </div>
+
+    <!-- 6. 마켓플레이스 통합 -->
+    <div class="page">
+      <div class="section-header">
+        <div class="section-badge">Chapter 06</div>
+        <h2 class="section-title">웨딩 상품 마켓플레이스 통합</h2>
+        <p class="section-desc">아이디어스 스타일 상품 판매 플랫폼</p>
+      </div>
+
+      <h3>6.1. 통합 전략</h3>
+      <p>
+        웨딩 서비스 플랫폼 내에 <strong>웨딩 상품 마켓플레이스</strong>를
+        통합하여 원스톱 서비스를 제공합니다.
+      </p>
+
+      <div class="alert alert-info">
+        <div class="alert-title">통합 이유</div>
+        <ul>
+          <li><strong>수익 다각화:</strong> 연 2,400만원 추가 수익 가능</li>
+          <li><strong>사용자 편의:</strong> 플랫폼 내 원스톱 쇼핑</li>
+          <li><strong>데이터 활용:</strong> 매칭 데이터로 상품 추천</li>
+          <li><strong>브랜드 강화:</strong> 웨딩 생태계 완성</li>
+        </ul>
+      </div>
+
+      <h3>6.2. 상품 카테고리 및 시장</h3>
+
+      <table>
+        <thead>
+          <tr>
+            <th>카테고리</th>
+            <th>시장 규모</th>
+            <th>우선순위</th>
+            <th>특징</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>청첩장</strong></td>
+            <td>높음</td>
+            <td>Phase 1</td>
+            <td>맞춤 디자인, 개인화 중요</td>
+          </tr>
+          <tr>
+            <td><strong>답례품</strong></td>
+            <td>높음</td>
+            <td>Phase 2</td>
+            <td>다양한 가격대, 패키지 구성</td>
+          </tr>
+          <tr>
+            <td><strong>감사카드/초대장</strong></td>
+            <td>중간</td>
+            <td>Phase 2</td>
+            <td>디지털/물리적 혼합</td>
+          </tr>
+          <tr>
+            <td><strong>웨딩 소품</strong></td>
+            <td>중간</td>
+            <td>Phase 2</td>
+            <td>데코, 포토부스 소품</td>
+          </tr>
+          <tr>
+            <td><strong>웨딩 굿즈</strong></td>
+            <td>낮음</td>
+            <td>Phase 3</td>
+            <td>기념품, 머그컵 등</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>6.3. 기술 구현 분석</h3>
+
+      <div class="two-columns">
+        <div>
+          <h4>구현 난이도</h4>
+          <div class="stat-box">
+            <div class="stat-value">6/10</div>
+            <div class="stat-label">보통</div>
+          </div>
+          <ul style="margin-top: 12px; font-size: 14px">
+            <li>기존 인프라 90% 재사용</li>
+            <li>새로운 기술 스택 불필요</li>
+            <li>개발 기간: 2~3개월</li>
+          </ul>
+        </div>
+        <div>
+          <h4>성능 영향</h4>
+          <div class="stat-box">
+            <div class="stat-value">최소</div>
+            <div class="stat-label">거의 없음</div>
+          </div>
+          <ul style="margin-top: 12px; font-size: 14px">
+            <li>완전히 독립된 모듈</li>
+            <li>Lazy Loading 적용</li>
+            <li>앱 크기: +2.5%만 증가</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3>6.4. 수익 모델</h3>
+
+      <table>
+        <thead>
+          <tr>
+            <th>수수료 타입</th>
+            <th>수수료율</th>
+            <th>적용 대상</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>기본 수수료</strong></td>
+            <td>판매가의 10%</td>
+            <td>모든 상품</td>
+          </tr>
+          <tr>
+            <td><strong>프로 판매자</strong></td>
+            <td>판매가의 8%</td>
+            <td>구독 구매자</td>
+          </tr>
+          <tr>
+            <td><strong>프리미엄 수수료</strong></td>
+            <td>판매가의 12%</td>
+            <td>맞춤 제작 상품</td>
+          </tr>
+          <tr>
+            <td><strong>광고 상품</strong></td>
+            <td>판매가의 15%</td>
+            <td>상단 노출 상품</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>6.5. 수익 기여도 예측</h3>
+
+      <div class="highlight-box">
+        <div class="highlight-title">마켓플레이스 수익 예측 (Phase 2 기준)</div>
+        <table style="margin-top: 16px">
+          <tbody>
+            <tr>
+              <td>월 상품 판매</td>
+              <td>500건</td>
+            </tr>
+            <tr>
+              <td>평균 판매가</td>
+              <td>30,000원</td>
+            </tr>
+            <tr>
+              <td>평균 수수료율</td>
+              <td>10%</td>
+            </tr>
+            <tr style="background: var(--bg-light); font-weight: 600">
+              <td>월 마켓플레이스 수익</td>
+              <td>150만원</td>
+            </tr>
+            <tr style="background: var(--bg-light); font-weight: 600">
+              <td>연 마켓플레이스 수익</td>
+              <td>1,800만원</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>6.6. 구현 단계</h3>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Phase</th>
+            <th>기간</th>
+            <th>목표</th>
+            <th>기능</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Phase 1</strong></td>
+            <td>3개월</td>
+            <td>MVP</td>
+            <td>청첩장 카테고리, 기본 주문/결제</td>
+          </tr>
+          <tr>
+            <td><strong>Phase 2</strong></td>
+            <td>6개월</td>
+            <td>확장</td>
+            <td>답례품 추가, 맞춤 제작 옵션</td>
+          </tr>
+          <tr>
+            <td><strong>Phase 3</strong></td>
+            <td>12개월</td>
+            <td>고도화</td>
+            <td>모든 카테고리, AI 추천, 프로모션</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="page-number">7</div>
+    </div>
+
+    <!-- 7. 핵심 지표 및 목표 -->
+    <div class="page">
+      <div class="section-header">
+        <div class="section-badge">Chapter 07</div>
+        <h2 class="section-title">핵심 지표 및 목표</h2>
+        <p class="section-desc">성공을 측정하는 KPI</p>
+      </div>
+
+      <h3>7.1. 핵심 성과 지표 (KPI)</h3>
+
+      <table>
+        <thead>
+          <tr>
+            <th>지표</th>
+            <th>1년차 목표</th>
+            <th>의미</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>프리랜서 수</strong></td>
+            <td>800명</td>
+            <td>플랫폼 생태계 규모</td>
+          </tr>
+          <tr>
+            <td><strong>MAU (예비부부)</strong></td>
+            <td>10,000명</td>
+            <td>활성 사용자 수</td>
+          </tr>
+          <tr>
+            <td><strong>월 매칭 건수</strong></td>
+            <td>1,500건</td>
+            <td>플랫폼 활성도</td>
+          </tr>
+          <tr>
+            <td><strong>월 거래 성사</strong></td>
+            <td>262건</td>
+            <td>실제 수익 창출</td>
+          </tr>
+          <tr>
+            <td><strong>구독 전환율</strong></td>
+            <td>25%</td>
+            <td>프리랜서 수익화</td>
+          </tr>
+          <tr>
+            <td><strong>월 매출</strong></td>
+            <td>1,380만원</td>
+            <td>비즈니스 성장</td>
+          </tr>
+          <tr>
+            <td><strong>월 순이익</strong></td>
+            <td>620만원</td>
+            <td>수익성</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>7.2. Unit Economics</h3>
+
+      <table>
+        <thead>
+          <tr>
+            <th>지표</th>
+            <th>수치</th>
+            <th>비고</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>CAC (고객획득비용)</strong></td>
+            <td>44,000원</td>
+            <td>프리랜서당 평균</td>
+          </tr>
+          <tr>
+            <td><strong>LTV (고객생애가치)</strong></td>
+            <td>352,000원</td>
+            <td>구독 티어별 가중평균</td>
+          </tr>
+          <tr>
+            <td><strong>LTV/CAC</strong></td>
+            <td>8:1</td>
+            <td>건강한 비율 (3:1 이상)</td>
+          </tr>
+          <tr>
+            <td><strong>Payback Period</strong></td>
+            <td>3개월</td>
+            <td>CAC 회수 기간</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>7.3. 품질 지표</h3>
+
+      <table>
+        <thead>
+          <tr>
+            <th>지표</th>
+            <th>목표</th>
+            <th>측정 방법</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>평균 리뷰 점수</strong></td>
+            <td>4.5점 이상</td>
+            <td>거래 후 리뷰</td>
+          </tr>
+          <tr>
+            <td><strong>앱 크래시율</strong></td>
+            <td>&lt; 1%</td>
+            <td>Sentry 모니터링</td>
+          </tr>
+          <tr>
+            <td><strong>평균 응답 시간</strong></td>
+            <td>&lt; 500ms</td>
+            <td>서버 모니터링</td>
+          </tr>
+          <tr>
+            <td><strong>매칭 만족도</strong></td>
+            <td>70% 이상</td>
+            <td>사용자 피드백</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>7.4. 성장 목표 (3년)</h3>
+
+      <table>
+        <thead>
+          <tr>
+            <th>연도</th>
+            <th>프리랜서</th>
+            <th>MAU</th>
+            <th>연 매출</th>
+            <th>연 순이익</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>1년차</strong></td>
+            <td>800명</td>
+            <td>10,000명</td>
+            <td>1.656억원</td>
+            <td>7,440만원</td>
+          </tr>
+          <tr>
+            <td><strong>2년차</strong></td>
+            <td>1,500명</td>
+            <td>20,000명</td>
+            <td>3.5억원</td>
+            <td>1.8억원</td>
+          </tr>
+          <tr>
+            <td><strong>3년차</strong></td>
+            <td>2,500명</td>
+            <td>35,000명</td>
+            <td>6억원</td>
+            <td>3.2억원</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="page-number">8</div>
+    </div>
+
+    <!-- 8. 기술적 특징 및 장점 -->
+    <div class="page">
+      <div class="section-header">
+        <div class="section-badge">Chapter 08</div>
+        <h2 class="section-title">기술적 특징 및 장점</h2>
+        <p class="section-desc">차별화 포인트 및 경쟁 우위</p>
+      </div>
+
+      <h3>8.1. AI 매칭 시스템</h3>
+
+      <h4>작동 방식</h4>
+      <ol>
+        <li>
+          <strong>입력:</strong> 예비부부가 선호 스타일 선택 + 참고 이미지
+          업로드
+        </li>
+        <li>
+          <strong>AI 분석:</strong>
+          <ul>
+            <li>자연어 처리 (GPT-4o-mini): 스타일 키워드 추출</li>
+            <li>이미지 임베딩 (CLIP): 참고 이미지 분석</li>
+            <li>협업 필터링: 유사 고객 선호 반영</li>
+          </ul>
+        </li>
+        <li>
+          <strong>매칭:</strong> 포트폴리오 스타일 벡터 + 가격/일정 필터 + 리뷰
+          점수
+        </li>
+        <li><strong>출력:</strong> Top 5 프리랜서 + 매칭 점수</li>
+      </ol>
+
+      <h4>이미지 임베딩 (CLIP)이 필요한 시점</h4>
+      <div class="alert alert-info">
+        <div class="alert-title">Phase 1 (MVP) vs Phase 2 (고도화)</div>
+        <table style="margin-top: 12px">
+          <thead>
+            <tr>
+              <th>단계</th>
+              <th>매칭 방식</th>
+              <th>이미지 임베딩 필요 여부</th>
+              <th>이유</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Phase 1</strong><br />(MVP, 1~3개월)</td>
+              <td>키워드 + 태그 기반 검색</td>
+              <td>불필요</td>
+              <td>
+                프리랜서가 직접 태그 입력<br />(예: "자연광", "웜톤", "미니멀")
+              </td>
+            </tr>
+            <tr>
+              <td><strong>Phase 2</strong><br />(고도화, 4~6개월)</td>
+              <td>이미지 임베딩 + AI 매칭</td>
+              <td><strong>필수</strong></td>
+              <td>
+                포트폴리오 이미지를 자동으로<br />벡터 변환하여 스타일 분석
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h4>이미지 임베딩이 필요한 이유</h4>
+      <div class="two-columns">
+        <div>
+          <h4>Phase 1의 한계 (태그 기반)</h4>
+          <ul>
+            <li>프리랜서가 태그를 직접 입력해야 함</li>
+            <li>태그 누락/오입력 가능</li>
+            <li>"자연스러운" 같은 주관적 표현의 한계</li>
+            <li>예비부부가 참고 이미지를 업로드해도 활용 불가</li>
+          </ul>
+        </div>
+        <div>
+          <h4>Phase 2의 장점 (이미지 임베딩)</h4>
+          <ul>
+            <li>포트폴리오 이미지 자동 분석</li>
+            <li>예비부부 참고 이미지와 포트폴리오 비교</li>
+            <li>시각적 유사도 계산 (벡터 거리)</li>
+            <li>더 정확한 스타일 매칭</li>
+          </ul>
+        </div>
+      </div>
+
+      <h4>이미지 임베딩 사용 시나리오</h4>
+      <table>
+        <thead>
+          <tr>
+            <th>시점</th>
+            <th>작업</th>
+            <th>CLIP 사용</th>
+            <th>예시</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>프리랜서 포트폴리오 등록 시</strong></td>
+            <td>포트폴리오 이미지 → 벡터 변환</td>
+            <td>필수</td>
+            <td>
+              작업물 10장을 512차원 벡터로 변환하여<br />Supabase pgvector에
+              저장
+            </td>
+          </tr>
+          <tr>
+            <td><strong>예비부부 매칭 요청 시</strong></td>
+            <td>참고 이미지 → 벡터 변환</td>
+            <td>필수</td>
+            <td>
+              예비부부가 업로드한 3장의 참고 이미지를<br />벡터로 변환하여
+              유사도 검색
+            </td>
+          </tr>
+          <tr>
+            <td><strong>매칭 알고리즘 실행</strong></td>
+            <td>벡터 유사도 계산</td>
+            <td>필수</td>
+            <td>
+              참고 이미지 벡터와 포트폴리오 벡터 간<br />코사인 유사도 계산
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="highlight-box">
+        <div class="highlight-title">실제 작동 예시</div>
+        <ol>
+          <li>
+            <strong>프리랜서 A가 포트폴리오 등록:</strong>
+            <ul>
+              <li>작업물 10장 업로드</li>
+              <li>각 이미지 → CLIP → 512차원 벡터</li>
+              <li>벡터를 Supabase PostgreSQL (pgvector)에 저장</li>
+            </ul>
+          </li>
+          <li>
+            <strong>예비부부 B가 매칭 요청:</strong>
+            <ul>
+              <li>참고 이미지 3장 업로드</li>
+              <li>각 이미지 → CLIP → 512차원 벡터</li>
+              <li>벡터 평균화 (3장 → 1개 벡터)</li>
+            </ul>
+          </li>
+          <li>
+            <strong>매칭 알고리즘:</strong>
+            <ul>
+              <li>예비부부 벡터 vs 모든 프리랜서 포트폴리오 벡터</li>
+              <li>코사인 유사도 계산 (0~1 사이 값)</li>
+              <li>유사도 0.85 이상인 프리랜서 Top 5 추천</li>
+            </ul>
+          </li>
+        </ol>
+      </div>
+
+      <div class="alert alert-warning">
+        <div class="alert-title">Phase 1에서 CLIP이 없는 경우</div>
+        <p>Phase 1 (MVP)에서는 CLIP 없이도 서비스가 가능합니다:</p>
+        <ul style="margin-top: 8px">
+          <li>
+            프리랜서가 직접 스타일 태그 선택 (예: "자연광", "웜톤", "미니멀")
+          </li>
+          <li>예비부부도 태그로 검색</li>
+          <li>키워드 매칭으로 기본적인 필터링 제공</li>
+          <li><strong>단점:</strong> 정확도는 낮지만 서비스 런칭에는 충분</li>
+        </ul>
+      </div>
+
+      <h4>CLIP 이미지 임베딩 비용 분석</h4>
+      <div class="highlight-box">
+        <div class="highlight-title">월간 사용량 예측 (안정화 단계 기준)</div>
+        <table style="margin-top: 16px">
+          <tbody>
+            <tr>
+              <td><strong>프리랜서 포트폴리오 등록</strong></td>
+              <td>800명 × 평균 10장 = 8,000장</td>
+              <td>초기 등록/업데이트 시 (한 번만)</td>
+            </tr>
+            <tr>
+              <td><strong>매칭 요청 (참고 이미지)</strong></td>
+              <td>1,500건 × 3장 = 4,500장/월</td>
+              <td>지속적 발생</td>
+            </tr>
+            <tr style="background: var(--bg-light); font-weight: 600">
+              <td><strong>월간 총 이미지 처리량</strong></td>
+              <td>약 5,000~12,500장/월</td>
+              <td>신규 등록 포함 시 최대</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h4>비용 비교 (월간 기준)</h4>
+      <table>
+        <thead>
+          <tr>
+            <th>방식</th>
+            <th>월간 비용</th>
+            <th>설명</th>
+            <th>장단점</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <strong>Hugging Face<br />Inference API</strong>
+            </td>
+            <td>약 1,000~2,500원</td>
+            <td>이미지당 $0.0001~0.0002<br />(약 0.1~0.2원)</td>
+            <td>장점: 초기 비용 없음<br />단점: 처리 속도 제한</td>
+          </tr>
+          <tr>
+            <td>
+              <strong>자체 서버 구축<br />(Railway/Render)</strong>
+            </td>
+            <td>약 10~20만원</td>
+            <td>GPU 서버 월 구독<br />($50~150, 약 7~20만원)</td>
+            <td>장점: 빠른 처리, 제어 가능<br />단점: 고정 비용 발생</td>
+          </tr>
+          <tr>
+            <td>
+              <strong>최적화 방식<br />(권장)</strong>
+            </td>
+            <td>약 10만원</td>
+            <td>배치 처리 + 캐싱<br />필요 시만 서버 실행</td>
+            <td>장점: 비용 효율적<br />단점: 초기 설정 복잡</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="alert alert-info">
+        <div class="alert-title">비용 최적화 전략</div>
+        <p><strong>권장 방식: 자체 서버 구축 (최적화)</strong></p>
+        <ul style="margin-top: 8px">
+          <li>
+            <strong>배치 처리:</strong> 포트폴리오 이미지는 등록 시 한 번만 처리
+            (캐싱)
+          </li>
+          <li>
+            <strong>서버 최적화:</strong> 필요 시만 GPU 서버 실행 (자동
+            스케일링)
+          </li>
+          <li>
+            <strong>예상 비용:</strong> 월 10만원 (프리랜서 800명, 매칭 1,500건
+            기준)
+          </li>
+          <li>
+            <strong>전체 AI 비용:</strong> GPT-4o-mini (20만원) + CLIP (10만원)
+            = 30만원/월
+          </li>
+        </ul>
+      </div>
+
+      <div class="alert alert-success">
+        <div class="alert-title">결론</div>
+        <p>
+          <strong>CLIP 이미지 임베딩 비용: 월 10만원 (안정화 단계 기준)</strong>
+        </p>
+        <ul style="margin-top: 8px">
+          <li>전체 AI 매칭 비용 (GPT + CLIP): 월 30만원</li>
+          <li>월 매출 1,380만원 대비 비용 비율: 약 2.2% (매우 저렴)</li>
+          <li>이미지당 평균 비용: 약 8~20원 (매칭 수익 대비 무시 가능)</li>
+          <li>
+            <strong>결론:</strong> 비용은 매우 저렴하며, 매칭 품질 향상으로
+            수익성이 확보됨
+          </li>
+        </ul>
+      </div>
+
+      <div class="alert alert-success">
+        <div class="alert-title">핵심 가치</div>
+        <p>
+          <strong>탐색 시간 99% 단축:</strong> 3주 → 3분 (Phase 2에서 완전히
+          구현)
+        </p>
+      </div>
+
+      <h3>8.2. 플랫폼별 최적화</h3>
+
+      <table>
+        <thead>
+          <tr>
+            <th>플랫폼</th>
+            <th>최적화 포인트</th>
+            <th>효과</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Flutter 앱</strong></td>
+            <td>모바일 UX 최적화, 오프라인 지원, 푸시 알림</td>
+            <td>높은 사용자 참여도</td>
+          </tr>
+          <tr>
+            <td><strong>Next.js 웹</strong></td>
+            <td>SEO 최적화, 공개 프로필, 블로그</td>
+            <td>자연 유입, 브랜드 노출</td>
+          </tr>
+          <tr>
+            <td><strong>FastAPI</strong></td>
+            <td>AI 처리 최적화, 비동기 처리</td>
+            <td>빠른 매칭 속도</td>
+          </tr>
+          <tr>
+            <td><strong>Supabase</strong></td>
+            <td>pgvector (벡터 검색), RLS (보안)</td>
+            <td>안전하고 확장 가능</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>8.3. 경쟁사 대비 차별점</h3>
+
+      <table>
+        <thead>
+          <tr>
+            <th>항목</th>
+            <th>숨고/크몽</th>
+            <th>특별시</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>포지션</strong></td>
+            <td>범용 플랫폼</td>
+            <td>웨딩 특화</td>
+          </tr>
+          <tr>
+            <td><strong>매칭 방식</strong></td>
+            <td>키워드 검색</td>
+            <td>AI 스타일 매칭</td>
+          </tr>
+          <tr>
+            <td><strong>수수료</strong></td>
+            <td>10~20%</td>
+            <td>고정 5,000원 (최대)</td>
+          </tr>
+          <tr>
+            <td><strong>결제</strong></td>
+            <td>외부/직거래</td>
+            <td>에스크로 안전 결제</td>
+          </tr>
+          <tr>
+            <td><strong>웨딩 특화 기능</strong></td>
+            <td>없음</td>
+            <td>웨딩 크루, 상품 마켓플레이스</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>8.4. 확장성</h3>
+
+      <ul>
+        <li><strong>수평 확장:</strong> 웨딩 → 경조사 → 기업행사</li>
+        <li><strong>수직 확장:</strong> 매칭 → 상품 판매 → 커뮤니티</li>
+        <li><strong>기술 확장:</strong> 모듈화된 구조로 기능 추가 용이</li>
+        <li>
+          <strong>인프라 확장:</strong> Supabase 자동 스케일링, FastAPI 컨테이너
+          확장
+        </li>
+      </ul>
+
+      <div class="page-number">9</div>
+    </div>
+
+    <!-- 9. 리스크 및 대응 전략 -->
+    <div class="page">
+      <div class="section-header">
+        <div class="section-badge">Chapter 09</div>
+        <h2 class="section-title">리스크 및 대응 전략</h2>
+        <p class="section-desc">주요 리스크 요소와 완화 방안</p>
+      </div>
+
+      <h3>9.1. 비즈니스 리스크</h3>
+
+      <table>
+        <thead>
+          <tr>
+            <th>리스크</th>
+            <th>영향도</th>
+            <th>대응 전략</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>프리랜서 확보 지연</strong></td>
+            <td>높음</td>
+            <td>사전 섭외, 인센티브 제공, 웨딩박람회 네트워킹</td>
+          </tr>
+          <tr>
+            <td><strong>우회율 증가</strong></td>
+            <td>중간</td>
+            <td>에스크로 필수화, 플랫폼 거래 혜택, 우회 탐지</td>
+          </tr>
+          <tr>
+            <td><strong>경쟁사 대응</strong></td>
+            <td>중간</td>
+            <td>웨딩 특화, AI 차별화, 빠른 실행</td>
+          </tr>
+          <tr>
+            <td><strong>구독 전환율 저조</strong></td>
+            <td>중간</td>
+            <td>Free 티어 제한 강화, ROI 데이터 제공</td>
+          </tr>
+          <tr>
+            <td><strong>광고 파트너 확보 지연</strong></td>
+            <td>낮음</td>
+            <td>런칭 전 사전 섭외, 단계적 확대</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>9.2. 기술 리스크</h3>
+
+      <table>
+        <thead>
+          <tr>
+            <th>리스크</th>
+            <th>영향도</th>
+            <th>대응 전략</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>AI 매칭 정확도 저조</strong></td>
+            <td>높음</td>
+            <td>단계적 개선, 데이터 축적, 사용자 피드백 반영</td>
+          </tr>
+          <tr>
+            <td><strong>서버 다운타임</strong></td>
+            <td>중간</td>
+            <td>Supabase 자동 백업, 모니터링 시스템, 장애 대응 프로세스</td>
+          </tr>
+          <tr>
+            <td><strong>데이터 보안 이슈</strong></td>
+            <td>높음</td>
+            <td>RLS 정책, 암호화, 정기 보안 점검</td>
+          </tr>
+          <tr>
+            <td><strong>AI 비용 증가</strong></td>
+            <td>중간</td>
+            <td>캐싱 전략, GPT-4o-mini 사용, 배치 처리</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>9.3. 운영 리스크</h3>
+
+      <table>
+        <thead>
+          <tr>
+            <th>리스크</th>
+            <th>영향도</th>
+            <th>대응 전략</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>인력 부족</strong></td>
+            <td>중간</td>
+            <td>단계적 채용, 외부 파트너 활용, 자동화 도입</td>
+          </tr>
+          <tr>
+            <td><strong>법적 이슈</strong></td>
+            <td>중간</td>
+            <td>통신판매중개업 신고, 개인정보보호법 준수, 법무 자문</td>
+          </tr>
+          <tr>
+            <td><strong>CS 부담 증가</strong></td>
+            <td>낮음</td>
+            <td>FAQ 구축, 챗봇 도입, 효율적 프로세스</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>9.4. 리스크 완화 우선순위</h3>
+
+      <ol>
+        <li><strong>프리랜서 확보:</strong> 양면시장의 핵심, 최우선 과제</li>
+        <li><strong>AI 매칭 품질:</strong> 차별화 포인트, 지속적 개선 필요</li>
+        <li><strong>데이터 보안:</strong> 신뢰의 기반, 초기부터 철저히</li>
+        <li><strong>우회율 관리:</strong> 수익성 직결, 사전 대응 필요</li>
+      </ol>
+
+      <div class="page-number">10</div>
+    </div>
+
+    <!-- 10. 실행 로드맵 -->
+    <div class="page">
+      <div class="section-header">
+        <div class="section-badge">Chapter 10</div>
+        <h2 class="section-title">실행 로드맵</h2>
+        <p class="section-desc">단계별 개발 및 런칭 계획</p>
+      </div>
+
+      <h3>10.1. MVP 개발 (Phase 1: 1~3개월)</h3>
+
+      <h4>목표</h4>
+      <ul>
+        <li>프리랜서 300명 확보</li>
+        <li>기본 매칭 기능 구현</li>
+        <li>베타 테스트 진행</li>
+      </ul>
+
+      <h4>핵심 기능</h4>
+      <table>
+        <thead>
+          <tr>
+            <th>기능</th>
+            <th>우선순위</th>
+            <th>기간</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>회원가입/로그인</td>
+            <td>필수</td>
+            <td>1주</td>
+          </tr>
+          <tr>
+            <td>프리랜서 프로필 등록</td>
+            <td>필수</td>
+            <td>2주</td>
+          </tr>
+          <tr>
+            <td>검색/필터 기능</td>
+            <td>필수</td>
+            <td>2주</td>
+          </tr>
+          <tr>
+            <td>기본 매칭 (AI 없음)</td>
+            <td>필수</td>
+            <td>2주</td>
+          </tr>
+          <tr>
+            <td>채팅 기능</td>
+            <td>필수</td>
+            <td>2주</td>
+          </tr>
+          <tr>
+            <td>결제 시스템</td>
+            <td>필수</td>
+            <td>2주</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>10.2. 성장 단계 (Phase 2: 4~6개월)</h3>
+
+      <h4>목표</h4>
+      <ul>
+        <li>프리랜서 600명 확보</li>
+        <li>AI 매칭 기능 추가</li>
+        <li>BEP 달성</li>
+      </ul>
+
+      <h4>추가 기능</h4>
+      <ul>
+        <li>AI 스타일 매칭 (GPT-4o-mini 연동)</li>
+        <li>리뷰 시스템 고도화</li>
+        <li>구독 시스템 완성</li>
+        <li>웨딩 크루 시스템 (베타)</li>
+      </ul>
+
+      <h3>10.3. 안정화 단계 (Phase 3: 7~12개월)</h3>
+
+      <h4>목표</h4>
+      <ul>
+        <li>프리랜서 800명 확보</li>
+        <li>월 순이익 620만원 달성</li>
+        <li>마켓플레이스 통합 (선택)</li>
+      </ul>
+
+      <h4>고도화 기능</h4>
+      <ul>
+        <li>이미지 임베딩 (CLIP) 추가</li>
+        <li>웨딩 상품 마켓플레이스 (Phase 1)</li>
+        <li>관리자 대시보드</li>
+        <li>고급 분석 기능</li>
+      </ul>
+
+      <h3>10.4. 마일스톤</h3>
+
+      <table>
+        <thead>
+          <tr>
+            <th>시점</th>
+            <th>마일스톤</th>
+            <th>핵심 지표</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>3개월</strong></td>
+            <td>MVP 런칭</td>
+            <td>프리랜서 300명, 베타 매칭 50건</td>
+          </tr>
+          <tr>
+            <td><strong>6개월</strong></td>
+            <td>BEP 달성</td>
+            <td>프리랜서 500명, 월 매출 760만원</td>
+          </tr>
+          <tr>
+            <td><strong>9개월</strong></td>
+            <td>안정화</td>
+            <td>프리랜서 700명, 월 순이익 400만원</td>
+          </tr>
+          <tr>
+            <td><strong>12개월</strong></td>
+            <td>성장 가속</td>
+            <td>프리랜서 800명, 월 순이익 620만원</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="page-number">11</div>
+    </div>
+
+    <!-- 11. 팀 구성 -->
+    <div class="page">
+      <div class="section-header">
+        <div class="section-badge">Chapter 11</div>
+        <h2 class="section-title">팀 구성 및 역할</h2>
+        <p class="section-desc">초창기 4명 팀 구조</p>
+      </div>
+
+      <h3>11.1. 현재 팀 구성</h3>
+
+      <table>
+        <thead>
+          <tr>
+            <th>역할</th>
+            <th>담당</th>
+            <th>비고</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>CEO/CTO</strong></td>
+            <td>전체 기획, 기술 아키텍처, 개발</td>
+            <td>창업자</td>
+          </tr>
+          <tr>
+            <td><strong>프론트엔드 개발자</strong></td>
+            <td>Flutter 앱, Next.js 웹</td>
+            <td>1명</td>
+          </tr>
+          <tr>
+            <td><strong>백엔드 개발자</strong></td>
+            <td>FastAPI, Supabase, AI 연동</td>
+            <td>1명</td>
+          </tr>
+          <tr>
+            <td><strong>디자이너/마케터</strong></td>
+            <td>UI/UX, 브랜딩, 마케팅</td>
+            <td>1명</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>11.2. 역할 분담</h3>
+
+      <div class="two-columns">
+        <div>
+          <h4>기술팀</h4>
+          <ul>
+            <li>Flutter 앱 개발</li>
+            <li>Next.js 웹 개발</li>
+            <li>FastAPI 백엔드</li>
+            <li>Supabase 설정 및 관리</li>
+            <li>AI 매칭 알고리즘</li>
+          </ul>
+        </div>
+        <div>
+          <h4>비즈니스팀</h4>
+          <ul>
+            <li>프리랜서 확보 및 관리</li>
+            <li>마케팅 및 브랜딩</li>
+            <li>고객 지원 (CS)</li>
+            <li>파트너십 관리</li>
+            <li>데이터 분석</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3>11.3. 향후 채용 계획</h3>
+
+      <table>
+        <thead>
+          <tr>
+            <th>시점</th>
+            <th>인원</th>
+            <th>역할</th>
+            <th>조건</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>1년차 후반</strong></td>
+            <td>+1명</td>
+            <td>마케터/CS</td>
+            <td>월 순이익 500만원 이상</td>
+          </tr>
+          <tr>
+            <td><strong>2년차</strong></td>
+            <td>+2명</td>
+            <td>개발자 1명, 마케터 1명</td>
+            <td>프리랜서 1,000명 달성</td>
+          </tr>
+          <tr>
+            <td><strong>3년차</strong></td>
+            <td>+4명</td>
+            <td>팀 확대 (총 10명)</td>
+            <td>연 매출 5억원 이상</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="alert alert-info">
+        <div class="alert-title">초창기 전략</div>
+        <p>
+          직원 4명으로 효율적 운영을 통해 <strong>높은 수익률(45%)</strong>을
+          달성하고, 규모 확대 후 인원을 늘리는 단계적 접근을 합니다.
+        </p>
+      </div>
+
+      <div class="page-number">12</div>
+    </div>
+
+    <!-- 12. 요약 및 핵심 포인트 -->
+    <div class="page">
+      <div class="section-header">
+        <div class="section-badge">Chapter 12</div>
+        <h2 class="section-title">요약 및 핵심 포인트</h2>
+        <p class="section-desc">프로젝트의 핵심 가치와 차별화 포인트</p>
+      </div>
+
+      <h3>12.1. 핵심 가치 제안</h3>
+
+      <div class="highlight-box">
+        <div class="highlight-title">예비부부에게</div>
+        <ul>
+          <li>AI 매칭으로 탐색 시간 99% 단축 (3주 → 3분)</li>
+          <li>투명한 가격 정보로 예산 관리 용이</li>
+          <li>에스크로 안전 결제로 피해 방지</li>
+          <li>웨딩 상품까지 원스톱으로 제공</li>
+        </ul>
+      </div>
+
+      <div class="highlight-box">
+        <div class="highlight-title">프리랜서에게</div>
+        <ul>
+          <li>고정 수수료로 비용 예측 가능 (건당 최대 5,000원)</li>
+          <li>숨고/크몽 대비 70% 비용 절감</li>
+          <li>웨딩 특화 플랫폼으로 타겟 고객 집중</li>
+          <li>AI 추천으로 우수 작가 우선 노출</li>
+        </ul>
+      </div>
+
+      <h3>12.2. 차별화 포인트</h3>
+
+      <table>
+        <thead>
+          <tr>
+            <th>항목</th>
+            <th>특별시</th>
+            <th>경쟁사</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>매칭 방식</strong></td>
+            <td>AI 스타일 매칭</td>
+            <td>키워드 검색</td>
+          </tr>
+          <tr>
+            <td><strong>수수료</strong></td>
+            <td>고정 5,000원</td>
+            <td>10~20%</td>
+          </tr>
+          <tr>
+            <td><strong>포지션</strong></td>
+            <td>웨딩 특화</td>
+            <td>범용 플랫폼</td>
+          </tr>
+          <tr>
+            <td><strong>부가 기능</strong></td>
+            <td>웨딩 크루, 상품 마켓플레이스</td>
+            <td>없음</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>12.3. 수익성 요약</h3>
+
+      <div class="two-columns">
+        <div class="stat-box">
+          <div class="stat-value">45%</div>
+          <div class="stat-label">순이익률</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-value">7,440만원</div>
+          <div class="stat-label">연 순이익 (1년차)</div>
+        </div>
+      </div>
+
+      <table style="margin-top: 20px">
+        <tbody>
+          <tr>
+            <td><strong>직원 수</strong></td>
+            <td>4명</td>
+          </tr>
+          <tr>
+            <td><strong>월 매출</strong></td>
+            <td>1,380만원</td>
+          </tr>
+          <tr>
+            <td><strong>월 순이익</strong></td>
+            <td>620만원</td>
+          </tr>
+          <tr>
+            <td><strong>BEP 달성</strong></td>
+            <td>4~6개월차 (프리랜서 500명)</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>12.4. 성공 요인</h3>
+
+      <ol>
+        <li>
+          <strong>구독 수익 중심:</strong> 안정적이고 예측 가능한 수익 구조
+        </li>
+        <li><strong>효율적 운영:</strong> 직원 4명으로 높은 수익률 달성</li>
+        <li>
+          <strong>다각화 수익원:</strong> 매칭+거래+구독+광고+마켓플레이스
+        </li>
+        <li><strong>기술 차별화:</strong> AI 매칭으로 경쟁 우위</li>
+        <li>
+          <strong>확장 가능성:</strong> 웨딩 → 경조사 → 기업행사 (TAM 15조원)
+        </li>
+      </ol>
+
+      <h3>12.5. 향후 비전</h3>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Phase</th>
+            <th>시기</th>
+            <th>영역</th>
+            <th>TAM</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Phase 1</strong></td>
+            <td>2026~2027</td>
+            <td>웨딩</td>
+            <td>6조원</td>
+          </tr>
+          <tr>
+            <td><strong>Phase 2</strong></td>
+            <td>2028</td>
+            <td>경조사/이벤트</td>
+            <td>+4조원</td>
+          </tr>
+          <tr>
+            <td><strong>Phase 3</strong></td>
+            <td>2029</td>
+            <td>기업행사</td>
+            <td>+5조원</td>
+          </tr>
+          <tr>
+            <td><strong>Phase 4</strong></td>
+            <td>2030~</td>
+            <td>All Events</td>
+            <td>15조원</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="alert alert-success" style="margin-top: 32px">
+        <div class="alert-title">최종 평가</div>
+        <p>
+          <strong>특별시 (The Special Time)</strong>는 기술적으로 구현 가능하며,
+          비즈니스 모델이 명확하고, 수익성이 입증된 프로젝트입니다.
+        </p>
+        <p style="margin-top: 12px">
+          <strong>핵심:</strong> 직원 4명 기준으로 프리랜서 500명 확보 시 BEP
+          달성, 800명 확보 시 월 순이익 620만원의 흑자 운영이 가능합니다.
+        </p>
+      </div>
+
+      <div class="page-number">13</div>
+    </div>
+
+    <!-- 문서 정보 -->
+    <div class="page">
+      <div class="section-header">
+        <div class="section-badge">Document Info</div>
+        <h2 class="section-title">문서 정보</h2>
+      </div>
+
+      <h3>문서 버전</h3>
+      <table>
+        <tbody>
+          <tr>
+            <td><strong>버전</strong></td>
+            <td>1.0 (종합 문서)</td>
+          </tr>
+          <tr>
+            <td><strong>작성일</strong></td>
+            <td>2026년 1월 2일</td>
+          </tr>
+          <tr>
+            <td><strong>작성자</strong></td>
+            <td>특별시 개발팀</td>
+          </tr>
+          <tr>
+            <td><strong>목적</strong></td>
+            <td>프로젝트 전체 정의 및 정리</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>참고 문서</h3>
+      <ul>
+        <li>PLAN_v2.md - 기술 아키텍처 및 개발 로드맵</li>
+        <li>teukbyulsi-team-handbook.html - 개발 협업 가이드</li>
+        <li>ui-ux-design-handbook.html - 디자인 시스템 가이드</li>
+        <li>26년-예창패-합격-가이드북.html - 사업계획서</li>
+      </ul>
+
+      <div class="divider"></div>
+
+      <div
+        style="
+          text-align: center;
+          margin-top: 60px;
+          padding-top: 40px;
+          border-top: 2px solid var(--border);
+          color: var(--text-light);
+        "
+      >
+        <p style="font-size: 14px; font-weight: 600; color: var(--text-dark)">
+          © 2026 The Special Time (특별시). All Rights Reserved.
+        </p>
+        <p style="margin-top: 8px; font-size: 12px">
+          본 문서의 무단 배포 및 복제를 금지합니다.
+        </p>
+      </div>
+
+      <div class="page-number">14</div>
+    </div>
+
+    <script>
+      // Smooth scroll
+      document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+        anchor.addEventListener("click", function (e) {
+          e.preventDefault();
+          const target = document.querySelector(this.getAttribute("href"));
+          if (target) {
+            target.scrollIntoView({ behavior: "smooth", block: "start" });
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

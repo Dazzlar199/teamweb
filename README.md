@@ -37,8 +37,8 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
 Vercel → Settings → Environment Variables에서 설정:
 
 ```
-NEXT_PUBLIC_SUPABASE_URL=https://ldvfagbaxlispvhygpip.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+NEXT_PUBLIC_SUPABASE_URL=your-supabase-project-url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
 ```
 
 ### Git Submodule 경고 해결

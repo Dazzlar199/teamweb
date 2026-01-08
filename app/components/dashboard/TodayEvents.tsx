@@ -32,7 +32,7 @@ export default function TodayEvents({ date, events }: TodayEventsProps) {
                 <div className="min-w-0">
                   <h3 className="text-xs font-bold text-[#111827] truncate leading-tight">{event.title}</h3>
                   <div className="flex items-center gap-2 mt-1">
-                    {!isHoliday && <span className="text-[10px] text-[#6B7280]">{event.time}</span>}
+                    {!isHoliday && <span className="text-[10px] text-[#6B7280]">{(event as Event).time}</span>}
                     <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded ${isHoliday ? "bg-red-50 text-red-600" : "bg-blue-50 text-blue-600"}`}>
                       {isHoliday ? "공휴일" : event.createdBy}
                     </span>

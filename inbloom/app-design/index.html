@@ -1,0 +1,1221 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>특별시 - Special Time | 웨딩 서브서비스 매칭</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            /* Colors - Warm Luxury Wedding */
+            --ivory: #FDF8F3;
+            --cream: #FAF5EF;
+            --warm-white: #FFFBF7;
+            --champagne: #D4AF37;
+            --rose-gold: #B8860B;
+            --rose-gold-light: #D4A574;
+            --blush: #F5E6E0;
+            --dusty-rose: #DCBAB0;
+            --warm-charcoal: #2D2926;
+            --warm-gray: #5D5652;
+            --soft-gray: #9E9590;
+            --border: #E8E2DC;
+
+            /* Typography */
+            --font-display: 'Cormorant Garamond', Georgia, serif;
+            --font-body: 'Noto Sans KR', -apple-system, sans-serif;
+
+            /* Spacing */
+            --space-xs: 4px;
+            --space-sm: 8px;
+            --space-md: 16px;
+            --space-lg: 24px;
+            --space-xl: 40px;
+            --space-2xl: 64px;
+            --space-3xl: 100px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--ivory);
+            color: var(--warm-charcoal);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* ========================================
+           HERO SECTION - Editorial Style
+        ======================================== */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            background: linear-gradient(180deg, var(--warm-white) 0%, var(--cream) 100%);
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background:
+                radial-gradient(ellipse at 20% 80%, rgba(212, 175, 55, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 20%, rgba(184, 134, 11, 0.05) 0%, transparent 40%);
+            pointer-events: none;
+        }
+
+        /* Navigation */
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--space-lg) var(--space-xl);
+            position: relative;
+            z-index: 10;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--rose-gold-light), var(--rose-gold));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-family: var(--font-display);
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-text {
+            font-family: var(--font-display);
+            font-size: 24px;
+            font-weight: 500;
+            color: var(--warm-charcoal);
+            letter-spacing: 1px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: var(--space-xl);
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--warm-gray);
+            font-size: 14px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--rose-gold);
+        }
+
+        /* Hero Content */
+        .hero-content {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--space-3xl);
+            padding: 0 var(--space-3xl);
+            align-items: center;
+            position: relative;
+            z-index: 5;
+        }
+
+        .hero-text {
+            max-width: 560px;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-sm);
+            background: var(--blush);
+            padding: 8px 16px;
+            border-radius: 100px;
+            font-size: 13px;
+            color: var(--rose-gold);
+            font-weight: 500;
+            margin-bottom: var(--space-lg);
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .hero-badge::before {
+            content: '✦';
+            font-size: 10px;
+        }
+
+        .hero-title {
+            font-family: var(--font-display);
+            font-size: clamp(48px, 6vw, 72px);
+            font-weight: 400;
+            line-height: 1.1;
+            color: var(--warm-charcoal);
+            margin-bottom: var(--space-lg);
+            animation: fadeInUp 0.8s ease-out 0.1s backwards;
+        }
+
+        .hero-title em {
+            font-style: italic;
+            color: var(--rose-gold);
+        }
+
+        .hero-subtitle {
+            font-size: 18px;
+            color: var(--warm-gray);
+            line-height: 1.8;
+            margin-bottom: var(--space-xl);
+            animation: fadeInUp 0.8s ease-out 0.2s backwards;
+        }
+
+        .hero-cta {
+            display: flex;
+            gap: var(--space-md);
+            animation: fadeInUp 0.8s ease-out 0.3s backwards;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-sm);
+            padding: 16px 32px;
+            border-radius: 100px;
+            font-size: 15px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--rose-gold-light), var(--rose-gold));
+            color: white;
+            box-shadow: 0 4px 20px rgba(184, 134, 11, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(184, 134, 11, 0.4);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--warm-charcoal);
+            border: 1.5px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--rose-gold);
+            color: var(--rose-gold);
+        }
+
+        /* Phone Mockup */
+        .hero-visual {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            animation: fadeInRight 1s ease-out 0.4s backwards;
+        }
+
+        .phone-mockup {
+            position: relative;
+            width: 300px;
+            height: 620px;
+            background: #1a1a1a;
+            border-radius: 45px;
+            padding: 12px;
+            box-shadow:
+                0 50px 100px -20px rgba(0, 0, 0, 0.25),
+                0 30px 60px -30px rgba(0, 0, 0, 0.3),
+                inset 0 0 0 2px rgba(255, 255, 255, 0.1);
+        }
+
+        .phone-screen {
+            width: 100%;
+            height: 100%;
+            background: var(--warm-white);
+            border-radius: 35px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .phone-notch {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 30px;
+            background: #1a1a1a;
+            border-radius: 0 0 20px 20px;
+            z-index: 10;
+        }
+
+        /* App Screen Content */
+        .app-screen {
+            height: 100%;
+            overflow-y: auto;
+            padding-top: 50px;
+        }
+
+        .app-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px 16px;
+        }
+
+        .app-logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .app-logo-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--rose-gold-light), var(--rose-gold));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-family: var(--font-display);
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .app-logo-text {
+            font-family: var(--font-display);
+            font-size: 18px;
+            font-weight: 500;
+            color: var(--warm-charcoal);
+        }
+
+        .app-notification {
+            width: 36px;
+            height: 36px;
+            background: var(--cream);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .app-notification::after {
+            content: '';
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 8px;
+            height: 8px;
+            background: var(--rose-gold);
+            border-radius: 50%;
+            border: 2px solid var(--warm-white);
+        }
+
+        /* AI Banner */
+        .ai-banner {
+            margin: 0 16px 20px;
+            background: linear-gradient(135deg, var(--rose-gold-light), var(--rose-gold));
+            border-radius: 16px;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ai-banner::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
+        }
+
+        .ai-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(255,255,255,0.2);
+            padding: 4px 10px;
+            border-radius: 100px;
+            font-size: 10px;
+            color: white;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .ai-title {
+            font-family: var(--font-display);
+            font-size: 18px;
+            color: white;
+            line-height: 1.4;
+            margin-bottom: 12px;
+        }
+
+        .ai-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 12px;
+            color: rgba(255,255,255,0.9);
+            font-weight: 500;
+        }
+
+        /* Categories */
+        .categories {
+            padding: 0 16px 20px;
+        }
+
+        .category-scroll {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+        }
+
+        .category-item {
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .category-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .category-icon.snap { background: linear-gradient(135deg, #E8E0F0, #D4C4E8); }
+        .category-icon.video { background: linear-gradient(135deg, #FFE4E8, #FFC8D0); }
+        .category-icon.singer { background: linear-gradient(135deg, #FFF0E0, #FFE0C0); }
+        .category-icon.makeup { background: linear-gradient(135deg, #F0E8F4, #E0D4EC); }
+        .category-icon.flower { background: linear-gradient(135deg, #E8F4E8, #D0E8D0); }
+
+        .category-label {
+            font-size: 11px;
+            color: var(--warm-gray);
+            font-weight: 500;
+        }
+
+        /* Section Title */
+        .section-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 16px 12px;
+        }
+
+        .section-title h3 {
+            font-family: var(--font-display);
+            font-size: 18px;
+            font-weight: 500;
+            color: var(--warm-charcoal);
+        }
+
+        .section-title a {
+            font-size: 12px;
+            color: var(--rose-gold);
+            text-decoration: none;
+        }
+
+        /* Pro Cards */
+        .pro-scroll {
+            display: flex;
+            gap: 12px;
+            padding: 0 16px 20px;
+            overflow-x: auto;
+        }
+
+        .pro-card {
+            flex-shrink: 0;
+            width: 140px;
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+        }
+
+        .pro-image {
+            height: 100px;
+            background: linear-gradient(135deg, var(--blush), var(--dusty-rose));
+            position: relative;
+        }
+
+        .pro-badge {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            background: rgba(255,255,255,0.9);
+            padding: 3px 8px;
+            border-radius: 100px;
+            font-size: 9px;
+            font-weight: 600;
+            color: var(--rose-gold);
+        }
+
+        .pro-info {
+            padding: 12px;
+        }
+
+        .pro-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--warm-charcoal);
+            margin-bottom: 2px;
+        }
+
+        .pro-category {
+            font-size: 11px;
+            color: var(--soft-gray);
+            margin-bottom: 8px;
+        }
+
+        .pro-rating {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 11px;
+            color: var(--warm-gray);
+        }
+
+        .pro-rating span {
+            color: #FBBF24;
+        }
+
+        /* Floating Elements */
+        .float-card {
+            position: absolute;
+            background: white;
+            border-radius: 12px;
+            padding: 12px 16px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .float-card-1 {
+            top: 10%;
+            right: -40px;
+            animation-delay: 0s;
+        }
+
+        .float-card-2 {
+            bottom: 20%;
+            left: -60px;
+            animation-delay: 2s;
+        }
+
+        .float-review {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .float-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--blush), var(--dusty-rose));
+        }
+
+        .float-text {
+            font-size: 12px;
+        }
+
+        .float-text strong {
+            display: block;
+            color: var(--warm-charcoal);
+            margin-bottom: 2px;
+        }
+
+        .float-text span {
+            color: var(--soft-gray);
+        }
+
+        .float-stars {
+            color: #FBBF24;
+            font-size: 10px;
+        }
+
+        /* ========================================
+           FEATURES SECTION
+        ======================================== */
+        .features {
+            padding: var(--space-3xl) var(--space-xl);
+            background: white;
+            position: relative;
+        }
+
+        .features::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--border), transparent);
+        }
+
+        .section-header {
+            text-align: center;
+            max-width: 600px;
+            margin: 0 auto var(--space-2xl);
+        }
+
+        .section-header .badge {
+            display: inline-block;
+            background: var(--blush);
+            color: var(--rose-gold);
+            padding: 8px 16px;
+            border-radius: 100px;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: var(--space-md);
+        }
+
+        .section-header h2 {
+            font-family: var(--font-display);
+            font-size: clamp(32px, 4vw, 48px);
+            font-weight: 400;
+            line-height: 1.2;
+            margin-bottom: var(--space-md);
+        }
+
+        .section-header p {
+            font-size: 16px;
+            color: var(--warm-gray);
+            line-height: 1.7;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--space-xl);
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .feature-card {
+            background: var(--cream);
+            border-radius: 24px;
+            padding: var(--space-xl);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, transparent, rgba(184, 134, 11, 0.05));
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .feature-card:hover::before {
+            opacity: 1;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 60px rgba(184, 134, 11, 0.15);
+        }
+
+        .feature-icon {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, var(--rose-gold-light), var(--rose-gold));
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            margin-bottom: var(--space-lg);
+        }
+
+        .feature-card h3 {
+            font-family: var(--font-display);
+            font-size: 22px;
+            font-weight: 500;
+            margin-bottom: var(--space-sm);
+        }
+
+        .feature-card p {
+            font-size: 14px;
+            color: var(--warm-gray);
+            line-height: 1.7;
+        }
+
+        /* ========================================
+           STATS SECTION
+        ======================================== */
+        .stats {
+            padding: var(--space-2xl) var(--space-xl);
+            background: linear-gradient(135deg, var(--warm-charcoal), #3D3936);
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: var(--space-xl);
+            max-width: 1000px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .stat-item {
+            padding: var(--space-lg);
+        }
+
+        .stat-number {
+            font-family: var(--font-display);
+            font-size: 48px;
+            font-weight: 300;
+            color: var(--champagne);
+            margin-bottom: var(--space-xs);
+        }
+
+        .stat-label {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        /* ========================================
+           CTA SECTION
+        ======================================== */
+        .cta {
+            padding: var(--space-3xl) var(--space-xl);
+            text-align: center;
+            background: var(--cream);
+            position: relative;
+        }
+
+        .cta::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(212, 175, 55, 0.1) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .cta-content {
+            max-width: 600px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .cta h2 {
+            font-family: var(--font-display);
+            font-size: clamp(36px, 5vw, 56px);
+            font-weight: 400;
+            line-height: 1.2;
+            margin-bottom: var(--space-lg);
+        }
+
+        .cta h2 em {
+            font-style: italic;
+            color: var(--rose-gold);
+        }
+
+        .cta p {
+            font-size: 18px;
+            color: var(--warm-gray);
+            margin-bottom: var(--space-xl);
+        }
+
+        /* ========================================
+           FOOTER
+        ======================================== */
+        .footer {
+            padding: var(--space-2xl) var(--space-xl);
+            background: var(--warm-charcoal);
+            color: white;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+
+        .footer-logo-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--rose-gold-light), var(--rose-gold));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-family: var(--font-display);
+            font-size: 12px;
+        }
+
+        .footer-logo-text {
+            font-family: var(--font-display);
+            font-size: 20px;
+            color: white;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: var(--space-xl);
+        }
+
+        .footer-links a {
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--champagne);
+        }
+
+        .footer-copy {
+            font-size: 13px;
+            opacity: 0.5;
+        }
+
+        /* ========================================
+           ANIMATIONS
+        ======================================== */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInRight {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-15px);
+            }
+        }
+
+        /* ========================================
+           RESPONSIVE
+        ======================================== */
+        @media (max-width: 1024px) {
+            .hero-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+                padding: var(--space-xl);
+            }
+
+            .hero-text {
+                max-width: 100%;
+            }
+
+            .hero-cta {
+                justify-content: center;
+            }
+
+            .hero-visual {
+                display: none;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+                max-width: 500px;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .nav-links {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .footer-content {
+                flex-direction: column;
+                gap: var(--space-lg);
+                text-align: center;
+            }
+
+            .footer-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <section class="hero">
+        <nav class="nav">
+            <div class="logo">
+                <div class="logo-icon">ㅌㅂㅅ</div>
+                <span class="logo-text">특별시</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#features">서비스</a></li>
+                <li><a href="#categories">카테고리</a></li>
+                <li><a href="#about">소개</a></li>
+                <li><a href="#contact">문의</a></li>
+            </ul>
+            <a href="#download" class="btn btn-primary" style="padding: 12px 24px; font-size: 14px;">앱 다운로드</a>
+        </nav>
+
+        <div class="hero-content">
+            <div class="hero-text">
+                <div class="hero-badge">AI 기반 매칭 서비스</div>
+                <h1 class="hero-title">
+                    인생에서 가장<br>
+                    <em>특별한 시간</em>을<br>
+                    더 특별하게
+                </h1>
+                <p class="hero-subtitle">
+                    웨딩 스냅, 영상, 축가, 메이크업 등<br>
+                    당신의 특별한 날을 빛낼 최고의 전문가를<br>
+                    AI가 찾아드립니다.
+                </p>
+                <div class="hero-cta">
+                    <a href="#" class="btn btn-primary">
+                        <span>무료로 시작하기</span>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M5 12h14M12 5l7 7-7 7"/>
+                        </svg>
+                    </a>
+                    <a href="#" class="btn btn-secondary">전문가 둘러보기</a>
+                </div>
+            </div>
+
+            <div class="hero-visual">
+                <!-- Floating Cards -->
+                <div class="float-card float-card-1">
+                    <div class="float-review">
+                        <div class="float-avatar"></div>
+                        <div class="float-text">
+                            <strong>김스냅 작가님 최고!</strong>
+                            <div class="float-stars">★★★★★</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="float-card float-card-2">
+                    <div class="float-review">
+                        <div class="float-avatar"></div>
+                        <div class="float-text">
+                            <strong>예약 확정</strong>
+                            <span>3월 15일 본식 촬영</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Phone Mockup -->
+                <div class="phone-mockup">
+                    <div class="phone-notch"></div>
+                    <div class="phone-screen">
+                        <div class="app-screen">
+                            <!-- App Header -->
+                            <div class="app-header">
+                                <div class="app-logo">
+                                    <div class="app-logo-icon">ㅌㅂㅅ</div>
+                                    <span class="app-logo-text">특별시</span>
+                                </div>
+                                <div class="app-notification">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5D5652" stroke-width="2">
+                                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                                        <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                                    </svg>
+                                </div>
+                            </div>
+
+                            <!-- AI Banner -->
+                            <div class="ai-banner">
+                                <div class="ai-badge">✨ AI 매칭</div>
+                                <div class="ai-title">
+                                    딱 맞는 전문가를<br>
+                                    AI가 찾아드려요
+                                </div>
+                                <div class="ai-cta">
+                                    매칭 시작하기
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                                    </svg>
+                                </div>
+                            </div>
+
+                            <!-- Categories -->
+                            <div class="categories">
+                                <div class="category-scroll">
+                                    <div class="category-item">
+                                        <div class="category-icon snap">📸</div>
+                                        <span class="category-label">스냅</span>
+                                    </div>
+                                    <div class="category-item">
+                                        <div class="category-icon video">🎬</div>
+                                        <span class="category-label">영상</span>
+                                    </div>
+                                    <div class="category-item">
+                                        <div class="category-icon singer">🎤</div>
+                                        <span class="category-label">축가</span>
+                                    </div>
+                                    <div class="category-item">
+                                        <div class="category-icon makeup">💄</div>
+                                        <span class="category-label">메이크업</span>
+                                    </div>
+                                    <div class="category-item">
+                                        <div class="category-icon flower">💐</div>
+                                        <span class="category-label">플라워</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Popular Pros -->
+                            <div class="section-title">
+                                <h3>인기 전문가</h3>
+                                <a href="#">더보기</a>
+                            </div>
+                            <div class="pro-scroll">
+                                <div class="pro-card">
+                                    <div class="pro-image">
+                                        <span class="pro-badge">TOP</span>
+                                    </div>
+                                    <div class="pro-info">
+                                        <div class="pro-name">김스냅 작가</div>
+                                        <div class="pro-category">웨딩스냅</div>
+                                        <div class="pro-rating">
+                                            <span>★</span> 4.9 (128)
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="pro-card">
+                                    <div class="pro-image" style="background: linear-gradient(135deg, #E8F0E8, #D0E0D0);">
+                                        <span class="pro-badge">NEW</span>
+                                    </div>
+                                    <div class="pro-info">
+                                        <div class="pro-name">박영상 감독</div>
+                                        <div class="pro-category">본식영상</div>
+                                        <div class="pro-rating">
+                                            <span>★</span> 4.8 (89)
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="pro-card">
+                                    <div class="pro-image" style="background: linear-gradient(135deg, #FFF0E0, #FFE0C0);"></div>
+                                    <div class="pro-info">
+                                        <div class="pro-name">이보컬</div>
+                                        <div class="pro-category">축가</div>
+                                        <div class="pro-rating">
+                                            <span>★</span> 5.0 (56)
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <div class="section-header">
+            <span class="badge">Why 특별시</span>
+            <h2>왜 특별시인가요?</h2>
+            <p>수많은 예비 부부가 특별시를 선택하는 이유</p>
+        </div>
+
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">🤖</div>
+                <h3>AI 맞춤 매칭</h3>
+                <p>스타일, 예산, 일정을 분석해 가장 잘 맞는 전문가를 추천해드립니다. 더 이상 검색에 시간 낭비하지 마세요.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">✅</div>
+                <h3>검증된 전문가</h3>
+                <p>포트폴리오, 리뷰, 실제 작업물을 꼼꼼히 검증한 전문가만 등록됩니다. 믿고 맡기세요.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">💎</div>
+                <h3>투명한 가격</h3>
+                <p>숨겨진 비용 없이 명확한 가격을 확인하세요. 비교 견적으로 합리적인 선택이 가능합니다.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats">
+        <div class="stats-grid">
+            <div class="stat-item">
+                <div class="stat-number">500+</div>
+                <div class="stat-label">검증된 전문가</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">2,000+</div>
+                <div class="stat-label">성공적인 매칭</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">4.9</div>
+                <div class="stat-label">평균 만족도</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">50+</div>
+                <div class="stat-label">서비스 카테고리</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta">
+        <div class="cta-content">
+            <h2>
+                당신의 <em>특별한 날</em>,<br>
+                지금 시작하세요
+            </h2>
+            <p>무료 회원가입 후 AI 매칭을 경험해보세요.</p>
+            <a href="#" class="btn btn-primary" style="font-size: 16px; padding: 18px 40px;">
+                무료로 시작하기
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M5 12h14M12 5l7 7-7 7"/>
+                </svg>
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-logo">
+                <div class="footer-logo-icon">ㅌㅂㅅ</div>
+                <span class="footer-logo-text">특별시</span>
+            </div>
+            <div class="footer-links">
+                <a href="#">서비스 소개</a>
+                <a href="#">이용약관</a>
+                <a href="#">개인정보처리방침</a>
+                <a href="#">고객센터</a>
+            </div>
+            <div class="footer-copy">
+                © 2025 특별시. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+
+        // Intersection Observer for animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.feature-card, .stat-item').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(30px)';
+            el.style.transition = 'all 0.6s ease-out';
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>
