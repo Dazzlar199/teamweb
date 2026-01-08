@@ -32,6 +32,8 @@ export interface Task {
   isBookmarked?: boolean;
   progress?: number; // 0-100
   createdBy?: string; // 작성자
+  createdAt?: string; // 생성일 (ISO string)
+  updatedAt?: string; // 수정일 (ISO string)
   attachments?: Attachment[];
 }
 

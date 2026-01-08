@@ -21,7 +21,14 @@ export default function TasksPage() {
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [showAddForm, setShowAddForm] = useState(false);
 
-  const [newTask, setNewTask] = useState({
+  const [newTask, setNewTask] = useState<{
+    title: string;
+    description: string;
+    status: "todo" | "in_progress" | "done";
+    priority: "low" | "medium" | "high";
+    assignedTo: string;
+    dueDate: string;
+  }>({
     title: "",
     description: "",
     status: "todo",
@@ -49,9 +56,15 @@ export default function TasksPage() {
 
     const task: Task = {
       id: `task-${Date.now()}`,
-      ...newTask,
+      title: newTask.title,
+      description: newTask.description,
+      status: newTask.status,
+      priority: newTask.priority,
+      assignedTo: newTask.assignedTo,
+      dueDate: newTask.dueDate,
       comments: [],
       createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
       createdBy: currentUser,
     };
 
@@ -82,8 +95,8 @@ export default function TasksPage() {
     }
   };
 
-  const updateTaskStatus = (id: string, newStatus: string) => {
-    const updatedTasks = tasks.map(t => t.id === id ? { ...t, status: newStatus } : t);
+  const updateTaskStatus = (id: string, newStatus: "todo" | "in_progress" | "done") => {
+    const updatedTasks = tasks.map(t => t.id === id ? { ...t, status: newStatus, updatedAt: new Date().toISOString() } : t);
     setTasks(updatedTasks);
     localStorage.setItem("team-dashboard-tasks", JSON.stringify(updatedTasks));
     showToast(`상태가 ${newStatus === 'done' ? '완료' : '변경'}되었습니다.`, "info");
