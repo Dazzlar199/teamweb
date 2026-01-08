@@ -15,7 +15,7 @@ export default function TasksPage() {
   const { showToast } = useToast();
   const currentUser = user?.name || "김찬주";
 
-  const [filterStatus, setStatusFilter] = useState<string>("전체");
+  const [filterStatus, setStatusFilter] = useState<"전체" | "todo" | "in_progress" | "done">("전체");
   const [filterPriority, setPriorityFilter] = useState<string>("전체");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
@@ -124,7 +124,7 @@ export default function TasksPage() {
         {/* 필터 바 */}
         <div className="glass-card p-2 rounded-2xl flex flex-wrap items-center gap-2">
           <div className="flex bg-slate-100 p-1 rounded-xl">
-            {["전체", "todo", "in_progress", "done"].map((s) => (
+            {(["전체", "todo", "in_progress", "done"] as const).map((s) => (
               <button
                 key={s}
                 onClick={() => setStatusFilter(s)}
@@ -239,7 +239,7 @@ export default function TasksPage() {
                     <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">우선순위</label>
                     <select 
                       value={newTask.priority}
-                      onChange={(e) => setNewTask({...newTask, priority: e.target.value})}
+                      onChange={(e) => setNewTask({...newTask, priority: e.target.value as "low" | "medium" | "high"})}
                       className="w-full px-4 py-3 bg-slate-50 border-none rounded-2xl text-sm font-bold outline-none cursor-pointer"
                     >
                       <option value="high">긴급 (High)</option>

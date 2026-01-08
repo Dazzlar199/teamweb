@@ -270,7 +270,12 @@ export default function FinancePage() {
                 <div className="grid grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">공식 비목</label>
-                    <select disabled={addType === "구독"} value={addType === "구독" ? "임차비" : newExp.bimok} onChange={(e) => setNewExp({...newExp, bimok: e.target.value as any})} className="w-full px-5 py-3 bg-white border border-slate-100 rounded-2xl text-sm font-bold shadow-sm outline-none focus:ring-2 focus:ring-indigo-500">
+                    <select 
+                      disabled={addType === "구독"} 
+                      value={addType === "구독" ? "임차비" : newExp.bimok} 
+                      onChange={(e) => setNewExp({...newExp, bimok: e.target.value as any})} 
+                      className="w-full px-5 py-3 bg-white border border-slate-100 rounded-2xl text-sm font-bold shadow-sm outline-none focus:ring-2 focus:ring-indigo-500"
+                    >
                       <option value="전문가활용비">전문가활용비</option>
                       <option value="임차비">임차비</option>
                       <option value="재료구입비">재료구입비</option>
