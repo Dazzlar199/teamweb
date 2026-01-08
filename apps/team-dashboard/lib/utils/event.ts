@@ -1,6 +1,7 @@
 import { getLocalStorage, setLocalStorage } from "./localStorage";
 import { supabase, isSupabaseConfigured } from "@/lib/supabase/client";
 import type { Event } from "@/lib/types/event";
+import { addNotification } from "./notifications";
 
 const STORAGE_KEY = "team-dashboard-events";
 
@@ -450,6 +451,7 @@ export async function saveEvent(event: Event): Promise<void> {
   // localStorage에 먼저 저장 (항상 작동)
   const events = getLocalStorage<Event[]>(STORAGE_KEY, []);
   const index = events.findIndex((e) => e.id === event.id);
+  const isNew = index < 0;
 
   if (index >= 0) {
     events[index] = event;
@@ -473,6 +475,17 @@ export async function saveEvent(event: Event): Promise<void> {
         await saveEventToSupabase(event);
         console.log("[saveEvent] Supabase 동기화 성공:", event.id, `(시도 ${retryCount + 1}/${maxRetries})`);
         syncSuccess = true;
+        
+        // 새 일정인 경우 알림 발송
+        if (isNew && event.createdBy !== "시스템") {
+          await addNotification({
+            type: 'event',
+            title: '새 팀 일정',
+            message: `${event.createdBy}님이 새 일정을 등록했습니다: ${event.title}`,
+            eventId: event.id,
+            link: '/calendar'
+          }, ["김찬주", "박건희", "김예린", "이나영"].filter(u => u !== event.createdBy));
+        }
         
         // 저장 성공 시 캐시 무효화 (다른 사용자가 즉시 볼 수 있도록)
         clearCache("events");

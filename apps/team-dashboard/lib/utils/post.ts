@@ -1,6 +1,7 @@
 import { getLocalStorage, setLocalStorage } from "./localStorage";
 import { supabase, isSupabaseConfigured } from "@/lib/supabase/client";
 import type { Post, Comment } from "@/lib/types/post";
+import { addNotification } from "./notifications";
 
 const STORAGE_KEY = "team-posts";
 
@@ -153,6 +154,16 @@ export function savePost(post: Post): void | Promise<void> {
     (async () => {
       try {
         await savePostToSupabase(post);
+        
+        // 새 게시글 작성 시 알림 (작성자 제외 전원)
+        if (index < 0) { // 새로 작성된 경우만
+          await addNotification({
+            type: 'comment',
+            title: '새 게시글 등록',
+            message: `${post.author}님이 소통공간에 새 글을 올렸습니다: ${post.title}`,
+            link: '/communication'
+          }, ["김찬주", "박건희", "김예린", "이나영"].filter(u => u !== post.author));
+        }
       } catch (error) {
         console.warn("Supabase 게시글 동기화 실패 (무시됨):", error);
       }

@@ -11,7 +11,15 @@ interface ActivityLogProps {
 
 export default function ActivityLog({ activities }: ActivityLogProps) {
   const [isExpanded, setIsExpanded] = useState(false);
-  const displayActivities = isExpanded ? activities : activities.slice(0, 6);
+  
+  // 생산적인 활동만 필터링 (취소, 삭제 등 제외)
+  const filteredActivities = activities.filter(a => 
+    !a.action.includes("취소") && 
+    !a.action.includes("삭제") && 
+    !a.action.includes("거부")
+  );
+
+  const displayActivities = isExpanded ? filteredActivities : filteredActivities.slice(0, 6);
 
   const getMemberInfo = (userName: string) => {
     return TEAM_MEMBERS[userName as keyof typeof TEAM_MEMBERS] || {
