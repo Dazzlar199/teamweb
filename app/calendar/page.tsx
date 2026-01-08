@@ -21,7 +21,7 @@ export default function CalendarPage() {
 
   const [showAddForm, setShowAddForm] = useState(false);
   const [selectedDate, setSelectedDate] = useState<number>(currentDate);
-  const [viewEvent, setViewEvent] = useState<Event | null>(null); // 일정 상세 보기 모달용
+  const [viewEvent, setViewEvent] = useState<any | null>(null); // 일정 및 공휴일 통합 수용 (타입 오류 방지)
 
   const [newEvent, setNewEvent] = useState({
     title: "",
@@ -247,11 +247,11 @@ export default function CalendarPage() {
         {viewEvent && (
           <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center z-[110] p-4">
             <div className="bg-white rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden animate-slide-in">
-              <div className="p-6 border-b border-slate-100 flex justify-between items-center" style={{ borderLeft: `8px solid ${TEAM_MEMBERS[viewEvent.createdBy as keyof typeof TEAM_MEMBERS]?.color}` }}>
+              <div className="p-6 border-b border-slate-100 flex justify-between items-center" style={{ borderLeft: `8px solid ${viewEvent.createdBy === "시스템" ? "#f43f5e" : (TEAM_MEMBERS[viewEvent.createdBy as keyof typeof TEAM_MEMBERS]?.color || "#64748b")}` }}>
                 <div>
                   <div className="flex items-center gap-2 mb-1">
-                    <span className="px-2 py-0.5 bg-slate-100 text-slate-500 text-[10px] font-black rounded">{viewEvent.time}</span>
-                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{viewEvent.location || "장소 미정"}</span>
+                    {viewEvent.time && <span className="px-2 py-0.5 bg-slate-100 text-slate-500 text-[10px] font-black rounded">{viewEvent.time}</span>}
+                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{viewEvent.location || (viewEvent.createdBy === "시스템" ? "법정공휴일" : "장소 미정")}</span>
                   </div>
                   <h2 className="text-xl font-black text-slate-900">{viewEvent.title}</h2>
                 </div>
@@ -260,25 +260,33 @@ export default function CalendarPage() {
               <div className="p-8 space-y-6">
                 <div>
                   <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest block mb-2">일정 내용</label>
-                  <p className="text-sm text-slate-600 font-medium leading-relaxed bg-slate-50 p-4 rounded-2xl">{viewEvent.description || "상세 설명이 없습니다."}</p>
+                  <p className="text-sm text-slate-600 font-medium leading-relaxed bg-slate-50 p-4 rounded-2xl">{viewEvent.description || (viewEvent.createdBy === "시스템" ? "공식 공휴일입니다." : "상세 설명이 없습니다.")}</p>
                 </div>
-                <div>
-                  <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest block mb-3">참여자 ({viewEvent.participants?.length || 0}명)</label>
-                  <div className="flex flex-wrap gap-2">
-                    {viewEvent.participants?.map(p => (
-                      <div key={p} className="flex items-center gap-2 px-3 py-1.5 bg-white border border-slate-100 rounded-xl shadow-sm">
-                        <div className="w-5 h-5 rounded-full flex items-center justify-center text-[8px] font-bold text-white" style={{ backgroundColor: TEAM_MEMBERS[p as keyof typeof TEAM_MEMBERS]?.color }}>{p[0]}</div>
-                        <span className="text-xs font-bold text-slate-700">{p}</span>
-                      </div>
-                    ))}
+                {viewEvent.createdBy !== "시스템" && (
+                  <div>
+                    <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest block mb-3">참여자 ({viewEvent.participants?.length || 0}명)</label>
+                    <div className="flex flex-wrap gap-2">
+                      {viewEvent.participants?.map((p: string) => (
+                        <div key={p} className="flex items-center gap-2 px-3 py-1.5 bg-white border border-slate-100 rounded-xl shadow-sm">
+                          <div className="w-5 h-5 rounded-full flex items-center justify-center text-[8px] font-bold text-white" style={{ backgroundColor: TEAM_MEMBERS[p as keyof typeof TEAM_MEMBERS]?.color }}>{p[0]}</div>
+                          <span className="text-xs font-bold text-slate-700">{p}</span>
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
               <div className="p-6 bg-slate-50 flex gap-3">
-                <button onClick={async () => { if(confirm('일정을 삭제할까요?')) { await deleteEvent(viewEvent.id); setViewEvent(null); refreshEvents(); showToast('삭제되었습니다.', 'info'); } }} className="px-4 py-3 text-sm font-bold text-rose-500 hover:bg-rose-50 rounded-2xl transition-all">삭제</button>
-                <button onClick={() => handleToggleParticipation(viewEvent.id)} className={`flex-1 py-3 font-black text-white rounded-2xl shadow-lg transition-all ${viewEvent.participants?.includes(currentUser) ? "bg-rose-500 hover:bg-rose-600 shadow-rose-100" : "bg-indigo-600 hover:bg-indigo-700 shadow-indigo-100"}`}>
-                  {viewEvent.participants?.includes(currentUser) ? "일정 참여 취소" : "이 일정에 참여하기"}
-                </button>
+                {viewEvent.createdBy !== "시스템" ? (
+                  <>
+                    <button onClick={async () => { if(confirm('일정을 삭제할까요?')) { await deleteEvent(viewEvent.id); setViewEvent(null); refreshEvents(); showToast('삭제되었습니다.', 'info'); } }} className="px-4 py-3 text-sm font-bold text-rose-500 hover:bg-rose-50 rounded-2xl transition-all">삭제</button>
+                    <button onClick={() => handleToggleParticipation(viewEvent.id)} className={`flex-1 py-3 font-black text-white rounded-2xl shadow-lg transition-all ${viewEvent.participants?.includes(currentUser) ? "bg-rose-500 hover:bg-rose-600 shadow-rose-100" : "bg-indigo-600 hover:bg-indigo-700 shadow-indigo-100"}`}>
+                      {viewEvent.participants?.includes(currentUser) ? "일정 참여 취소" : "이 일정에 참여하기"}
+                    </button>
+                  </>
+                ) : (
+                  <button onClick={() => setViewEvent(null)} className="flex-1 py-3 bg-slate-900 text-white font-black rounded-2xl">확인</button>
+                )}
               </div>
             </div>
           </div>
