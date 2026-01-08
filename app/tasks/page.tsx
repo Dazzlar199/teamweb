@@ -124,7 +124,7 @@ export default function TasksPage() {
         {/* 필터 바 */}
         <div className="glass-card p-2 rounded-2xl flex flex-wrap items-center gap-2">
           <div className="flex bg-slate-100 p-1 rounded-xl">
-            {["전체", "todo", "in-progress", "done"].map((s) => (
+            {["전체", "todo", "in_progress", "done"].map((s) => (
               <button
                 key={s}
                 onClick={() => setStatusFilter(s)}
@@ -132,7 +132,7 @@ export default function TasksPage() {
                   filterStatus === s ? "bg-white text-indigo-600 shadow-sm" : "text-slate-500 hover:text-slate-800"
                 }`}
               >
-                {s === "todo" ? "대기" : s === "in-progress" ? "진행" : s === "done" ? "완료" : "전체 상태"}
+                {s === "todo" ? "대기" : s === "in_progress" ? "진행" : s === "done" ? "완료" : "전체 상태"}
               </button>
             ))}
           </div>
@@ -202,7 +202,7 @@ export default function TasksPage() {
                   {/* 진행률 바 (상태별) */}
                   <div className="h-1.5 w-full bg-slate-100">
                     <div className={`h-full transition-all duration-500 ${
-                      task.status === 'done' ? 'bg-emerald-500 w-full' : task.status === 'in-progress' ? 'bg-indigo-500 w-1/2' : 'bg-slate-300 w-1/4'
+                      task.status === 'done' ? 'bg-emerald-500 w-full' : task.status === 'in_progress' ? 'bg-indigo-500 w-1/2' : 'bg-slate-300 w-1/4'
                     }`} />
                   </div>
                 </div>
