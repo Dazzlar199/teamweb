@@ -1,0 +1,9 @@
+{
+  "name": "root-proxy",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "cd apps/team-dashboard && npm run dev",
+    "build": "cd apps/team-dashboard && npm run build",
+    "start": "cd apps/team-dashboard && npm run start"
+  }
+}
