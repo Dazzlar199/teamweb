@@ -1,18 +1,10 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  async redirects() {
-    return [
-      {
-        source: "/inbloom",
-        destination: "/inbloom/index.html",
-        permanent: false,
-      },
-    ];
-  },
-  // Vercel 배포를 위한 설정
+  // 정적 파일 서빙을 방해하는 리다이렉트 제거
   trailingSlash: false,
 };
 
 export default nextConfig;
-// Final build trigger with Root Directory: apps/team-dashboard
+// Optimized for stable deployment
+
