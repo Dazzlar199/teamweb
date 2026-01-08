@@ -8,6 +8,7 @@ import { useData } from "@/lib/context/DataContext";
 import { useToast } from "@/lib/context/ToastContext";
 import { addActivityLog } from "@/lib/utils/activityLog";
 import type { Task } from "@/lib/types/task";
+import RichTextEditor from "@/components/common/RichTextEditor";
 
 export default function TasksPage() {
   const { user, canModify } = useUser();
@@ -183,7 +184,9 @@ export default function TasksPage() {
                     
                     <div className="space-y-1">
                       <h3 className="text-[16px] font-bold text-slate-900 group-hover:text-indigo-600 transition-colors line-clamp-1">{task.title}</h3>
-                      <p className="text-xs text-slate-500 line-clamp-2 leading-relaxed">{task.description || "설명이 없습니다."}</p>
+                      <p className="text-xs text-slate-500 line-clamp-2 leading-relaxed">
+                        {task.description ? task.description.replace(/<[^>]*>?/gm, '') : "설명이 없습니다."}
+                      </p>
                     </div>
 
                     <div className="pt-4 border-t border-slate-50 flex items-center justify-between">
@@ -259,13 +262,13 @@ export default function TasksPage() {
                 </div>
                 <div className="space-y-1">
                   <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">설명 (선택)</label>
-                  <textarea 
-                    rows={3}
-                    value={newTask.description}
-                    onChange={(e) => setNewTask({...newTask, description: e.target.value})}
-                    placeholder="상세 내용을 입력하세요..."
-                    className="w-full px-4 py-3 bg-slate-50 border-none rounded-2xl text-sm font-medium resize-none outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
-                  />
+                  <div className="border border-slate-100 rounded-2xl overflow-hidden bg-slate-50">
+                    <RichTextEditor 
+                      value={newTask.description}
+                      onChange={(content) => setNewTask({...newTask, description: content})}
+                      placeholder="상세 내용을 입력하세요... (이미지 첨부 가능)"
+                    />
+                  </div>
                 </div>
               </div>
               <div className="p-6 bg-slate-50 flex gap-3">
