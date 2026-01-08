@@ -51,7 +51,7 @@ export function subscribeToNotifications(userName: string, callback: () => void)
  * 새 알림 추가 (특정 사용자 또는 전체 팀)
  */
 export async function addNotification(
-  notification: Omit<Notification, 'id' | 'timestamp' | 'read'>,
+  notification: Omit<Notification, 'id' | 'timestamp' | 'read' | 'user_name'>,
   targetUsers?: string[]
 ): Promise<void> {
   const users = targetUsers && targetUsers.length > 0 ? targetUsers : ["김찬주", "박건희", "김예린", "이나영"]; // 정정된 팀원 명단
