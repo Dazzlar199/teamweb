@@ -81,4 +81,5 @@ export default function RichTextEditor({ value, onChange, placeholder }: EditorP
         .ql-snow .ql-picker.ql-header .ql-picker-item[data-value="3"]::before { content: '제목 3'; }
       `}</style>
     </div>
-  );\n}
+  );
+}
