@@ -1,0 +1,5211 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>특별시 UI/UX 디자인 지침서 - 디자인 시스템 가이드</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600;700;800;900&family=Montserrat:wght@300;400;500;600;700;800;900&family=Noto+Sans+KR:wght@300;400;500;700;900&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary: #18181b;
+        --primary-light: #3f3f46;
+        --primary-dark: #09090b;
+        --accent: #52525b;
+        --accent-light: #71717a;
+        --bg-light: #fafafa;
+        --bg-dark: #18181b;
+        --text-dark: #18181b;
+        --text-gray: #52525b;
+        --text-light: #a1a1aa;
+        --border: #e4e4e7;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+        --info: #3b82f6;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        font-family: "Inter", "Noto Sans KR", -apple-system, BlinkMacSystemFont,
+          sans-serif;
+        background: #f4f4f5;
+        color: var(--text-dark);
+        line-height: 1.7;
+        letter-spacing: -0.02em;
+      }
+
+      /* 페이지 레이아웃 */
+      .page {
+        width: 210mm;
+        min-height: 297mm;
+        padding: 15mm 20mm 25mm 20mm;
+        margin: 20px auto;
+        background: white;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25),
+          0 0 0 1px rgba(255, 255, 255, 0.05);
+        page-break-after: always;
+        page-break-inside: avoid;
+        border-radius: 4px;
+        position: relative;
+      }
+
+      .no-break {
+        page-break-inside: avoid;
+        break-inside: avoid;
+      }
+
+      .page-break {
+        page-break-before: always;
+      }
+
+      @media print {
+        body {
+          background: white;
+        }
+        .page {
+          margin: 0;
+          box-shadow: none;
+          page-break-after: always;
+          page-break-inside: avoid;
+        }
+        .sidebar {
+          display: none;
+        }
+      }
+
+      /* 표지 */
+      .cover {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        min-height: 257mm;
+      }
+
+      .cover-badge {
+        display: inline-block;
+        background: var(--primary);
+        color: white;
+        padding: 8px 24px;
+        border-radius: 30px;
+        font-size: 14px;
+        font-weight: 500;
+        margin-bottom: 30px;
+      }
+
+      .cover-title {
+        font-size: 42px;
+        font-weight: 900;
+        color: var(--text-dark);
+        margin-bottom: 16px;
+        line-height: 1.3;
+      }
+
+      .cover-subtitle {
+        font-size: 20px;
+        color: var(--text-gray);
+        margin-bottom: 40px;
+      }
+
+      .cover-info {
+        margin-top: 40px;
+        padding: 24px 40px;
+        background: var(--bg-light);
+        border-radius: 16px;
+      }
+
+      .cover-info p {
+        font-size: 15px;
+        color: var(--text-gray);
+        margin: 8px 0;
+      }
+
+      .cover-info strong {
+        color: var(--primary);
+      }
+
+      /* 섹션 헤더 */
+      .section-header {
+        margin-bottom: 30px;
+        padding-bottom: 20px;
+        border-bottom: 3px solid var(--primary);
+        page-break-inside: avoid;
+        page-break-after: avoid;
+      }
+
+      .section-badge {
+        display: inline-block;
+        background: var(--primary);
+        color: white;
+        padding: 6px 16px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        margin-bottom: 12px;
+      }
+
+      .section-title {
+        font-size: 28px;
+        font-weight: 700;
+        color: var(--text-dark);
+        margin-bottom: 8px;
+      }
+
+      .section-desc {
+        font-size: 15px;
+        color: var(--text-gray);
+      }
+
+      /* 타이포그래피 */
+      h3 {
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--primary-dark);
+        margin: 24px 0 12px 0;
+        padding: 0 0 12px 12px;
+        page-break-after: avoid;
+        page-break-inside: avoid;
+        border-left: 4px solid var(--primary);
+      }
+
+      h4 {
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--text-dark);
+        margin: 20px 0 10px 0;
+        page-break-after: avoid;
+        page-break-inside: avoid;
+      }
+
+      p {
+        font-size: 14px;
+        margin-bottom: 12px;
+        text-align: justify;
+      }
+
+      /* 목록 */
+      ul,
+      ol {
+        margin: 12px 0 12px 24px;
+        font-size: 14px;
+      }
+
+      li {
+        margin: 8px 0;
+        line-height: 1.6;
+      }
+
+      /* 코드 블록 */
+      code {
+        background: #f3f4f6;
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-family: "SF Mono", "Monaco", "Consolas", monospace;
+        font-size: 13px;
+        color: var(--text-dark);
+      }
+
+      pre {
+        background: #f9fafb;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 16px;
+        margin: 16px 0;
+        overflow-x: auto;
+        font-family: "SF Mono", "Monaco", "Consolas", monospace;
+        font-size: 13px;
+        line-height: 1.6;
+        page-break-inside: avoid;
+      }
+
+      pre code {
+        background: none;
+        padding: 0;
+      }
+
+      /* 알림 박스 */
+      .alert {
+        padding: 16px 20px;
+        border-radius: 8px;
+        margin: 16px 0;
+        font-size: 13px;
+        line-height: 1.6;
+        page-break-inside: avoid;
+      }
+
+      .alert-info {
+        background: #eff6ff;
+        border-left: 4px solid #3b82f6;
+        color: #1e3a8a;
+      }
+
+      .alert-warning {
+        background: #fffbeb;
+        border-left: 4px solid #f59e0b;
+        color: #92400e;
+      }
+
+      .alert-danger {
+        background: #fef2f2;
+        border-left: 4px solid #ef4444;
+        color: #991b1b;
+      }
+
+      .alert-success {
+        background: #ecfdf5;
+        border-left: 4px solid #10b981;
+        color: #065f46;
+      }
+
+      .alert-title {
+        font-weight: 600;
+        margin-bottom: 6px;
+      }
+
+      /* 표 */
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 16px 0;
+        font-size: 13px;
+        page-break-inside: auto;
+      }
+
+      th,
+      td {
+        padding: 12px 16px;
+        text-align: left;
+        border: 1px solid var(--border);
+      }
+
+      th {
+        background: var(--primary);
+        color: white;
+        font-weight: 600;
+      }
+
+      tr:nth-child(even) {
+        background: var(--bg-light);
+      }
+
+      /* 컬러 스왑 */
+      .color-swatch {
+        display: inline-block;
+        width: 60px;
+        height: 60px;
+        border-radius: 8px;
+        border: 2px solid var(--border);
+        margin-right: 12px;
+        vertical-align: middle;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .color-info {
+        display: inline-block;
+        vertical-align: middle;
+      }
+
+      .color-name {
+        font-weight: 600;
+        margin-bottom: 4px;
+      }
+
+      .color-code {
+        font-family: "SF Mono", monospace;
+        font-size: 12px;
+        color: var(--text-gray);
+      }
+
+      /* 체크리스트 */
+      .checklist {
+        list-style: none;
+        margin: 16px 0;
+      }
+
+      .checklist li {
+        padding: 10px 0 10px 32px;
+        position: relative;
+        font-size: 14px;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .checklist li:before {
+        content: "☐";
+        position: absolute;
+        left: 0;
+        color: var(--primary);
+        font-size: 16px;
+      }
+
+      /* 번호 리스트 */
+      .numbered-list {
+        counter-reset: item;
+        list-style: none;
+        margin: 16px 0;
+      }
+
+      .numbered-list li {
+        position: relative;
+        padding: 12px 0 12px 44px;
+        font-size: 14px;
+        border-bottom: 1px dashed var(--border);
+      }
+
+      .numbered-list li:before {
+        counter-increment: item;
+        content: counter(item);
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 28px;
+        height: 28px;
+        background: var(--primary);
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+        font-weight: 700;
+      }
+
+      /* 목차 */
+      .toc {
+        background: var(--bg-light);
+        border-radius: 16px;
+        padding: 30px;
+      }
+
+      .toc-title {
+        font-size: 20px;
+        font-weight: 700;
+        color: var(--primary);
+        margin-bottom: 20px;
+        padding-bottom: 12px;
+        border-bottom: 2px solid var(--primary);
+      }
+
+      .toc-list {
+        list-style: none;
+      }
+
+      .toc-list > li {
+        margin: 16px 0;
+        page-break-inside: avoid;
+      }
+
+      .toc-part {
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--text-dark);
+      }
+
+      .toc-link {
+        text-decoration: none;
+        display: block;
+        padding: 8px 12px;
+        margin: -8px -12px;
+        border-radius: 8px;
+        transition: all 0.2s ease;
+        color: var(--text-dark);
+      }
+
+      .toc-link:hover {
+        background: rgba(24, 24, 27, 0.08);
+      }
+
+      .toc-sub {
+        list-style: none;
+        margin-top: 8px;
+        padding-left: 20px;
+      }
+
+      .toc-sub li {
+        font-size: 13px;
+        color: var(--text-gray);
+        margin: 6px 0;
+        padding-left: 16px;
+        position: relative;
+      }
+
+      .toc-sub li:before {
+        content: "•";
+        position: absolute;
+        left: 0;
+        color: var(--primary);
+      }
+
+      /* 페이지 번호 */
+      .page-number {
+        position: absolute;
+        bottom: 15mm;
+        right: 25mm;
+        font-size: 12px;
+        color: var(--text-light);
+      }
+
+      /* 사이드바 네비게이션 */
+      .sidebar {
+        position: fixed;
+        left: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 240px;
+        max-height: 80vh;
+        overflow-y: auto;
+        background: white;
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+      }
+
+      .sidebar-title {
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--primary);
+        margin-bottom: 16px;
+        padding-bottom: 12px;
+        border-bottom: 2px solid var(--primary);
+      }
+
+      .sidebar-nav {
+        list-style: none;
+      }
+
+      .sidebar-nav li {
+        margin: 4px 0;
+      }
+
+      .sidebar-nav a {
+        display: block;
+        padding: 8px 12px;
+        font-size: 13px;
+        color: var(--text-gray);
+        text-decoration: none;
+        border-radius: 6px;
+        transition: all 0.2s;
+      }
+
+      .sidebar-nav a:hover {
+        background: var(--bg-light);
+        color: var(--primary);
+      }
+
+      .sidebar-nav a.active {
+        background: var(--primary);
+        color: white;
+      }
+
+      @media (max-width: 1400px) {
+        .sidebar {
+          display: none;
+        }
+      }
+
+      /* 유틸리티 */
+      .text-center {
+        text-align: center;
+      }
+      .text-primary {
+        color: var(--primary);
+      }
+      .font-bold {
+        font-weight: 700;
+      }
+      .mt-20 {
+        margin-top: 20px;
+      }
+      .mb-20 {
+        margin-bottom: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- 사이드바 네비게이션 -->
+    <nav class="sidebar">
+      <div class="sidebar-title">목차</div>
+      <ul class="sidebar-nav">
+        <li><a href="#section-0">0. 디자인 시스템 개요</a></li>
+        <li><a href="#section-1">1. 컬러 팔레트</a></li>
+        <li><a href="#section-2">2. 타이포그래피</a></li>
+        <li><a href="#section-3">3. 스페이싱 & 레이아웃</a></li>
+        <li><a href="#section-4">4. 컴포넌트 가이드</a></li>
+        <li><a href="#section-5">5. Flutter 구현</a></li>
+        <li><a href="#section-6">6. Next.js 웹 구현</a></li>
+        <li><a href="#section-6-1">6-1. 애니메이션 & 모션</a></li>
+        <li><a href="#section-7">7. 반응형 디자인</a></li>
+        <li><a href="#section-8">8. 접근성 가이드</a></li>
+      </ul>
+    </nav>
+
+    <!-- 표지 -->
+    <div class="page">
+      <div class="cover">
+        <div class="cover-badge">Design System Guide</div>
+        <h1 class="cover-title">특별시 UI/UX 디자인 지침서</h1>
+        <p class="cover-subtitle">
+          Flutter 앱 & Next.js 웹 디자인 시스템 가이드
+        </p>
+
+        <div class="cover-info">
+          <p><strong>버전:</strong> 1.1 (최종 검수 완료)</p>
+          <p><strong>최종 업데이트:</strong> 2026년 1월 2일</p>
+          <p><strong>대상:</strong> 디자이너, 개발자</p>
+          <p>
+            <strong>범위:</strong> 컬러, 타이포그래피, 컴포넌트, 레이아웃, 구현
+            가이드
+          </p>
+          <p><strong>플랫폼:</strong> Flutter (iOS/Android) & Next.js (Web)</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 목차 -->
+    <div class="page">
+      <div class="toc">
+        <div class="toc-title">목차 (Table of Contents)</div>
+        <ul class="toc-list">
+          <li class="no-break">
+            <a href="#section-0" class="toc-link">
+              <div class="toc-part">제0장. 디자인 시스템 개요</div>
+            </a>
+            <ul class="toc-sub">
+              <li>디자인 컨셉</li>
+              <li>디자인 원칙</li>
+              <li>플랫폼별 적용</li>
+            </ul>
+          </li>
+          <li class="no-break">
+            <a href="#section-1" class="toc-link">
+              <div class="toc-part">제1장. 컬러 팔레트</div>
+            </a>
+            <ul class="toc-sub">
+              <li>Primary & Accent 컬러</li>
+              <li>Semantic 컬러</li>
+              <li>Background & Text 컬러</li>
+              <li>카테고리별 컬러</li>
+              <li>그라데이션</li>
+            </ul>
+          </li>
+          <li class="no-break">
+            <a href="#section-2" class="toc-link">
+              <div class="toc-part">제2장. 타이포그래피</div>
+            </a>
+            <ul class="toc-sub">
+              <li>폰트 시스템</li>
+              <li>타입 스케일</li>
+              <li>사용 가이드</li>
+            </ul>
+          </li>
+          <li class="no-break">
+            <a href="#section-3" class="toc-link">
+              <div class="toc-part">제3장. 스페이싱 & 레이아웃</div>
+            </a>
+            <ul class="toc-sub">
+              <li>스페이싱 시스템</li>
+              <li>그리드 시스템</li>
+              <li>레이아웃 패턴</li>
+            </ul>
+          </li>
+          <li class="no-break">
+            <a href="#section-4" class="toc-link">
+              <div class="toc-part">제4장. 컴포넌트 가이드</div>
+            </a>
+            <ul class="toc-sub">
+              <li>버튼</li>
+              <li>카드</li>
+              <li>입력 필드</li>
+              <li>배지 & 태그</li>
+              <li>그림자 & Border Radius</li>
+              <li>아이콘 & 이미지</li>
+              <li>로딩, 토스트, 모달</li>
+              <li>리스트, 탭, Bottom Sheet</li>
+            </ul>
+          </li>
+          <li class="no-break">
+            <a href="#section-5" class="toc-link">
+              <div class="toc-part">제5장. Flutter 구현</div>
+            </a>
+            <ul class="toc-sub">
+              <li>컬러 사용법</li>
+              <li>타이포그래피 사용법</li>
+              <li>컴포넌트 예시</li>
+            </ul>
+          </li>
+          <li class="no-break">
+            <a href="#section-6" class="toc-link">
+              <div class="toc-part">제6장. Next.js 웹 구현</div>
+            </a>
+            <ul class="toc-sub">
+              <li>CSS 변수 설정</li>
+              <li>Tailwind 설정</li>
+              <li>컴포넌트 예시</li>
+            </ul>
+          </li>
+          <li class="no-break">
+            <a href="#section-6-1" class="toc-link">
+              <div class="toc-part">제6-1장. 애니메이션 & 모션 가이드</div>
+            </a>
+            <ul class="toc-sub">
+              <li>애니메이션 원칙</li>
+              <li>Duration & Easing</li>
+              <li>타입별 가이드 (Fade, Slide, Scale, Rotation)</li>
+              <li>Flutter & Next.js 구현</li>
+              <li>성능 최적화</li>
+            </ul>
+          </li>
+          <li class="no-break">
+            <a href="#section-7" class="toc-link">
+              <div class="toc-part">제7장. 반응형 디자인</div>
+            </a>
+            <ul class="toc-sub">
+              <li>브레이크포인트</li>
+              <li>모바일 우선</li>
+              <li>적응형 레이아웃</li>
+            </ul>
+          </li>
+          <li class="no-break">
+            <a href="#section-8" class="toc-link">
+              <div class="toc-part">제8장. 접근성 가이드</div>
+            </a>
+            <ul class="toc-sub">
+              <li>컬러 대비</li>
+              <li>터치 타겟</li>
+              <li>스크린 리더</li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 제0장: 디자인 시스템 개요 -->
+    <div class="page page-break" id="section-0">
+      <div class="section-header">
+        <div class="section-badge">Chapter 00</div>
+        <h2 class="section-title">디자인 시스템 개요</h2>
+        <p class="section-desc">
+          특별시 (The Special Time) 디자인 철학 및 원칙
+        </p>
+      </div>
+
+      <h3>0.1. 디자인 컨셉</h3>
+
+      <p>
+        <strong>특별시</strong>는 웨딩 프리랜서 매칭 플랫폼으로, 따뜻하고
+        로맨틱한 감성을 추구합니다.
+      </p>
+
+      <h4>핵심 가치</h4>
+      <ul>
+        <li><strong>Warmth</strong>: 특별한 순간의 따뜻함</li>
+        <li><strong>Romance</strong>: 로맨틱하고 우아한 분위기</li>
+        <li><strong>Luxury</strong>: 프리미엄 웨딩 서비스</li>
+        <li><strong>Trust</strong>: 신뢰감 있는 서비스</li>
+      </ul>
+
+      <h3>0.2. 디자인 원칙</h3>
+
+      <table>
+        <thead>
+          <tr>
+            <th>원칙</th>
+            <th>설명</th>
+            <th>적용 예시</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Clarity</strong></td>
+            <td>모든 요소가 명확한 목적</td>
+            <td>불필요한 장식 제거, 명확한 계층 구조</td>
+          </tr>
+          <tr>
+            <td><strong>Consistency</strong></td>
+            <td>일관된 패턴 사용</td>
+            <td>동일한 버튼 스타일, 스페이싱 규칙</td>
+          </tr>
+          <tr>
+            <td><strong>Accessibility</strong></td>
+            <td>모든 사용자 접근 가능</td>
+            <td>WCAG AA 준수, 충분한 컬러 대비</td>
+          </tr>
+          <tr>
+            <td><strong>Performance</strong></td>
+            <td>빠르고 부드러운 경험</td>
+            <td>이미지 최적화, 애니메이션 최소화</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>0.3. 플랫폼별 적용</h3>
+
+      <div class="alert alert-info">
+        <div class="alert-title">플랫폼별 차이점</div>
+        <ul>
+          <li>
+            <strong>Flutter (앱):</strong> iOS/Android 네이티브 가이드라인 준수,
+            터치 중심
+          </li>
+          <li>
+            <strong>Next.js (웹):</strong> SEO 최적화, 데스크탑/태블릿 고려,
+            마우스/키보드 지원
+          </li>
+          <li>
+            <strong>공통:</strong> 컬러 팔레트, 타이포그래피, 컴포넌트 스타일
+            동일
+          </li>
+        </ul>
+      </div>
+
+      <div class="page-number">0</div>
+    </div>
+
+    <!-- 제1장: 컬러 팔레트 -->
+    <div class="page page-break" id="section-1">
+      <div class="section-header">
+        <div class="section-badge">Chapter 01</div>
+        <h2 class="section-title">컬러 팔레트</h2>
+        <p class="section-desc">모든 컬러 코드 및 사용 가이드</p>
+      </div>
+
+      <div class="alert alert-info">
+        <div class="alert-title">컬러 검색 방법</div>
+        <p>
+          이 문서에서 원하는 컬러를 찾으려면 브라우저의 "검색" 기능(Ctrl+F /
+          Cmd+F)을 사용하여 HEX 코드나 컬러 이름을 검색하세요.
+        </p>
+        <p>
+          예: <code>#B8860B</code>, <code>primary</code>, <code>골드</code> 등
+        </p>
+      </div>
+
+      <h3>1.0. 컬러 피커 도구</h3>
+
+      <p>
+        원하는 색상을 선택하면 HEX, RGB, Flutter 코드를 바로 확인할 수 있습니다.
+      </p>
+
+      <div
+        style="
+          background: var(--bg-light);
+          padding: 24px;
+          border-radius: 12px;
+          margin: 20px 0;
+        "
+      >
+        <div
+          style="
+            display: flex;
+            gap: 24px;
+            align-items: flex-start;
+            flex-wrap: wrap;
+          "
+        >
+          <!-- 컬러 피커 -->
+          <div style="flex: 1; min-width: 250px">
+            <label
+              for="colorPicker"
+              style="display: block; margin-bottom: 12px; font-weight: 600"
+              >색상 선택</label
+            >
+            <div style="display: flex; gap: 12px; align-items: center">
+              <input
+                type="color"
+                id="colorPicker"
+                value="#B8860B"
+                style="
+                  width: 80px;
+                  height: 80px;
+                  border: 2px solid var(--border);
+                  border-radius: 8px;
+                  cursor: pointer;
+                "
+              />
+              <div style="flex: 1">
+                <div
+                  style="
+                    font-size: 13px;
+                    color: var(--text-gray);
+                    margin-bottom: 8px;
+                  "
+                >
+                  선택된 색상
+                </div>
+                <div
+                  id="selectedColorPreview"
+                  style="
+                    width: 100%;
+                    height: 60px;
+                    background: #b8860b;
+                    border: 2px solid var(--border);
+                    border-radius: 8px;
+                    margin-bottom: 12px;
+                  "
+                ></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 코드 표시 -->
+          <div style="flex: 1; min-width: 250px">
+            <div style="font-weight: 600; margin-bottom: 12px">컬러 코드</div>
+            <div
+              style="
+                background: white;
+                padding: 16px;
+                border-radius: 8px;
+                border: 1px solid var(--border);
+              "
+            >
+              <div style="margin-bottom: 12px">
+                <div
+                  style="
+                    font-size: 12px;
+                    color: var(--text-gray);
+                    margin-bottom: 4px;
+                  "
+                >
+                  HEX
+                </div>
+                <div style="display: flex; gap: 8px; align-items: center">
+                  <code
+                    id="hexCode"
+                    style="
+                      flex: 1;
+                      padding: 8px;
+                      background: var(--bg-light);
+                      border-radius: 4px;
+                      font-size: 14px;
+                    "
+                    >#B8860B</code
+                  >
+                  <button
+                    onclick="copyToClipboard('hexCode')"
+                    style="
+                      padding: 8px 12px;
+                      background: var(--primary);
+                      color: white;
+                      border: none;
+                      border-radius: 4px;
+                      cursor: pointer;
+                      font-size: 12px;
+                    "
+                  >
+                    복사
+                  </button>
+                </div>
+              </div>
+              <div style="margin-bottom: 12px">
+                <div
+                  style="
+                    font-size: 12px;
+                    color: var(--text-gray);
+                    margin-bottom: 4px;
+                  "
+                >
+                  RGB
+                </div>
+                <div style="display: flex; gap: 8px; align-items: center">
+                  <code
+                    id="rgbCode"
+                    style="
+                      flex: 1;
+                      padding: 8px;
+                      background: var(--bg-light);
+                      border-radius: 4px;
+                      font-size: 14px;
+                    "
+                    >rgb(184, 134, 11)</code
+                  >
+                  <button
+                    onclick="copyToClipboard('rgbCode')"
+                    style="
+                      padding: 8px 12px;
+                      background: var(--primary);
+                      color: white;
+                      border: none;
+                      border-radius: 4px;
+                      cursor: pointer;
+                      font-size: 12px;
+                    "
+                  >
+                    복사
+                  </button>
+                </div>
+              </div>
+              <div>
+                <div
+                  style="
+                    font-size: 12px;
+                    color: var(--text-gray);
+                    margin-bottom: 4px;
+                  "
+                >
+                  Flutter
+                </div>
+                <div style="display: flex; gap: 8px; align-items: center">
+                  <code
+                    id="flutterCode"
+                    style="
+                      flex: 1;
+                      padding: 8px;
+                      background: var(--bg-light);
+                      border-radius: 4px;
+                      font-size: 14px;
+                    "
+                    >Color(0xFFB8860B)</code
+                  >
+                  <button
+                    onclick="copyToClipboard('flutterCode')"
+                    style="
+                      padding: 8px 12px;
+                      background: var(--primary);
+                      color: white;
+                      border: none;
+                      border-radius: 4px;
+                      cursor: pointer;
+                      font-size: 12px;
+                    "
+                  >
+                    복사
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="alert alert-success">
+        <div class="alert-title">사용 방법</div>
+        <ol style="margin: 0; padding-left: 20px">
+          <li>컬러 피커를 클릭하여 원하는 색상을 선택하세요</li>
+          <li>선택한 색상의 HEX, RGB, Flutter 코드가 자동으로 표시됩니다</li>
+          <li>"복사" 버튼을 클릭하면 해당 코드가 클립보드에 복사됩니다</li>
+          <li>코드를 직접 사용하거나 문서에서 비슷한 색상을 검색해보세요</li>
+        </ol>
+      </div>
+
+      <h3>1.1. Primary & Accent 컬러</h3>
+
+      <p>웨딩 브랜드의 핵심 컬러입니다.</p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>컬러 이름</th>
+            <th>스왑</th>
+            <th>HEX 코드</th>
+            <th>Flutter 코드</th>
+            <th>CSS 변수</th>
+            <th>용도</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>primary</strong><br />메인 골드</td>
+            <td>
+              <span class="color-swatch" style="background: #b8860b"></span>
+            </td>
+            <td><code>#B8860B</code></td>
+            <td><code>AppColors.primary</code></td>
+            <td><code>--color-primary</code></td>
+            <td>메인 브랜드 컬러, CTA 버튼</td>
+          </tr>
+          <tr>
+            <td><strong>primaryLight</strong><br />밝은 골드</td>
+            <td>
+              <span class="color-swatch" style="background: #d4a574"></span>
+            </td>
+            <td><code>#D4A574</code></td>
+            <td><code>AppColors.primaryLight</code></td>
+            <td><code>--color-primary-light</code></td>
+            <td>호버 상태, 서브 액션</td>
+          </tr>
+          <tr>
+            <td><strong>primarySoft</strong><br />아이보리 배경</td>
+            <td>
+              <span class="color-swatch" style="background: #fdf5e6"></span>
+            </td>
+            <td><code>#FDF5E6</code></td>
+            <td><code>AppColors.primarySoft</code></td>
+            <td><code>--color-primary-soft</code></td>
+            <td>배지, 태그 배경</td>
+          </tr>
+          <tr>
+            <td><strong>accent</strong><br />샴페인 골드</td>
+            <td>
+              <span class="color-swatch" style="background: #d4af37"></span>
+            </td>
+            <td><code>#D4AF37</code></td>
+            <td><code>AppColors.accent</code></td>
+            <td><code>--color-accent</code></td>
+            <td>강조, 특별 요소</td>
+          </tr>
+          <tr>
+            <td><strong>accentLight</strong><br />라이트 액센트</td>
+            <td>
+              <span class="color-swatch" style="background: #fff8e7"></span>
+            </td>
+            <td><code>#FFF8E7</code></td>
+            <td><code>AppColors.accentLight</code></td>
+            <td><code>--color-accent-light</code></td>
+            <td>배지 배경</td>
+          </tr>
+          <tr>
+            <td><strong>accentDark</strong><br />다크 액센트</td>
+            <td>
+              <span class="color-swatch" style="background: #c5a028"></span>
+            </td>
+            <td><code>#C5A028</code></td>
+            <td><code>AppColors.accentDark</code></td>
+            <td><code>--color-accent-dark</code></td>
+            <td>호버 상태</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>1.2. Semantic 컬러 (상태 표시)</h3>
+
+      <table>
+        <thead>
+          <tr>
+            <th>컬러 이름</th>
+            <th>스왑</th>
+            <th>HEX 코드</th>
+            <th>Flutter 코드</th>
+            <th>용도</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>success</strong></td>
+            <td>
+              <span class="color-swatch" style="background: #4caf50"></span>
+            </td>
+            <td><code>#4CAF50</code></td>
+            <td><code>AppColors.success</code></td>
+            <td>성공 메시지, 완료 상태</td>
+          </tr>
+          <tr>
+            <td><strong>successLight</strong></td>
+            <td>
+              <span class="color-swatch" style="background: #e8f5e9"></span>
+            </td>
+            <td><code>#E8F5E9</code></td>
+            <td><code>AppColors.successLight</code></td>
+            <td>성공 배경</td>
+          </tr>
+          <tr>
+            <td><strong>warning</strong></td>
+            <td>
+              <span class="color-swatch" style="background: #ffb74d"></span>
+            </td>
+            <td><code>#FFB74D</code></td>
+            <td><code>AppColors.warning</code></td>
+            <td>경고 메시지, 주의 필요</td>
+          </tr>
+          <tr>
+            <td><strong>warningLight</strong></td>
+            <td>
+              <span class="color-swatch" style="background: #fff3e0"></span>
+            </td>
+            <td><code>#FFF3E0</code></td>
+            <td><code>AppColors.warningLight</code></td>
+            <td>경고 배경</td>
+          </tr>
+          <tr>
+            <td><strong>error</strong></td>
+            <td>
+              <span class="color-swatch" style="background: #e57373"></span>
+            </td>
+            <td><code>#E57373</code></td>
+            <td><code>AppColors.error</code></td>
+            <td>에러 메시지, 삭제 액션</td>
+          </tr>
+          <tr>
+            <td><strong>errorLight</strong></td>
+            <td>
+              <span class="color-swatch" style="background: #ffebee"></span>
+            </td>
+            <td><code>#FFEBEE</code></td>
+            <td><code>AppColors.errorLight</code></td>
+            <td>에러 배경</td>
+          </tr>
+          <tr>
+            <td><strong>info</strong></td>
+            <td>
+              <span class="color-swatch" style="background: #64b5f6"></span>
+            </td>
+            <td><code>#64B5F6</code></td>
+            <td><code>AppColors.info</code></td>
+            <td>정보 메시지, 안내</td>
+          </tr>
+          <tr>
+            <td><strong>infoLight</strong></td>
+            <td>
+              <span class="color-swatch" style="background: #e3f2fd"></span>
+            </td>
+            <td><code>#E3F2FD</code></td>
+            <td><code>AppColors.infoLight</code></td>
+            <td>정보 배경</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="page-number">1</div>
+    </div>
+
+    <!-- 제1장 계속: Background & Text -->
+    <div class="page" id="section-1-2">
+      <h3>1.3. Background 컬러</h3>
+
+      <table>
+        <thead>
+          <tr>
+            <th>컬러 이름</th>
+            <th>스왑</th>
+            <th>HEX 코드</th>
+            <th>Flutter 코드</th>
+            <th>용도</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>bgPrimary</strong><br />메인 배경</td>
+            <td>
+              <span class="color-swatch" style="background: #fffbf7"></span>
+            </td>
+            <td><code>#FFFBF7</code></td>
+            <td><code>AppColors.bgPrimary</code></td>
+            <td>앱 전체 배경</td>
+          </tr>
+          <tr>
+            <td><strong>bgSecondary</strong><br />카드 배경</td>
+            <td>
+              <span
+                class="color-swatch"
+                style="background: #ffffff; border: 2px solid #ccc"
+              ></span>
+            </td>
+            <td><code>#FFFFFF</code></td>
+            <td><code>AppColors.bgSecondary</code></td>
+            <td>카드, 모달 배경</td>
+          </tr>
+          <tr>
+            <td><strong>bgTertiary</strong><br />입력 필드 배경</td>
+            <td>
+              <span class="color-swatch" style="background: #faf7f2"></span>
+            </td>
+            <td><code>#FAF7F2</code></td>
+            <td><code>AppColors.bgTertiary</code></td>
+            <td>입력 필드, 칩 배경</td>
+          </tr>
+          <tr>
+            <td><strong>bgPlaceholder</strong><br />플레이스홀더</td>
+            <td>
+              <span class="color-swatch" style="background: #ede8e3"></span>
+            </td>
+            <td><code>#EDE8E3</code></td>
+            <td><code>AppColors.bgPlaceholder</code></td>
+            <td>이미지 로딩 중</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>1.4. Text 컬러</h3>
+
+      <table>
+        <thead>
+          <tr>
+            <th>컬러 이름</th>
+            <th>스왑</th>
+            <th>HEX 코드</th>
+            <th>Flutter 코드</th>
+            <th>용도</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>textPrimary</strong><br />메인 텍스트</td>
+            <td>
+              <span class="color-swatch" style="background: #2d2926"></span>
+            </td>
+            <td><code>#2D2926</code></td>
+            <td><code>AppColors.textPrimary</code></td>
+            <td>제목, 본문 텍스트</td>
+          </tr>
+          <tr>
+            <td><strong>textSecondary</strong><br />보조 텍스트</td>
+            <td>
+              <span class="color-swatch" style="background: #5d5652"></span>
+            </td>
+            <td><code>#5D5652</code></td>
+            <td><code>AppColors.textSecondary</code></td>
+            <td>설명, 부가 정보</td>
+          </tr>
+          <tr>
+            <td><strong>textTertiary</strong><br />비활성 텍스트</td>
+            <td>
+              <span class="color-swatch" style="background: #9e9590"></span>
+            </td>
+            <td><code>#9E9590</code></td>
+            <td><code>AppColors.textTertiary</code></td>
+            <td>플레이스홀더, 비활성</td>
+          </tr>
+          <tr>
+            <td><strong>textInverse</strong><br />반전 텍스트</td>
+            <td>
+              <span class="color-swatch" style="background: #fffbf7"></span>
+            </td>
+            <td><code>#FFFBF7</code></td>
+            <td><code>AppColors.textInverse</code></td>
+            <td>다크 배경용 텍스트</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>1.5. Border & Icon 컬러</h3>
+
+      <table>
+        <thead>
+          <tr>
+            <th>컬러 이름</th>
+            <th>스왑</th>
+            <th>HEX 코드</th>
+            <th>Flutter 코드</th>
+            <th>용도</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>borderDefault</strong></td>
+            <td>
+              <span class="color-swatch" style="background: #e8e2dc"></span>
+            </td>
+            <td><code>#E8E2DC</code></td>
+            <td><code>AppColors.borderDefault</code></td>
+            <td>일반 보더</td>
+          </tr>
+          <tr>
+            <td><strong>borderStrong</strong></td>
+            <td>
+              <span class="color-swatch" style="background: #d5cec6"></span>
+            </td>
+            <td><code>#D5CEC6</code></td>
+            <td><code>AppColors.borderStrong</code></td>
+            <td>강조 보더</td>
+          </tr>
+          <tr>
+            <td><strong>divider</strong></td>
+            <td>
+              <span class="color-swatch" style="background: #f5f0eb"></span>
+            </td>
+            <td><code>#F5F0EB</code></td>
+            <td><code>AppColors.divider</code></td>
+            <td>구분선</td>
+          </tr>
+          <tr>
+            <td><strong>iconDefault</strong></td>
+            <td>
+              <span class="color-swatch" style="background: #a69b91"></span>
+            </td>
+            <td><code>#A69B91</code></td>
+            <td><code>AppColors.iconDefault</code></td>
+            <td>일반 아이콘</td>
+          </tr>
+          <tr>
+            <td><strong>iconActive</strong></td>
+            <td>
+              <span class="color-swatch" style="background: #b8860b"></span>
+            </td>
+            <td><code>#B8860B</code></td>
+            <td><code>AppColors.iconActive</code></td>
+            <td>활성 아이콘</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="page-number">2</div>
+    </div>
+
+    <!-- 제1장 계속: 카테고리 & 그라데이션 -->
+    <div class="page" id="section-1-3">
+      <h3>1.6. 카테고리별 컬러</h3>
+
+      <p>웨딩 서비스 카테고리별 전용 컬러입니다.</p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>카테고리</th>
+            <th>스왑</th>
+            <th>HEX 코드</th>
+            <th>Flutter 코드</th>
+            <th>용도</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>categorySnap</strong><br />스냅 사진</td>
+            <td>
+              <span class="color-swatch" style="background: #7b68ee"></span>
+            </td>
+            <td><code>#7B68EE</code></td>
+            <td><code>AppColors.categorySnap</code></td>
+            <td>스냅 사진 카테고리 태그</td>
+          </tr>
+          <tr>
+            <td><strong>categoryVideo</strong><br />영상</td>
+            <td>
+              <span class="color-swatch" style="background: #db7093"></span>
+            </td>
+            <td><code>#DB7093</code></td>
+            <td><code>AppColors.categoryVideo</code></td>
+            <td>영상 카테고리 태그</td>
+          </tr>
+          <tr>
+            <td><strong>categorySinger</strong><br />가수</td>
+            <td>
+              <span class="color-swatch" style="background: #deb887"></span>
+            </td>
+            <td><code>#DEB887</code></td>
+            <td><code>AppColors.categorySinger</code></td>
+            <td>가수 카테고리 태그</td>
+          </tr>
+          <tr>
+            <td><strong>categoryMakeup</strong><br />메이크업</td>
+            <td>
+              <span class="color-swatch" style="background: #da70d6"></span>
+            </td>
+            <td><code>#DA70D6</code></td>
+            <td><code>AppColors.categoryMakeup</code></td>
+            <td>메이크업 카테고리 태그</td>
+          </tr>
+          <tr>
+            <td><strong>categoryFlower</strong><br />꽃</td>
+            <td>
+              <span class="color-swatch" style="background: #8fbc8f"></span>
+            </td>
+            <td><code>#8FBC8F</code></td>
+            <td><code>AppColors.categoryFlower</code></td>
+            <td>꽃 카테고리 태그</td>
+          </tr>
+          <tr>
+            <td><strong>categoryCalligraphy</strong><br />펜글씨</td>
+            <td>
+              <span class="color-swatch" style="background: #6495ed"></span>
+            </td>
+            <td><code>#6495ED</code></td>
+            <td><code>AppColors.categoryCalligraphy</code></td>
+            <td>펜글씨 카테고리 태그</td>
+          </tr>
+          <tr>
+            <td><strong>categoryGift</strong><br />답례품</td>
+            <td>
+              <span class="color-swatch" style="background: #f08080"></span>
+            </td>
+            <td><code>#F08080</code></td>
+            <td><code>AppColors.categoryGift</code></td>
+            <td>답례품 카테고리 태그</td>
+          </tr>
+          <tr>
+            <td><strong>categoryMC</strong><br />MC</td>
+            <td>
+              <span class="color-swatch" style="background: #87ceeb"></span>
+            </td>
+            <td><code>#87CEEB</code></td>
+            <td><code>AppColors.categoryMC</code></td>
+            <td>MC 카테고리 태그</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>1.7. Special 웨딩 컬러</h3>
+
+      <p>로맨틱한 웨딩 테마를 위한 특별 컬러입니다.</p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>컬러 이름</th>
+            <th>스왑</th>
+            <th>HEX 코드</th>
+            <th>Flutter 코드</th>
+            <th>용도</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>blush</strong><br />블러시 핑크</td>
+            <td>
+              <span class="color-swatch" style="background: #ffb6c1"></span>
+            </td>
+            <td><code>#FFB6C1</code></td>
+            <td><code>AppColors.blush</code></td>
+            <td>로맨틱 액센트</td>
+          </tr>
+          <tr>
+            <td><strong>peach</strong><br />피치</td>
+            <td>
+              <span class="color-swatch" style="background: #ffdab9"></span>
+            </td>
+            <td><code>#FFDAB9</code></td>
+            <td><code>AppColors.peach</code></td>
+            <td>부드러운 강조</td>
+          </tr>
+          <tr>
+            <td><strong>lavender</strong><br />라벤더</td>
+            <td>
+              <span class="color-swatch" style="background: #e6e6fa"></span>
+            </td>
+            <td><code>#E6E6FA</code></td>
+            <td><code>AppColors.lavender</code></td>
+            <td>우아한 보조색</td>
+          </tr>
+          <tr>
+            <td><strong>sage</strong><br />세이지 그린</td>
+            <td>
+              <span class="color-swatch" style="background: #bcb88a"></span>
+            </td>
+            <td><code>#BCB88A</code></td>
+            <td><code>AppColors.sage</code></td>
+            <td>자연스러운 그린</td>
+          </tr>
+          <tr>
+            <td><strong>dustyRose</strong><br />더스티 로즈</td>
+            <td>
+              <span class="color-swatch" style="background: #dcb8b0"></span>
+            </td>
+            <td><code>#DCB8B0</code></td>
+            <td><code>AppColors.dustyRose</code></td>
+            <td>빈티지 로맨스</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>1.8. 그라데이션</h3>
+
+      <table>
+        <thead>
+          <tr>
+            <th>그라데이션 이름</th>
+            <th>스왑</th>
+            <th>색상 (시작 → 끝)</th>
+            <th>Flutter 코드</th>
+            <th>용도</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>primaryGradient</strong></td>
+            <td>
+              <span
+                class="color-swatch"
+                style="background: linear-gradient(135deg, #d4a574, #b8860b)"
+              ></span>
+            </td>
+            <td><code>#D4A574</code> → <code>#B8860B</code></td>
+            <td><code>AppColors.primaryGradient</code></td>
+            <td>메인 CTA 버튼</td>
+          </tr>
+          <tr>
+            <td><strong>goldGradient</strong></td>
+            <td>
+              <span
+                class="color-swatch"
+                style="background: linear-gradient(135deg, #e6c983, #d4af37)"
+              ></span>
+            </td>
+            <td><code>#E6C983</code> → <code>#D4AF37</code></td>
+            <td><code>AppColors.goldGradient</code></td>
+            <td>프리미엄 요소</td>
+          </tr>
+          <tr>
+            <td><strong>ivoryGradient</strong></td>
+            <td>
+              <span
+                class="color-swatch"
+                style="background: linear-gradient(180deg, #fffdf9, #faf7f2)"
+              ></span>
+            </td>
+            <td><code>#FFFDF9</code> → <code>#FAF7F2</code></td>
+            <td><code>AppColors.ivoryGradient</code></td>
+            <td>카드 배경</td>
+          </tr>
+          <tr>
+            <td><strong>blushGradient</strong></td>
+            <td>
+              <span
+                class="color-swatch"
+                style="background: linear-gradient(135deg, #fff0f5, #ffe4e1)"
+              ></span>
+            </td>
+            <td><code>#FFF0F5</code> → <code>#FFE4E1</code></td>
+            <td><code>AppColors.blushGradient</code></td>
+            <td>로맨틱 액센트</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="alert alert-success">
+        <div class="alert-title">컬러 사용 팁</div>
+        <ul>
+          <li>
+            컬러 코드는
+            <code>apps/flutter/lib/core/theme/app_colors.dart</code>에서
+            정의됩니다.
+          </li>
+          <li>
+            웹에서는 CSS 변수 또는 Tailwind 커스텀 컬러로 동일하게 적용합니다.
+          </li>
+          <li>새 컬러 추가 시 반드시 문서에 업데이트하세요.</li>
+        </ul>
+      </div>
+
+      <div class="page-number">3</div>
+    </div>
+
+    <!-- 제2장: 타이포그래피 -->
+    <div class="page page-break" id="section-2">
+      <div class="section-header">
+        <div class="section-badge">Chapter 02</div>
+        <h2 class="section-title">타이포그래피</h2>
+        <p class="section-desc">폰트 시스템 및 타입 스케일</p>
+      </div>
+
+      <h3>2.0. 폰트 미리보기 도구</h3>
+
+      <p>폰트를 선택하고 실시간으로 미리보기를 확인할 수 있습니다.</p>
+
+      <div
+        style="
+          background: var(--bg-light);
+          padding: 24px;
+          border-radius: 12px;
+          margin: 20px 0;
+        "
+      >
+        <div style="display: grid; gap: 20px">
+          <!-- 폰트 선택 -->
+          <div>
+            <label
+              for="fontSelector"
+              style="display: block; margin-bottom: 8px; font-weight: 600"
+              >폰트 선택</label
+            >
+            <select
+              id="fontSelector"
+              style="
+                width: 100%;
+                padding: 10px;
+                border: 1px solid var(--border);
+                border-radius: 8px;
+                font-size: 14px;
+              "
+            >
+              <option
+                value="'Pretendard Variable', 'Pretendard', -apple-system, sans-serif"
+              >
+                Pretendard Variable (Body)
+              </option>
+              <option value="'Cormorant Garamond', Georgia, serif">
+                Cormorant Garamond (Display)
+              </option>
+              <option value="'Playfair Display', Georgia, serif">
+                Playfair Display (Display)
+              </option>
+              <option value="'Montserrat', -apple-system, sans-serif">
+                Montserrat (Display)
+              </option>
+              <option value="'Noto Sans KR', -apple-system, sans-serif">
+                Noto Sans KR (Body)
+              </option>
+              <option value="'Inter', -apple-system, sans-serif">
+                Inter (Body)
+              </option>
+            </select>
+          </div>
+
+          <!-- 텍스트 입력 -->
+          <div>
+            <label
+              for="fontPreviewText"
+              style="display: block; margin-bottom: 8px; font-weight: 600"
+              >미리보기 텍스트</label
+            >
+            <input
+              type="text"
+              id="fontPreviewText"
+              value="특별한 순간을 만들어드립니다"
+              style="
+                width: 100%;
+                padding: 10px;
+                border: 1px solid var(--border);
+                border-radius: 8px;
+                font-size: 14px;
+              "
+            />
+          </div>
+
+          <!-- 크기 & Weight 조절 -->
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px">
+            <div>
+              <label
+                for="fontSizeSlider"
+                style="display: block; margin-bottom: 8px; font-weight: 600"
+                >크기: <span id="fontSizeValue">34</span>px</label
+              >
+              <input
+                type="range"
+                id="fontSizeSlider"
+                min="12"
+                max="72"
+                value="34"
+                style="width: 100%"
+              />
+            </div>
+            <div>
+              <label
+                for="fontWeightSelect"
+                style="display: block; margin-bottom: 8px; font-weight: 600"
+                >Weight</label
+              >
+              <select
+                id="fontWeightSelect"
+                style="
+                  width: 100%;
+                  padding: 10px;
+                  border: 1px solid var(--border);
+                  border-radius: 8px;
+                  font-size: 14px;
+                "
+              >
+                <option value="300">300 (Light)</option>
+                <option value="400">400 (Regular)</option>
+                <option value="500">500 (Medium)</option>
+                <option value="600">600 (Semibold)</option>
+                <option value="700" selected>700 (Bold)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- 미리보기 -->
+          <div
+            style="
+              background: white;
+              padding: 32px;
+              border-radius: 12px;
+              border: 1px solid var(--border);
+              min-height: 200px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+            "
+          >
+            <div
+              id="fontPreview"
+              style="
+                font-size: 34px;
+                font-weight: 700;
+                color: var(--text-primary);
+                text-align: center;
+                font-family: 'Pretendard Variable', 'Pretendard', -apple-system,
+                  sans-serif;
+              "
+            >
+              특별한 순간을 만들어드립니다
+            </div>
+          </div>
+
+          <!-- 코드 출력 -->
+          <div
+            style="
+              background: white;
+              padding: 16px;
+              border-radius: 8px;
+              border: 1px solid var(--border);
+            "
+          >
+            <div style="font-weight: 600; margin-bottom: 12px">생성된 코드</div>
+
+            <div style="margin-bottom: 12px">
+              <div
+                style="
+                  font-size: 12px;
+                  color: var(--text-gray);
+                  margin-bottom: 4px;
+                "
+              >
+                CSS
+              </div>
+              <div style="display: flex; gap: 8px; align-items: flex-start">
+                <code
+                  id="cssFontCode"
+                  style="
+                    flex: 1;
+                    padding: 8px;
+                    background: var(--bg-light);
+                    border-radius: 4px;
+                    font-size: 13px;
+                    word-break: break-all;
+                    white-space: pre-line;
+                  "
+                  >font-family: 'Pretendard Variable', 'Pretendard',
+                  -apple-system, sans-serif; font-size: 34px; font-weight:
+                  700;</code
+                >
+                <button
+                  onclick="copyToClipboard('cssFontCode')"
+                  style="
+                    padding: 8px 12px;
+                    background: var(--primary);
+                    color: white;
+                    border: none;
+                    border-radius: 4px;
+                    cursor: pointer;
+                    font-size: 12px;
+                    white-space: nowrap;
+                    align-self: flex-start;
+                  "
+                >
+                  복사
+                </button>
+              </div>
+            </div>
+
+            <div>
+              <div
+                style="
+                  font-size: 12px;
+                  color: var(--text-gray);
+                  margin-bottom: 4px;
+                "
+              >
+                Flutter
+              </div>
+              <div style="display: flex; gap: 8px; align-items: flex-start">
+                <code
+                  id="flutterFontCode"
+                  style="
+                    flex: 1;
+                    padding: 8px;
+                    background: var(--bg-light);
+                    border-radius: 4px;
+                    font-size: 13px;
+                    word-break: break-all;
+                  "
+                  >TextStyle(fontFamily: 'Pretendard Variable', fontSize: 34,
+                  fontWeight: FontWeight.w700)</code
+                >
+                <button
+                  onclick="copyToClipboard('flutterFontCode')"
+                  style="
+                    padding: 8px 12px;
+                    background: var(--primary);
+                    color: white;
+                    border: none;
+                    border-radius: 4px;
+                    cursor: pointer;
+                    font-size: 12px;
+                    white-space: nowrap;
+                    align-self: flex-start;
+                  "
+                >
+                  복사
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="alert alert-success">
+        <div class="alert-title">사용 방법</div>
+        <ol style="margin: 0; padding-left: 20px">
+          <li>폰트를 선택하세요 (Display 또는 Body)</li>
+          <li>미리보기 텍스트를 입력하거나 수정하세요</li>
+          <li>크기와 Weight를 조절하여 원하는 스타일을 찾으세요</li>
+          <li>생성된 CSS/Flutter 코드를 복사하여 사용하세요</li>
+        </ol>
+      </div>
+
+      <h3>2.1. 폰트 시스템</h3>
+
+      <p>
+        웨딩 플랫폼의 특성에 맞춰 <strong>Display 폰트</strong>와
+        <strong>Body 폰트</strong>를 분리하여 사용합니다.
+      </p>
+
+      <h4>폰트 조합 전략</h4>
+      <table>
+        <thead>
+          <tr>
+            <th>용도</th>
+            <th>주 폰트</th>
+            <th>대체 폰트</th>
+            <th>사용 위치</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Display</strong><br />(고급스러운 제목)</td>
+            <td>Cormorant Garamond<br />(Serif)</td>
+            <td>Georgia, serif</td>
+            <td>히어로 타이틀, 큰 제목, 브랜드명</td>
+          </tr>
+          <tr>
+            <td><strong>Body</strong><br />(가독성 본문)</td>
+            <td>Pretendard Variable<br />(Sans-serif)</td>
+            <td>Noto Sans KR, -apple-system</td>
+            <td>본문, 버튼, 일반 텍스트</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="alert alert-info">
+        <div class="alert-title">폰트 선택 원칙</div>
+        <ul>
+          <li><strong>최대 2개 폰트 패밀리</strong>: Display 1개 + Body 1개</li>
+          <li>
+            <strong>무게 제한</strong>: 각 폰트당 최대 3가지 weight 사용 (300,
+            400/500, 600/700)
+          </li>
+          <li><strong>로딩 성능</strong>: 필요한 weight만 로드</li>
+        </ul>
+      </div>
+
+      <h4>현재 프로젝트 폰트 설정</h4>
+      <table>
+        <thead>
+          <tr>
+            <th>플랫폼</th>
+            <th>Display 폰트</th>
+            <th>Body 폰트</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Flutter 앱</strong></td>
+            <td>Pretendard Variable<br />(모든 용도 통합)</td>
+            <td>Pretendard Variable</td>
+          </tr>
+          <tr>
+            <td><strong>Next.js 웹</strong></td>
+            <td>Cormorant Garamond<br />(웹 디자인 프로토타입)</td>
+            <td>Noto Sans KR</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h4>폰트 설치 (Flutter)</h4>
+      <pre><code># pubspec.yaml
+flutter:
+  fonts:
+    # Display 폰트 (선택)
+    - family: Cormorant Garamond
+      fonts:
+        - asset: assets/fonts/CormorantGaramond-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/CormorantGaramond-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/CormorantGaramond-Bold.ttf
+          weight: 700
+    
+    # Body 폰트
+    - family: Pretendard Variable
+      fonts:
+        - asset: assets/fonts/PretendardVariable.ttf</code></pre>
+
+      <h4>폰트 설치 (Next.js)</h4>
+      <pre><code>// app/layout.tsx
+import { Cormorant_Garamond } from 'next/font/google'
+import localFont from 'next/font/local'
+
+// Display 폰트 (Google Fonts)
+const cormorant = Cormorant_Garamond({
+  weight: ['400', '600', '700'],
+  subsets: ['latin'],
+  variable: '--font-display',
+  display: 'swap',
+})
+
+// Body 폰트 (로컬)
+const pretendard = localFont({
+  src: './fonts/PretendardVariable.woff2',
+  variable: '--font-body',
+  display: 'swap',
+})
+
+export default function RootLayout({ children }) {
+  return (
+    <html className={`${cormorant.variable} ${pretendard.variable}`}>
+      <body className={pretendard.className}>
+        {children}
+      </body>
+    </html>
+  )
+}</code></pre>
+
+      <h4>CSS 변수 사용</h4>
+      <pre><code>/* globals.css */
+:root {
+  --font-display: 'Cormorant Garamond', Georgia, serif;
+  --font-body: 'Pretendard Variable', 'Noto Sans KR', -apple-system, sans-serif;
+}
+
+/* Display 폰트 사용 */
+.display-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 48px;
+}
+
+/* Body 폰트 사용 */
+body {
+  font-family: var(--font-body);
+}</code></pre>
+
+      <h3>2.1-1. 대안 폰트 옵션</h3>
+
+      <p>프로젝트 성격에 따라 다른 폰트 조합을 선택할 수 있습니다.</p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>스타일</th>
+            <th>Display 폰트</th>
+            <th>Body 폰트</th>
+            <th>특징</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>럭셔리 웨딩</strong><br />(현재 선택)</td>
+            <td>Cormorant Garamond</td>
+            <td>Pretendard Variable</td>
+            <td>고급스러운 Serif + 모던 Sans</td>
+          </tr>
+          <tr>
+            <td><strong>모던 미니멀</strong></td>
+            <td>Pretendard Variable</td>
+            <td>Pretendard Variable</td>
+            <td>통일감, 빠른 로딩</td>
+          </tr>
+          <tr>
+            <td><strong>클래식 엘레강스</strong></td>
+            <td>Playfair Display</td>
+            <td>Source Sans Pro</td>
+            <td>전통적 우아함</td>
+          </tr>
+          <tr>
+            <td><strong>컨템포러리</strong></td>
+            <td>Montserrat</td>
+            <td>Inter</td>
+            <td>깔끔하고 현대적</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="alert alert-warning">
+        <div class="alert-title">폰트 선택 시 주의사항</div>
+        <ul>
+          <li>
+            <strong>한글 지원</strong>: Display 폰트도 한글이 필요하면 지원 여부
+            확인
+          </li>
+          <li>
+            <strong>로딩 시간</strong>: 폰트 파일 크기 고려 (각 폰트당
+            100-300KB)
+          </li>
+          <li>
+            <strong>폴백 전략</strong>: 시스템 폰트로 graceful degradation
+          </li>
+          <li><strong>라이선스</strong>: 상업적 사용 가능 여부 확인</li>
+        </ul>
+      </div>
+
+      <h3>2.2. 타입 스케일</h3>
+
+      <table>
+        <thead>
+          <tr>
+            <th>스타일 이름</th>
+            <th>크기</th>
+            <th>Weight</th>
+            <th>Line Height</th>
+            <th>Letter Spacing</th>
+            <th>Flutter 코드</th>
+            <th>용도</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>display</strong></td>
+            <td>34px</td>
+            <td>700 (Bold)</td>
+            <td>1.2</td>
+            <td>-0.5</td>
+            <td>
+              <code>AppTypography.display</code><br /><small
+                >(Display 폰트 사용 권장)</small
+              >
+            </td>
+            <td>히어로 타이틀, 큰 제목</td>
+          </tr>
+          <tr>
+            <td><strong>displaySmall</strong></td>
+            <td>28px</td>
+            <td>700 (Bold)</td>
+            <td>1.25</td>
+            <td>-0.3</td>
+            <td><code>AppTypography.displaySmall</code></td>
+            <td>큰 제목</td>
+          </tr>
+          <tr>
+            <td><strong>h1</strong></td>
+            <td>24px</td>
+            <td>700 (Bold)</td>
+            <td>1.3</td>
+            <td>-0.3</td>
+            <td><code>AppTypography.h1</code></td>
+            <td>페이지 제목</td>
+          </tr>
+          <tr>
+            <td><strong>h2</strong></td>
+            <td>20px</td>
+            <td>600 (Semibold)</td>
+            <td>1.3</td>
+            <td>-0.2</td>
+            <td><code>AppTypography.h2</code></td>
+            <td>섹션 제목</td>
+          </tr>
+          <tr>
+            <td><strong>h3</strong></td>
+            <td>17px</td>
+            <td>600 (Semibold)</td>
+            <td>1.4</td>
+            <td>-0.1</td>
+            <td><code>AppTypography.h3</code></td>
+            <td>서브 섹션 제목</td>
+          </tr>
+          <tr>
+            <td><strong>body</strong></td>
+            <td>16px</td>
+            <td>400 (Regular)</td>
+            <td>1.5</td>
+            <td>0</td>
+            <td><code>AppTypography.body</code></td>
+            <td>본문 텍스트</td>
+          </tr>
+          <tr>
+            <td><strong>bodyMedium</strong></td>
+            <td>16px</td>
+            <td>500 (Medium)</td>
+            <td>1.5</td>
+            <td>0</td>
+            <td><code>AppTypography.bodyMedium</code></td>
+            <td>강조 본문</td>
+          </tr>
+          <tr>
+            <td><strong>bodySmall</strong></td>
+            <td>14px</td>
+            <td>400 (Regular)</td>
+            <td>1.5</td>
+            <td>0</td>
+            <td><code>AppTypography.bodySmall</code></td>
+            <td>작은 본문</td>
+          </tr>
+          <tr>
+            <td><strong>label</strong></td>
+            <td>13px</td>
+            <td>500 (Medium)</td>
+            <td>1.4</td>
+            <td>0</td>
+            <td><code>AppTypography.label</code></td>
+            <td>라벨, 태그</td>
+          </tr>
+          <tr>
+            <td><strong>labelSmall</strong></td>
+            <td>12px</td>
+            <td>500 (Medium)</td>
+            <td>1.4</td>
+            <td>0</td>
+            <td><code>AppTypography.labelSmall</code></td>
+            <td>작은 라벨</td>
+          </tr>
+          <tr>
+            <td><strong>caption</strong></td>
+            <td>11px</td>
+            <td>400 (Regular)</td>
+            <td>1.4</td>
+            <td>0.1</td>
+            <td><code>AppTypography.caption</code></td>
+            <td>캡션, 도움말</td>
+          </tr>
+          <tr>
+            <td><strong>price</strong></td>
+            <td>18px</td>
+            <td>700 (Bold)</td>
+            <td>1.3</td>
+            <td>-0.2</td>
+            <td><code>AppTypography.price</code></td>
+            <td>가격 표시</td>
+          </tr>
+          <tr>
+            <td><strong>button</strong></td>
+            <td>16px</td>
+            <td>600 (Semibold)</td>
+            <td>1.2</td>
+            <td>0</td>
+            <td><code>AppTypography.button</code></td>
+            <td>버튼 텍스트</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="page-number">4</div>
+    </div>
+
+    <!-- 제3장: 스페이싱 & 레이아웃 -->
+    <div class="page page-break" id="section-3">
+      <div class="section-header">
+        <div class="section-badge">Chapter 03</div>
+        <h2 class="section-title">스페이싱 & 레이아웃</h2>
+        <p class="section-desc">일관된 간격 시스템 및 레이아웃 규칙</p>
+      </div>
+
+      <h3>3.1. 스페이싱 시스템</h3>
+
+      <p>8px 기반 그리드 시스템을 사용합니다.</p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>이름</th>
+            <th>값</th>
+            <th>Flutter</th>
+            <th>CSS/Tailwind</th>
+            <th>용도</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>xs</strong></td>
+            <td>4px</td>
+            <td><code>4.0</code></td>
+            <td><code>1</code></td>
+            <td>인라인 아이콘 간격</td>
+          </tr>
+          <tr>
+            <td><strong>sm</strong></td>
+            <td>8px</td>
+            <td><code>8.0</code></td>
+            <td><code>2</code></td>
+            <td>관련 요소 간격</td>
+          </tr>
+          <tr>
+            <td><strong>md</strong></td>
+            <td>12px</td>
+            <td><code>12.0</code></td>
+            <td><code>3</code></td>
+            <td>카드 내부 패딩</td>
+          </tr>
+          <tr>
+            <td><strong>lg</strong></td>
+            <td>16px</td>
+            <td><code>16.0</code></td>
+            <td><code>4</code></td>
+            <td>표준 간격</td>
+          </tr>
+          <tr>
+            <td><strong>xl</strong></td>
+            <td>24px</td>
+            <td><code>24.0</code></td>
+            <td><code>6</code></td>
+            <td>섹션 구분</td>
+          </tr>
+          <tr>
+            <td><strong>2xl</strong></td>
+            <td>32px</td>
+            <td><code>32.0</code></td>
+            <td><code>8</code></td>
+            <td>큰 섹션 간격</td>
+          </tr>
+          <tr>
+            <td><strong>3xl</strong></td>
+            <td>48px</td>
+            <td><code>48.0</code></td>
+            <td><code>12</code></td>
+            <td>페이지 구분</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>3.2. 그리드 시스템</h3>
+
+      <h4>모바일 (Flutter 앱)</h4>
+      <ul>
+        <li>수평 패딩: <code>20px</code></li>
+        <li>카드 간격: <code>16px</code></li>
+        <li>섹션 간격: <code>24px</code></li>
+      </ul>
+
+      <h4>웹 (Next.js)</h4>
+      <ul>
+        <li>모바일: <code>20px</code> 패딩</li>
+        <li>태블릿: <code>32-48px</code> 패딩, 최대 너비 <code>720px</code></li>
+        <li>
+          데스크탑: <code>48-64px</code> 패딩, 최대 너비 <code>960-1200px</code>
+        </li>
+      </ul>
+
+      <h3>3.3. 레이아웃 패턴</h3>
+
+      <h4>페이지 구조</h4>
+      <pre><code>// Flutter
+Scaffold(
+  appBar: AppBar(...),
+  body: SafeArea(
+    child: SingleChildScrollView(
+      padding: EdgeInsets.symmetric(horizontal: 20.0),
+      child: Column(
+        children: [
+          SizedBox(height: 24.0),
+          // 콘텐츠
+          SizedBox(height: 32.0),
+        ],
+      ),
+    ),
+  ),
+)</code></pre>
+
+      <div class="page-number">5</div>
+    </div>
+
+    <!-- 제4장: 컴포넌트 가이드 -->
+    <div class="page page-break" id="section-4">
+      <div class="section-header">
+        <div class="section-badge">Chapter 04</div>
+        <h2 class="section-title">컴포넌트 가이드</h2>
+        <p class="section-desc">버튼, 카드, 입력 필드 등 UI 컴포넌트 스펙</p>
+      </div>
+
+      <h3>4.1. 버튼</h3>
+
+      <h4>Primary Button</h4>
+      <table>
+        <thead>
+          <tr>
+            <th>속성</th>
+            <th>값</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>배경</td>
+            <td><code>AppColors.primary</code> (#B8860B)</td>
+          </tr>
+          <tr>
+            <td>텍스트</td>
+            <td>
+              <code>AppColors.textInverse</code>,
+              <code>AppTypography.button</code>
+            </td>
+          </tr>
+          <tr>
+            <td>패딩</td>
+            <td>14-16px 수직, 24-32px 수평</td>
+          </tr>
+          <tr>
+            <td>Border Radius</td>
+            <td>10-12px</td>
+          </tr>
+          <tr>
+            <td>최소 높이</td>
+            <td>48px (터치 타겟)</td>
+          </tr>
+          <tr>
+            <td>Shadow</td>
+            <td><code>0 1px 2px rgba(0,0,0,0.05)</code></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h4>Secondary Button</h4>
+      <table>
+        <thead>
+          <tr>
+            <th>속성</th>
+            <th>값</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>배경</td>
+            <td>투명</td>
+          </tr>
+          <tr>
+            <td>보더</td>
+            <td>1.5px solid <code>AppColors.primary</code></td>
+          </tr>
+          <tr>
+            <td>텍스트</td>
+            <td><code>AppColors.primary</code></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>4.2. 카드</h3>
+
+      <div
+        style="
+          background: var(--bg-light);
+          padding: 24px;
+          border-radius: 12px;
+          margin: 20px 0;
+        "
+      >
+        <div style="font-weight: 600; margin-bottom: 16px; font-size: 16px">
+          카드 컴포넌트 인터랙티브 테스트
+        </div>
+        <div
+          style="
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 16px;
+          "
+        >
+          <div
+            id="card-demo"
+            class="demo-card"
+            style="
+              background: white;
+              padding: 20px;
+              border-radius: 16px;
+              border: 1px solid #e8e2dc;
+              box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+              transition: all 300ms ease-out;
+              cursor: pointer;
+            "
+          >
+            <div style="font-weight: 600; margin-bottom: 8px; font-size: 16px">
+              카드 제목
+            </div>
+            <div style="color: var(--text-gray); font-size: 14px">
+              카드 내용입니다. 마우스를 올려보세요.
+            </div>
+          </div>
+        </div>
+        <div
+          style="
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            font-size: 12px;
+            color: var(--text-gray);
+          "
+        >
+          💡 카드에 마우스를 올리면 hover 효과를 확인할 수 있습니다.
+        </div>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>속성</th>
+            <th>값</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>배경</td>
+            <td><code>AppColors.bgSecondary</code> (#FFFFFF)</td>
+          </tr>
+          <tr>
+            <td>Border Radius</td>
+            <td>12-16px</td>
+          </tr>
+          <tr>
+            <td>보더</td>
+            <td>
+              1px solid <code>AppColors.borderDefault</code> (또는 Shadow만)
+            </td>
+          </tr>
+          <tr>
+            <td>Shadow</td>
+            <td><code>0 1px 3px rgba(0,0,0,0.08)</code></td>
+          </tr>
+          <tr>
+            <td>패딩</td>
+            <td>16-20px</td>
+          </tr>
+          <tr>
+            <td>Hover</td>
+            <td><code>0 4px 12px rgba(0,0,0,0.1)</code>, translateY(-2px)</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>4.3. 입력 필드</h3>
+
+      <div
+        style="
+          background: var(--bg-light);
+          padding: 24px;
+          border-radius: 12px;
+          margin: 20px 0;
+        "
+      >
+        <div style="font-weight: 600; margin-bottom: 16px; font-size: 16px">
+          입력 필드 인터랙티브 테스트
+        </div>
+        <div style="display: grid; gap: 16px; margin-bottom: 16px">
+          <div>
+            <label
+              style="
+                display: block;
+                margin-bottom: 8px;
+                font-size: 14px;
+                font-weight: 500;
+              "
+              >일반 입력 필드</label
+            >
+            <input
+              type="text"
+              id="input-demo"
+              placeholder="입력해보세요..."
+              class="demo-input"
+              style="
+                width: 100%;
+                padding: 14px 16px;
+                border: 1.5px solid transparent;
+                border-radius: 10px;
+                background: #faf7f2;
+                font-size: 16px;
+                transition: all 200ms ease-out;
+              "
+            />
+          </div>
+          <div>
+            <label
+              style="
+                display: block;
+                margin-bottom: 8px;
+                font-size: 14px;
+                font-weight: 500;
+              "
+              >에러 상태 입력 필드</label
+            >
+            <input
+              type="text"
+              value="잘못된 입력"
+              class="demo-input-error"
+              style="
+                width: 100%;
+                padding: 14px 16px;
+                border: 1.5px solid #e57373;
+                border-radius: 10px;
+                background: #faf7f2;
+                font-size: 16px;
+                transition: all 200ms ease-out;
+              "
+            />
+            <div style="margin-top: 4px; font-size: 12px; color: #e57373">
+              올바른 형식으로 입력해주세요.
+            </div>
+          </div>
+        </div>
+        <div
+          style="
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            font-size: 12px;
+            color: var(--text-gray);
+          "
+        >
+          💡 입력 필드를 클릭하면 focus 효과를 확인할 수 있습니다.
+        </div>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>속성</th>
+            <th>값</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>배경</td>
+            <td><code>AppColors.bgTertiary</code> (#FAF7F2)</td>
+          </tr>
+          <tr>
+            <td>보더</td>
+            <td>1.5px transparent → focus: <code>AppColors.primary</code></td>
+          </tr>
+          <tr>
+            <td>Border Radius</td>
+            <td>10px</td>
+          </tr>
+          <tr>
+            <td>패딩</td>
+            <td>14px 16px</td>
+          </tr>
+          <tr>
+            <td>폰트 크기</td>
+            <td>16px (iOS 줌 방지)</td>
+          </tr>
+          <tr>
+            <td>Focus Shadow</td>
+            <td><code>0 0 0 3px rgba(184, 134, 11, 0.1)</code></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>4.4. 배지 & 태그</h3>
+
+      <div
+        style="
+          background: var(--bg-light);
+          padding: 24px;
+          border-radius: 12px;
+          margin: 20px 0;
+        "
+      >
+        <div style="font-weight: 600; margin-bottom: 16px; font-size: 16px">
+          배지 & 태그 인터랙티브 테스트
+        </div>
+        <div
+          style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px"
+        >
+          <span
+            class="demo-badge"
+            style="
+              display: inline-block;
+              padding: 4px 10px;
+              border-radius: 6px;
+              background: #fdf5e6;
+              color: #b8860b;
+              font-size: 12px;
+              font-weight: 600;
+            "
+            >Primary 배지</span
+          >
+          <span
+            class="demo-badge"
+            style="
+              display: inline-block;
+              padding: 4px 10px;
+              border-radius: 999px;
+              background: #fff8e7;
+              color: #d4af37;
+              font-size: 12px;
+              font-weight: 600;
+            "
+            >Pill 태그</span
+          >
+          <span
+            class="demo-badge"
+            style="
+              display: inline-block;
+              padding: 4px 10px;
+              border-radius: 6px;
+              background: #ecfdf5;
+              color: #4caf50;
+              font-size: 12px;
+              font-weight: 600;
+            "
+            >Success</span
+          >
+          <span
+            class="demo-badge"
+            style="
+              display: inline-block;
+              padding: 4px 10px;
+              border-radius: 6px;
+              background: #fff3e0;
+              color: #ffb74d;
+              font-size: 12px;
+              font-weight: 600;
+            "
+            >Warning</span
+          >
+          <span
+            class="demo-badge"
+            style="
+              display: inline-block;
+              padding: 4px 10px;
+              border-radius: 6px;
+              background: #ffebee;
+              color: #e57373;
+              font-size: 12px;
+              font-weight: 600;
+            "
+            >Error</span
+          >
+        </div>
+        <div
+          style="
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            font-size: 12px;
+            color: var(--text-gray);
+          "
+        >
+          💡 다양한 배지 스타일을 확인할 수 있습니다.
+        </div>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>속성</th>
+            <th>값</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>패딩</td>
+            <td>4px 10px</td>
+          </tr>
+          <tr>
+            <td>Border Radius</td>
+            <td>6px 또는 pill (999px)</td>
+          </tr>
+          <tr>
+            <td>폰트</td>
+            <td><code>AppTypography.label</code> (12-13px Medium)</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>4.5. 그림자 (Shadow/Elevation)</h3>
+
+      <p>계층 구조를 표현하는 그림자 시스템입니다.</p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>레벨</th>
+            <th>Shadow 값</th>
+            <th>Flutter 코드</th>
+            <th>CSS/Tailwind</th>
+            <th>용도</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>1</strong></td>
+            <td><code>0 1px 2px rgba(0,0,0,0.05)</code></td>
+            <td>
+              <code
+                >BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 2,
+                offset: Offset(0, 1))</code
+              >
+            </td>
+            <td><code>shadow-sm</code></td>
+            <td>버튼, 작은 요소</td>
+          </tr>
+          <tr>
+            <td><strong>2</strong></td>
+            <td><code>0 1px 3px rgba(0,0,0,0.08)</code></td>
+            <td>
+              <code
+                >BoxShadow(color: Colors.black.withOpacity(0.08), blurRadius: 3,
+                offset: Offset(0, 1))</code
+              >
+            </td>
+            <td><code>shadow</code></td>
+            <td>카드, 기본 요소</td>
+          </tr>
+          <tr>
+            <td><strong>3</strong></td>
+            <td><code>0 4px 12px rgba(0,0,0,0.1)</code></td>
+            <td>
+              <code
+                >BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 12,
+                offset: Offset(0, 4))</code
+              >
+            </td>
+            <td><code>shadow-lg</code></td>
+            <td>호버 상태, 팝오버</td>
+          </tr>
+          <tr>
+            <td><strong>4</strong></td>
+            <td><code>0 8px 24px rgba(0,0,0,0.12)</code></td>
+            <td>
+              <code
+                >BoxShadow(color: Colors.black.withOpacity(0.12), blurRadius:
+                24, offset: Offset(0, 8))</code
+              >
+            </td>
+            <td><code>shadow-xl</code></td>
+            <td>모달, 다이얼로그</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>4.6. Border Radius</h3>
+
+      <div
+        style="
+          background: var(--bg-light);
+          padding: 24px;
+          border-radius: 12px;
+          margin: 20px 0;
+        "
+      >
+        <div style="font-weight: 600; margin-bottom: 16px; font-size: 16px">
+          Border Radius 비교
+        </div>
+        <div
+          style="
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 16px;
+            margin-bottom: 16px;
+          "
+        >
+          <div
+            style="
+              background: #b8860b;
+              color: white;
+              padding: 20px;
+              border-radius: 6px;
+              text-align: center;
+              font-weight: 600;
+            "
+          >
+            <div style="margin-bottom: 4px">6px</div>
+            <div style="font-size: 11px; opacity: 0.9">small</div>
+          </div>
+          <div
+            style="
+              background: #b8860b;
+              color: white;
+              padding: 20px;
+              border-radius: 12px;
+              text-align: center;
+              font-weight: 600;
+            "
+          >
+            <div style="margin-bottom: 4px">12px</div>
+            <div style="font-size: 11px; opacity: 0.9">medium</div>
+          </div>
+          <div
+            style="
+              background: #b8860b;
+              color: white;
+              padding: 20px;
+              border-radius: 16px;
+              text-align: center;
+              font-weight: 600;
+            "
+          >
+            <div style="margin-bottom: 4px">16px</div>
+            <div style="font-size: 11px; opacity: 0.9">large</div>
+          </div>
+          <div
+            style="
+              background: #b8860b;
+              color: white;
+              padding: 20px;
+              border-radius: 999px;
+              text-align: center;
+              font-weight: 600;
+            "
+          >
+            <div style="margin-bottom: 4px">999px</div>
+            <div style="font-size: 11px; opacity: 0.9">pill</div>
+          </div>
+        </div>
+        <div
+          style="
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            font-size: 12px;
+            color: var(--text-gray);
+          "
+        >
+          💡 각 Border Radius 값의 차이를 비교할 수 있습니다.
+        </div>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>이름</th>
+            <th>값</th>
+            <th>Flutter</th>
+            <th>CSS/Tailwind</th>
+            <th>용도</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>small</strong></td>
+            <td>6px</td>
+            <td><code>BorderRadius.circular(6)</code></td>
+            <td><code>rounded-md</code></td>
+            <td>배지, 태그</td>
+          </tr>
+          <tr>
+            <td><strong>medium</strong></td>
+            <td>10-12px</td>
+            <td><code>BorderRadius.circular(12)</code></td>
+            <td><code>rounded-xl</code></td>
+            <td>버튼, 입력 필드</td>
+          </tr>
+          <tr>
+            <td><strong>large</strong></td>
+            <td>16px</td>
+            <td><code>BorderRadius.circular(16)</code></td>
+            <td><code>rounded-2xl</code></td>
+            <td>카드, 모달</td>
+          </tr>
+          <tr>
+            <td><strong>pill</strong></td>
+            <td>999px</td>
+            <td><code>BorderRadius.circular(999)</code></td>
+            <td><code>rounded-full</code></td>
+            <td>원형 버튼, 태그</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>4.7. 아이콘 시스템</h3>
+
+      <h4>아이콘 크기</h4>
+      <table>
+        <thead>
+          <tr>
+            <th>크기</th>
+            <th>값</th>
+            <th>용도</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>small</strong></td>
+            <td>16px</td>
+            <td>인라인 아이콘, 작은 버튼</td>
+          </tr>
+          <tr>
+            <td><strong>medium</strong></td>
+            <td>20-24px</td>
+            <td>일반 버튼, 네비게이션</td>
+          </tr>
+          <tr>
+            <td><strong>large</strong></td>
+            <td>32-40px</td>
+            <td>큰 버튼, 강조 요소</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h4>아이콘 컬러</h4>
+      <ul>
+        <li>기본: <code>AppColors.iconDefault</code> (#A69B91)</li>
+        <li>활성: <code>AppColors.iconActive</code> (#B8860B)</li>
+        <li>비활성: <code>AppColors.textTertiary</code> (#9E9590)</li>
+      </ul>
+
+      <h3>4.8. 이미지 가이드</h3>
+
+      <h4>비율</h4>
+      <table>
+        <thead>
+          <tr>
+            <th>비율</th>
+            <th>값</th>
+            <th>용도</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>1:1</strong></td>
+            <td>1:1</td>
+            <td>프로필 이미지, 썸네일</td>
+          </tr>
+          <tr>
+            <td><strong>4:3</strong></td>
+            <td>4:3</td>
+            <td>카드 이미지, 갤러리</td>
+          </tr>
+          <tr>
+            <td><strong>16:9</strong></td>
+            <td>16:9</td>
+            <td>히어로 이미지, 배너</td>
+          </tr>
+          <tr>
+            <td><strong>3:4</strong></td>
+            <td>3:4</td>
+            <td>포트레이트 이미지</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h4>최적화 규칙</h4>
+      <ul>
+        <li>WebP 형식 사용 (PNG보다 25-35% 작음)</li>
+        <li>적절한 해상도: @2x, @3x만 제공</li>
+        <li>Lazy Loading: 스크롤 시 로드</li>
+        <li>플레이스홀더: <code>AppColors.bgPlaceholder</code> 사용</li>
+      </ul>
+
+      <h3>4.9. 로딩 상태</h3>
+
+      <h4>Circular Progress Indicator</h4>
+      <ul>
+        <li>컬러: <code>AppColors.primary</code></li>
+        <li>크기: 24px (작은 것), 40px (큰 것)</li>
+        <li>Stroke Width: 3px</li>
+      </ul>
+
+      <h4>Skeleton/Shimmer</h4>
+      <ul>
+        <li>그라데이션: <code>AppColors.shimmerGradient</code></li>
+        <li>애니메이션: 좌→우 이동, 1.5초 duration</li>
+      </ul>
+
+      <h3>4.10. 토스트/알림</h3>
+
+      <div
+        style="
+          background: var(--bg-light);
+          padding: 24px;
+          border-radius: 12px;
+          margin: 20px 0;
+        "
+      >
+        <div style="font-weight: 600; margin-bottom: 16px; font-size: 16px">
+          토스트/알림 인터랙티브 테스트
+        </div>
+        <div style="display: grid; gap: 12px; margin-bottom: 16px">
+          <button
+            onclick="showToast('success')"
+            style="
+              background: #4caf50;
+              color: white;
+              border: none;
+              padding: 10px 20px;
+              border-radius: 8px;
+              cursor: pointer;
+              font-size: 14px;
+            "
+          >
+            Success 토스트 보기
+          </button>
+          <button
+            onclick="showToast('error')"
+            style="
+              background: #e57373;
+              color: white;
+              border: none;
+              padding: 10px 20px;
+              border-radius: 8px;
+              cursor: pointer;
+              font-size: 14px;
+            "
+          >
+            Error 토스트 보기
+          </button>
+          <button
+            onclick="showToast('warning')"
+            style="
+              background: #ffb74d;
+              color: white;
+              border: none;
+              padding: 10px 20px;
+              border-radius: 8px;
+              cursor: pointer;
+              font-size: 14px;
+            "
+          >
+            Warning 토스트 보기
+          </button>
+          <button
+            onclick="showToast('info')"
+            style="
+              background: #64b5f6;
+              color: white;
+              border: none;
+              padding: 10px 20px;
+              border-radius: 8px;
+              cursor: pointer;
+              font-size: 14px;
+            "
+          >
+            Info 토스트 보기
+          </button>
+        </div>
+        <div
+          id="toast-container"
+          style="
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            pointer-events: none;
+          "
+        ></div>
+        <div
+          style="
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            font-size: 12px;
+            color: var(--text-gray);
+          "
+        >
+          💡 버튼을 클릭하면 각 타입의 토스트를 확인할 수 있습니다.
+        </div>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>타입</th>
+            <th>배경</th>
+            <th>텍스트</th>
+            <th>아이콘</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Success</strong></td>
+            <td><code>AppColors.successLight</code></td>
+            <td><code>AppColors.success</code></td>
+            <td>✓</td>
+          </tr>
+          <tr>
+            <td><strong>Error</strong></td>
+            <td><code>AppColors.errorLight</code></td>
+            <td><code>AppColors.error</code></td>
+            <td>✕</td>
+          </tr>
+          <tr>
+            <td><strong>Warning</strong></td>
+            <td><code>AppColors.warningLight</code></td>
+            <td><code>AppColors.warning</code></td>
+            <td>⚠</td>
+          </tr>
+          <tr>
+            <td><strong>Info</strong></td>
+            <td><code>AppColors.infoLight</code></td>
+            <td><code>AppColors.info</code></td>
+            <td>ℹ</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h4>스타일</h4>
+      <ul>
+        <li>패딩: 12px 16px</li>
+        <li>Border Radius: 8px</li>
+        <li>Shadow: Level 2</li>
+        <li>Duration: 3초 (자동 사라짐)</li>
+      </ul>
+
+      <h3>4.11. 모달/다이얼로그</h3>
+
+      <h4>모달 오버레이</h4>
+      <ul>
+        <li>배경: <code>rgba(0, 0, 0, 0.5)</code></li>
+        <li>애니메이션: fade in 200ms</li>
+      </ul>
+
+      <h4>모달 컨텐츠</h4>
+      <ul>
+        <li>배경: <code>AppColors.bgSecondary</code></li>
+        <li>Border Radius: 16px</li>
+        <li>패딩: 24px</li>
+        <li>Shadow: Level 4</li>
+        <li>최대 너비: 90vw (모바일), 500px (데스크탑)</li>
+      </ul>
+
+      <h3>4.12. 리스트 아이템</h3>
+
+      <table>
+        <thead>
+          <tr>
+            <th>속성</th>
+            <th>값</th>
+            <th>용도</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>최소 높이</td>
+            <td>48px</td>
+            <td>터치 타겟 확보</td>
+          </tr>
+          <tr>
+            <td>패딩</td>
+            <td>12px 16px (수직/수평)</td>
+            <td>표준 리스트</td>
+          </tr>
+          <tr>
+            <td>보더</td>
+            <td>1px solid <code>AppColors.divider</code> (하단만)</td>
+            <td>구분선</td>
+          </tr>
+          <tr>
+            <td>Hover</td>
+            <td>배경: <code>AppColors.bgTertiary</code></td>
+            <td>웹 호버 효과</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>4.13. 탭/탭바</h3>
+
+      <div
+        style="
+          background: var(--bg-light);
+          padding: 24px;
+          border-radius: 12px;
+          margin: 20px 0;
+        "
+      >
+        <div style="font-weight: 600; margin-bottom: 16px; font-size: 16px">
+          탭/탭바 인터랙티브 테스트
+        </div>
+        <div
+          style="
+            background: white;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            padding: 8px;
+            margin-bottom: 16px;
+          "
+        >
+          <div style="display: flex; gap: 4px">
+            <button
+              class="demo-tab active"
+              onclick="switchTab(this, 'tab-1')"
+              style="
+                flex: 1;
+                padding: 10px 16px;
+                border: none;
+                background: transparent;
+                color: #b8860b;
+                font-weight: 600;
+                font-size: 14px;
+                cursor: pointer;
+                border-bottom: 2px solid #b8860b;
+                transition: all 200ms ease-out;
+              "
+            >
+              탭 1
+            </button>
+            <button
+              class="demo-tab"
+              onclick="switchTab(this, 'tab-2')"
+              style="
+                flex: 1;
+                padding: 10px 16px;
+                border: none;
+                background: transparent;
+                color: #5d5652;
+                font-weight: 600;
+                font-size: 14px;
+                cursor: pointer;
+                border-bottom: 2px solid transparent;
+                transition: all 200ms ease-out;
+              "
+            >
+              탭 2
+            </button>
+            <button
+              class="demo-tab"
+              onclick="switchTab(this, 'tab-3')"
+              style="
+                flex: 1;
+                padding: 10px 16px;
+                border: none;
+                background: transparent;
+                color: #5d5652;
+                font-weight: 600;
+                font-size: 14px;
+                cursor: pointer;
+                border-bottom: 2px solid transparent;
+                transition: all 200ms ease-out;
+              "
+            >
+              탭 3
+            </button>
+          </div>
+        </div>
+        <div
+          id="tab-content"
+          style="
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            min-height: 100px;
+            margin-bottom: 16px;
+          "
+        >
+          <div id="tab-1" class="tab-panel" style="display: block">
+            탭 1의 내용입니다.
+          </div>
+          <div id="tab-2" class="tab-panel" style="display: none">
+            탭 2의 내용입니다.
+          </div>
+          <div id="tab-3" class="tab-panel" style="display: none">
+            탭 3의 내용입니다.
+          </div>
+        </div>
+        <div
+          style="
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            font-size: 12px;
+            color: var(--text-gray);
+          "
+        >
+          💡 탭을 클릭하면 활성 상태와 내용 전환을 확인할 수 있습니다.
+        </div>
+      </div>
+
+      <script>
+        function switchTab(button, tabId) {
+          // 모든 탭 비활성화
+          document.querySelectorAll(".demo-tab").forEach((tab) => {
+            tab.classList.remove("active");
+            tab.style.color = "#5d5652";
+            tab.style.borderBottomColor = "transparent";
+          });
+
+          // 선택한 탭 활성화
+          button.classList.add("active");
+          button.style.color = "#b8860b";
+          button.style.borderBottomColor = "#b8860b";
+
+          // 모든 패널 숨기기
+          document.querySelectorAll(".tab-panel").forEach((panel) => {
+            panel.style.display = "none";
+          });
+
+          // 선택한 패널 표시
+          document.getElementById(tabId).style.display = "block";
+        }
+      </script>
+
+      <h4>탭 스타일</h4>
+      <table>
+        <thead>
+          <tr>
+            <th>상태</th>
+            <th>텍스트 컬러</th>
+            <th>하단 인디케이터</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>활성</strong></td>
+            <td><code>AppColors.primary</code></td>
+            <td>2px solid <code>AppColors.primary</code></td>
+          </tr>
+          <tr>
+            <td><strong>비활성</strong></td>
+            <td><code>AppColors.textSecondary</code></td>
+            <td>없음</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h4>탭바 (하단 네비게이션)</h4>
+      <ul>
+        <li>배경: <code>AppColors.bgSecondary</code></li>
+        <li>높이: 56px (iOS), 64px (Android)</li>
+        <li>아이콘: 24px</li>
+        <li>라벨: <code>AppTypography.nav</code> (10px)</li>
+        <li>Shadow: Level 2 (상단에만)</li>
+      </ul>
+
+      <h3>4.14. Bottom Sheet</h3>
+
+      <table>
+        <thead>
+          <tr>
+            <th>속성</th>
+            <th>값</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Border Radius</td>
+            <td>16px (상단만)</td>
+          </tr>
+          <tr>
+            <td>최대 높이</td>
+            <td>90vh</td>
+          </tr>
+          <tr>
+            <td>핸들바</td>
+            <td>4px 높이, 40px 너비, <code>AppColors.textTertiary</code></td>
+          </tr>
+          <tr>
+            <td>애니메이션</td>
+            <td>Slide up 300ms (ease-out)</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="page-number">6</div>
+    </div>
+
+    <!-- 제5장: Flutter 구현 -->
+    <div class="page page-break" id="section-5">
+      <div class="section-header">
+        <div class="section-badge">Chapter 05</div>
+        <h2 class="section-title">Flutter 구현 가이드</h2>
+        <p class="section-desc">Flutter 앱에서 디자인 시스템 사용법</p>
+      </div>
+
+      <h3>5.1. 컬러 사용법</h3>
+
+      <pre><code>import 'package:inbloom_app/core/theme/app_colors.dart';
+
+// 기본 사용
+Container(
+  color: AppColors.primary,  // #B8860B
+  child: Text('Hello', style: TextStyle(color: AppColors.textInverse)),
+)
+
+// 그라데이션 사용
+Container(
+  decoration: BoxDecoration(
+    gradient: AppColors.primaryGradient,
+  ),
+)</code></pre>
+
+      <h3>5.2. 타이포그래피 사용법</h3>
+
+      <pre><code>import 'package:inbloom_app/core/theme/app_typography.dart';
+
+Text(
+  '제목',
+  style: AppTypography.h1,
+)
+
+Text(
+  '본문 텍스트',
+  style: AppTypography.body,
+)
+
+Text(
+  '가격: 100,000원',
+  style: AppTypography.price,
+)</code></pre>
+
+      <h3>5.3. 버튼 컴포넌트 예시</h3>
+
+      <div
+        style="
+          background: var(--bg-light);
+          padding: 24px;
+          border-radius: 12px;
+          margin: 20px 0;
+        "
+      >
+        <div style="font-weight: 600; margin-bottom: 16px; font-size: 16px">
+          인터랙티브 버튼 테스트
+        </div>
+        <div
+          style="display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 24px"
+        >
+          <!-- Primary Button -->
+          <button
+            id="primary-btn"
+            class="demo-btn primary"
+            style="
+              background: #b8860b;
+              color: #fffbf7;
+              border: none;
+              padding: 14px 32px;
+              border-radius: 12px;
+              font-size: 16px;
+              font-weight: 600;
+              cursor: pointer;
+              min-height: 48px;
+              box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+              transition: all 200ms ease-out;
+            "
+          >
+            Primary 버튼
+          </button>
+          <!-- Secondary Button -->
+          <button
+            id="secondary-btn"
+            class="demo-btn secondary"
+            style="
+              background: transparent;
+              color: #b8860b;
+              border: 1.5px solid #b8860b;
+              padding: 14px 32px;
+              border-radius: 12px;
+              font-size: 16px;
+              font-weight: 600;
+              cursor: pointer;
+              min-height: 48px;
+              transition: all 200ms ease-out;
+            "
+          >
+            Secondary 버튼
+          </button>
+          <!-- Tertiary Button -->
+          <button
+            id="tertiary-btn"
+            class="demo-btn tertiary"
+            style="
+              background: #faf7f2;
+              color: #b8860b;
+              border: none;
+              padding: 14px 32px;
+              border-radius: 12px;
+              font-size: 16px;
+              font-weight: 600;
+              cursor: pointer;
+              min-height: 48px;
+              transition: all 200ms ease-out;
+            "
+          >
+            Tertiary 버튼
+          </button>
+          <!-- Disabled Button -->
+          <button
+            disabled
+            class="demo-btn disabled"
+            style="
+              background: #e8e2dc;
+              color: #9e9590;
+              border: none;
+              padding: 14px 32px;
+              border-radius: 12px;
+              font-size: 16px;
+              font-weight: 600;
+              cursor: not-allowed;
+              min-height: 48px;
+              opacity: 0.6;
+            "
+          >
+            Disabled 버튼
+          </button>
+        </div>
+        <div
+          style="
+            background: white;
+            padding: 16px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+          "
+        >
+          <div
+            style="font-size: 12px; color: var(--text-gray); margin-bottom: 8px"
+          >
+            버튼 상태 정보
+          </div>
+          <div
+            id="button-state"
+            style="font-size: 13px; color: var(--text-dark)"
+          >
+            버튼에 마우스를 올리거나 클릭해보세요
+          </div>
+        </div>
+      </div>
+
+      <pre><code>// Primary Button
+ElevatedButton(
+  onPressed: () {},
+  style: ElevatedButton.styleFrom(
+    backgroundColor: AppColors.primary,
+    foregroundColor: AppColors.textInverse,
+    padding: EdgeInsets.symmetric(horizontal: 32, vertical: 14),
+    minimumSize: Size(0, 48),
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(12),
+    ),
+    elevation: 1,
+  ),
+  child: Text('확인', style: AppTypography.button),
+)
+
+// Secondary Button
+OutlinedButton(
+  onPressed: () {},
+  style: OutlinedButton.styleFrom(
+    foregroundColor: AppColors.primary,
+    side: BorderSide(color: AppColors.primary, width: 1.5),
+    padding: EdgeInsets.symmetric(horizontal: 32, vertical: 14),
+    minimumSize: Size(0, 48),
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(12),
+    ),
+  ),
+  child: Text('취소', style: AppTypography.button),
+)</code></pre>
+
+      <h3>5.4. 카드 컴포넌트 예시</h3>
+
+      <pre><code>Container(
+  padding: EdgeInsets.all(16),
+  decoration: BoxDecoration(
+    color: AppColors.bgSecondary,
+    borderRadius: BorderRadius.circular(16),
+    border: Border.all(color: AppColors.borderDefault, width: 1),
+    boxShadow: [
+      BoxShadow(
+        color: Colors.black.withOpacity(0.08),
+        blurRadius: 3,
+        offset: Offset(0, 1),
+      ),
+    ],
+  ),
+  child: Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Text('카드 제목', style: AppTypography.h3),
+      SizedBox(height: 8),
+      Text('카드 내용', style: AppTypography.body),
+    ],
+  ),
+)</code></pre>
+
+      <div class="page-number">7</div>
+    </div>
+
+    <!-- 제6장: Next.js 웹 구현 -->
+    <div class="page page-break" id="section-6">
+      <div class="section-header">
+        <div class="section-badge">Chapter 06</div>
+        <h2 class="section-title">Next.js 웹 구현 가이드</h2>
+        <p class="section-desc">Next.js 웹에서 디자인 시스템 사용법</p>
+      </div>
+
+      <h3>6.1. CSS 변수 설정</h3>
+
+      <pre><code>/* app/globals.css */
+:root {
+  /* Primary */
+  --color-primary: #B8860B;
+  --color-primary-light: #D4A574;
+  --color-primary-soft: #FDF5E6;
+  
+  /* Accent */
+  --color-accent: #D4AF37;
+  --color-accent-light: #FFF8E7;
+  --color-accent-dark: #C5A028;
+  
+  /* Background */
+  --color-bg-primary: #FFFBF7;
+  --color-bg-secondary: #FFFFFF;
+  --color-bg-tertiary: #FAF7F2;
+  
+  /* Text */
+  --color-text-primary: #2D2926;
+  --color-text-secondary: #5D5652;
+  --color-text-tertiary: #9E9590;
+  --color-text-inverse: #FFFBF7;
+  
+  /* Border */
+  --color-border-default: #E8E2DC;
+  --color-border-strong: #D5CEC6;
+  
+  /* Semantic */
+  --color-success: #4CAF50;
+  --color-warning: #FFB74D;
+  --color-error: #E57373;
+  --color-info: #64B5F6;
+}</code></pre>
+
+      <h3>6.2. Tailwind 설정</h3>
+
+      <pre><code>// tailwind.config.ts
+export default {
+  theme: {
+    extend: {
+      colors: {
+        primary: {
+          DEFAULT: '#B8860B',
+          light: '#D4A574',
+          soft: '#FDF5E6',
+        },
+        accent: {
+          DEFAULT: '#D4AF37',
+          light: '#FFF8E7',
+          dark: '#C5A028',
+        },
+        bg: {
+          primary: '#FFFBF7',
+          secondary: '#FFFFFF',
+          tertiary: '#FAF7F2',
+        },
+        text: {
+          primary: '#2D2926',
+          secondary: '#5D5652',
+          tertiary: '#9E9590',
+          inverse: '#FFFBF7',
+        },
+      },
+    },
+  },
+}</code></pre>
+
+      <h3>6.3. 컴포넌트 예시</h3>
+
+      <h4>Primary Button</h4>
+      <pre><code>// components/Button.tsx
+export function PrimaryButton({ children, onClick }: Props) {
+  return (
+    <button
+      onClick={onClick}
+      className="bg-primary text-text-inverse px-8 py-3.5 rounded-xl 
+                 min-h-[48px] font-semibold text-base shadow-sm
+                 hover:opacity-90 transition-all"
+    >
+      {children}
+    </button>
+  );
+}</code></pre>
+
+      <h4>Card</h4>
+      <pre><code>// components/Card.tsx
+export function Card({ children }: Props) {
+  return (
+    <div className="bg-bg-secondary p-4 rounded-2xl border 
+                    border-border-default shadow-sm">
+      {children}
+    </div>
+  );
+}</code></pre>
+
+      <div class="page-number">8</div>
+    </div>
+
+    <!-- 제6-1장: 애니메이션 & 모션 -->
+    <div class="page page-break" id="section-6-1">
+      <div class="section-header">
+        <div class="section-badge">Chapter 06-1</div>
+        <h2 class="section-title">애니메이션 & 모션 가이드</h2>
+        <p class="section-desc">일관된 애니메이션으로 사용자 경험 향상</p>
+      </div>
+
+      <h3>6-1.1. 애니메이션 원칙</h3>
+
+      <div class="alert alert-info">
+        <div class="alert-title">애니메이션 목적</div>
+        <ul style="margin-top: 8px">
+          <li>
+            <strong>피드백 제공:</strong> 사용자 액션에 대한 즉각적인 반응
+          </li>
+          <li>
+            <strong>상태 변화 표시:</strong> 화면 전환, 로딩, 성공/실패 상태
+          </li>
+          <li><strong>계층 구조 표현:</strong> 요소 간 관계와 중요도</li>
+          <li><strong>전환 부드럽게:</strong> 자연스러운 화면 전환</li>
+        </ul>
+      </div>
+
+      <h4>애니메이션 규칙</h4>
+      <ul>
+        <li><strong>과하지 않게:</strong> 사용자를 방해하지 않는 수준</li>
+        <li><strong>일관성:</strong> 유사한 액션은 동일한 애니메이션</li>
+        <li><strong>성능:</strong> 60fps 유지 (16.67ms 이내)</li>
+        <li>
+          <strong>접근성:</strong> 사용자 설정에 따라 애니메이션 비활성화 옵션
+        </li>
+      </ul>
+
+      <h3>6-1.2. Duration (지속 시간)</h3>
+
+      <table>
+        <thead>
+          <tr>
+            <th>타입</th>
+            <th>Duration</th>
+            <th>용도</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>즉시 (Instant)</strong></td>
+            <td>0ms</td>
+            <td>상태 변경, 색상 변화</td>
+          </tr>
+          <tr>
+            <td><strong>빠름 (Fast)</strong></td>
+            <td>150-200ms</td>
+            <td>호버, 포커스, 작은 상호작용</td>
+          </tr>
+          <tr>
+            <td><strong>보통 (Medium)</strong></td>
+            <td>250-300ms</td>
+            <td>버튼 클릭, 모달 열기/닫기, 페이지 전환</td>
+          </tr>
+          <tr>
+            <td><strong>느림 (Slow)</strong></td>
+            <td>400-500ms</td>
+            <td>복잡한 레이아웃 전환, Bottom Sheet</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>6-1.2.1. 애니메이션 인터랙티브 테스트</h3>
+
+      <div
+        style="
+          background: var(--bg-light);
+          padding: 24px;
+          border-radius: 12px;
+          margin: 20px 0;
+        "
+      >
+        <div style="font-weight: 600; margin-bottom: 20px; font-size: 16px">
+          애니메이션 타입 및 속도 테스트
+        </div>
+
+        <!-- 컨트롤 패널 -->
+        <div style="display: grid; gap: 16px; margin-bottom: 24px">
+          <!-- 애니메이션 타입 선택 -->
+          <div>
+            <label
+              style="
+                display: block;
+                margin-bottom: 8px;
+                font-weight: 600;
+                font-size: 14px;
+              "
+              >애니메이션 타입</label
+            >
+            <select
+              id="animation-type"
+              style="
+                width: 100%;
+                padding: 10px;
+                border: 1px solid var(--border);
+                border-radius: 8px;
+                font-size: 14px;
+              "
+            >
+              <option value="fade">Fade (페이드)</option>
+              <option value="slide-up">Slide Up (슬라이드 위로)</option>
+              <option value="slide-down">Slide Down (슬라이드 아래로)</option>
+              <option value="slide-left">Slide Left (슬라이드 왼쪽)</option>
+              <option value="slide-right">Slide Right (슬라이드 오른쪽)</option>
+              <option value="scale">Scale (스케일)</option>
+              <option value="rotate">Rotate (회전)</option>
+            </select>
+          </div>
+
+          <!-- Duration 조절 -->
+          <div>
+            <label
+              style="
+                display: block;
+                margin-bottom: 8px;
+                font-weight: 600;
+                font-size: 14px;
+              "
+            >
+              Duration: <span id="duration-value">300</span>ms
+            </label>
+            <input
+              type="range"
+              id="duration-slider"
+              min="0"
+              max="1000"
+              value="300"
+              step="50"
+              style="width: 100%"
+            />
+            <div
+              style="
+                display: flex;
+                justify-content: space-between;
+                font-size: 11px;
+                color: var(--text-light);
+                margin-top: 4px;
+              "
+            >
+              <span>0ms</span>
+              <span>500ms</span>
+              <span>1000ms</span>
+            </div>
+          </div>
+
+          <!-- Easing 선택 -->
+          <div>
+            <label
+              style="
+                display: block;
+                margin-bottom: 8px;
+                font-weight: 600;
+                font-size: 14px;
+              "
+              >Easing (이징)</label
+            >
+            <select
+              id="easing-select"
+              style="
+                width: 100%;
+                padding: 10px;
+                border: 1px solid var(--border);
+                border-radius: 8px;
+                font-size: 14px;
+              "
+            >
+              <option value="linear">Linear</option>
+              <option value="ease-out" selected>Ease-out (기본)</option>
+              <option value="ease-in">Ease-in</option>
+              <option value="ease-in-out">Ease-in-out</option>
+              <option value="ease-out-cubic">Ease-out-cubic (권장)</option>
+            </select>
+          </div>
+
+          <!-- 재생 버튼 -->
+          <button
+            id="play-animation"
+            style="
+              background: #b8860b;
+              color: white;
+              border: none;
+              padding: 12px 24px;
+              border-radius: 8px;
+              font-size: 14px;
+              font-weight: 600;
+              cursor: pointer;
+              transition: opacity 200ms;
+            "
+          >
+            애니메이션 재생
+          </button>
+        </div>
+
+        <!-- 애니메이션 미리보기 영역 -->
+        <div
+          style="
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+          "
+        >
+          <div
+            id="animation-demo"
+            style="
+              background: #b8860b;
+              color: white;
+              padding: 20px 40px;
+              border-radius: 12px;
+              font-size: 18px;
+              font-weight: 600;
+              width: fit-content;
+            "
+          >
+            테스트 요소
+          </div>
+        </div>
+
+        <!-- 현재 설정 표시 -->
+        <div
+          style="
+            background: white;
+            padding: 16px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            margin-top: 16px;
+          "
+        >
+          <div
+            style="font-size: 12px; color: var(--text-gray); margin-bottom: 8px"
+          >
+            현재 설정
+          </div>
+          <div
+            id="animation-settings"
+            style="
+              font-size: 13px;
+              color: var(--text-dark);
+              font-family: monospace;
+            "
+          >
+            Type: Fade | Duration: 300ms | Easing: ease-out
+          </div>
+        </div>
+      </div>
+
+      <h3>6-1.3. Easing (이징) 함수</h3>
+
+      <table>
+        <thead>
+          <tr>
+            <th>타입</th>
+            <th>Flutter</th>
+            <th>CSS</th>
+            <th>용도</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Linear</strong></td>
+            <td><code>Curves.linear</code></td>
+            <td><code>linear</code></td>
+            <td>로딩 인디케이터</td>
+          </tr>
+          <tr>
+            <td><strong>Ease-out</strong></td>
+            <td><code>Curves.easeOut</code></td>
+            <td><code>ease-out</code></td>
+            <td>요소 등장 (기본)</td>
+          </tr>
+          <tr>
+            <td><strong>Ease-in</strong></td>
+            <td><code>Curves.easeIn</code></td>
+            <td><code>ease-in</code></td>
+            <td>요소 사라짐</td>
+          </tr>
+          <tr>
+            <td><strong>Ease-in-out</strong></td>
+            <td><code>Curves.easeInOut</code></td>
+            <td><code>ease-in-out</code></td>
+            <td>부드러운 전환 (권장)</td>
+          </tr>
+          <tr>
+            <td><strong>Custom (ease-out-cubic)</strong></td>
+            <td><code>Curves.easeOutCubic</code></td>
+            <td><code>cubic-bezier(0.33, 1, 0.68, 1)</code></td>
+            <td>자연스러운 전환 (권장)</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>6-1.4. 애니메이션 타입별 가이드</h3>
+
+      <h4>Fade (페이드)</h4>
+      <table>
+        <thead>
+          <tr>
+            <th>용도</th>
+            <th>Duration</th>
+            <th>Flutter 예시</th>
+            <th>CSS 예시</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>모달 오버레이</td>
+            <td>200ms</td>
+            <td><code>FadeTransition(opacity: animation)</code></td>
+            <td><code>transition: opacity 200ms ease-out</code></td>
+          </tr>
+          <tr>
+            <td>요소 등장/사라짐</td>
+            <td>300ms</td>
+            <td><code>AnimatedOpacity(duration: 300ms)</code></td>
+            <td><code>transition: opacity 300ms ease-in-out</code></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h4>Slide (슬라이드)</h4>
+      <table>
+        <thead>
+          <tr>
+            <th>용도</th>
+            <th>Duration</th>
+            <th>방향</th>
+            <th>Flutter 예시</th>
+            <th>CSS 예시</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Bottom Sheet</td>
+            <td>300ms</td>
+            <td>아래 → 위</td>
+            <td>
+              <code>SlideTransition(offset: Offset(0, 1) → Offset(0, 0))</code>
+            </td>
+            <td><code>transform: translateY(100%) → translateY(0)</code></td>
+          </tr>
+          <tr>
+            <td>페이지 전환</td>
+            <td>300ms</td>
+            <td>좌 → 우</td>
+            <td>
+              <code>SlideTransition(offset: Offset(1, 0) → Offset(0, 0))</code>
+            </td>
+            <td><code>transform: translateX(100%) → translateX(0)</code></td>
+          </tr>
+          <tr>
+            <td>드로어/사이드바</td>
+            <td>300ms</td>
+            <td>좌 → 우</td>
+            <td>
+              <code>SlideTransition(offset: Offset(-1, 0) → Offset(0, 0))</code>
+            </td>
+            <td><code>transform: translateX(-100%) → translateX(0)</code></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h4>Scale (스케일)</h4>
+      <table>
+        <thead>
+          <tr>
+            <th>용도</th>
+            <th>Duration</th>
+            <th>Scale 범위</th>
+            <th>Flutter 예시</th>
+            <th>CSS 예시</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>버튼 클릭 피드백</td>
+            <td>150ms</td>
+            <td>1.0 → 0.95 → 1.0</td>
+            <td><code>Transform.scale(scale: animation)</code></td>
+            <td><code>transform: scale(0.95)</code></td>
+          </tr>
+          <tr>
+            <td>모달 등장</td>
+            <td>300ms</td>
+            <td>0.9 → 1.0</td>
+            <td><code>ScaleTransition(scale: 0.9 → 1.0)</code></td>
+            <td><code>transform: scale(0.9) → scale(1)</code></td>
+          </tr>
+          <tr>
+            <td>아이콘 강조</td>
+            <td>200ms</td>
+            <td>1.0 → 1.1 → 1.0</td>
+            <td><code>AnimatedScale(scale: 1.1)</code></td>
+            <td><code>transform: scale(1.1)</code></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h4>Rotation (회전)</h4>
+      <table>
+        <thead>
+          <tr>
+            <th>용도</th>
+            <th>Duration</th>
+            <th>각도</th>
+            <th>Flutter 예시</th>
+            <th>CSS 예시</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>로딩 스피너</td>
+            <td>1s (반복)</td>
+            <td>0° → 360°</td>
+            <td><code>RotationTransition(turns: animation)</code></td>
+            <td><code>transform: rotate(360deg)</code></td>
+          </tr>
+          <tr>
+            <td>아이콘 회전 (드롭다운)</td>
+            <td>200ms</td>
+            <td>0° → 180°</td>
+            <td><code>RotatedBox(quarterTurns: 2)</code></td>
+            <td><code>transform: rotate(180deg)</code></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>6-1.5. Flutter 애니메이션 구현</h3>
+
+      <h4>기본 애니메이션</h4>
+      <pre><code>// Fade Animation
+AnimatedOpacity(
+  opacity: isVisible ? 1.0 : 0.0,
+  duration: Duration(milliseconds: 300),
+  curve: Curves.easeInOut,
+  child: Widget(),
+)
+
+// Slide Animation
+AnimatedSlide(
+  offset: isVisible ? Offset.zero : Offset(0, 0.1),
+  duration: Duration(milliseconds: 300),
+  curve: Curves.easeOut,
+  child: Widget(),
+)
+
+// Scale Animation
+AnimatedScale(
+  scale: isPressed ? 0.95 : 1.0,
+  duration: Duration(milliseconds: 150),
+  curve: Curves.easeOut,
+  child: Widget(),
+)</code></pre>
+
+      <h4>커스텀 애니메이션 (AnimationController)</h4>
+      <pre><code>class _MyWidgetState extends State&lt;MyWidget&gt;
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation&lt;double&gt; _animation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: Duration(milliseconds: 300),
+      vsync: this,
+    );
+    _animation = CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeOutCubic,
+    );
+    _controller.forward();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FadeTransition(
+      opacity: _animation,
+      child: Widget(),
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+}</code></pre>
+
+      <h3>6-1.6. Next.js/CSS 애니메이션 구현</h3>
+
+      <h4>CSS Transition</h4>
+      <pre><code>/* 기본 Transition */
+.button {
+  transition: all 200ms ease-out;
+}
+
+.button:hover {
+  transform: scale(1.05);
+  opacity: 0.9;
+}
+
+/* Fade */
+.fade-in {
+  animation: fadeIn 300ms ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Slide Up */
+.slide-up {
+  animation: slideUp 300ms ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}</code></pre>
+
+      <h4>React/Next.js (Framer Motion 예시)</h4>
+      <pre><code>import { motion } from 'framer-motion';
+
+// Fade In
+&lt;motion.div
+  initial={{ opacity: 0 }}
+  animate={{ opacity: 1 }}
+  transition={{ duration: 0.3, ease: 'easeOut' }}
+&gt;
+  Content
+&lt;/motion.div&gt;
+
+// Slide Up
+&lt;motion.div
+  initial={{ y: 20, opacity: 0 }}
+  animate={{ y: 0, opacity: 1 }}
+  transition={{ duration: 0.3, ease: 'easeOut' }}
+&gt;
+  Content
+&lt;/motion.div&gt;
+
+// Scale (Button Click)
+&lt;motion.button
+  whileTap={{ scale: 0.95 }}
+  transition={{ duration: 0.15 }}
+&gt;
+  Click Me
+&lt;/motion.button&gt;</code></pre>
+
+      <h3>6-1.7. 사용 사례별 애니메이션</h3>
+
+      <table>
+        <thead>
+          <tr>
+            <th>사용 사례</th>
+            <th>타입</th>
+            <th>Duration</th>
+            <th>Easing</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>버튼 클릭 피드백</td>
+            <td>Scale</td>
+            <td>150ms</td>
+            <td>ease-out</td>
+          </tr>
+          <tr>
+            <td>모달 열기/닫기</td>
+            <td>Fade + Scale</td>
+            <td>300ms</td>
+            <td>ease-out-cubic</td>
+          </tr>
+          <tr>
+            <td>Bottom Sheet</td>
+            <td>Slide Up</td>
+            <td>300ms</td>
+            <td>ease-out</td>
+          </tr>
+          <tr>
+            <td>페이지 전환</td>
+            <td>Slide (좌→우)</td>
+            <td>300ms</td>
+            <td>ease-in-out</td>
+          </tr>
+          <tr>
+            <td>리스트 아이템 등장</td>
+            <td>Fade + Slide Up</td>
+            <td>250ms (stagger)</td>
+            <td>ease-out</td>
+          </tr>
+          <tr>
+            <td>로딩 스피너</td>
+            <td>Rotation</td>
+            <td>1s (무한 반복)</td>
+            <td>linear</td>
+          </tr>
+          <tr>
+            <td>토스트 알림</td>
+            <td>Slide Down + Fade</td>
+            <td>300ms</td>
+            <td>ease-out</td>
+          </tr>
+          <tr>
+            <td>드롭다운 메뉴</td>
+            <td>Fade + Slide Down</td>
+            <td>200ms</td>
+            <td>ease-out</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>6-1.8. 성능 최적화</h3>
+
+      <div class="alert alert-warning">
+        <div class="alert-title">애니메이션 성능 체크리스트</div>
+        <ul style="margin-top: 8px">
+          <li>
+            <strong>GPU 가속:</strong> transform, opacity 속성 사용 (layout,
+            paint 최소화)
+          </li>
+          <li>
+            <strong>will-change:</strong> 애니메이션이 예상되는 요소에 미리 선언
+            (CSS)
+          </li>
+          <li>
+            <strong>60fps 유지:</strong> 모든 애니메이션은 16.67ms 이내 완료
+          </li>
+          <li>
+            <strong>불필요한 애니메이션 제거:</strong> 성능에 영향 주는 복잡한
+            애니메이션 피하기
+          </li>
+          <li>
+            <strong>접근성:</strong> prefers-reduced-motion 미디어 쿼리 지원
+          </li>
+        </ul>
+      </div>
+
+      <h4>Flutter 성능 팁</h4>
+      <ul>
+        <li><code>AnimatedWidget</code> 사용 시 rebuild 최소화</li>
+        <li><code>RepaintBoundary</code>로 애니메이션 영역 분리</li>
+        <li>복잡한 애니메이션은 <code>CustomPainter</code> 사용 고려</li>
+      </ul>
+
+      <h4>CSS 성능 팁</h4>
+      <pre><code>/* 좋은 예: GPU 가속 속성 사용 */
+.element {
+  transform: translateX(100px);
+  opacity: 0.5;
+}
+
+/* 나쁜 예: layout, paint 발생 */
+.element {
+  left: 100px;  /* layout 발생 */
+  background-color: red;  /* paint 발생 */
+}
+
+/* prefers-reduced-motion 지원 */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}</code></pre>
+
+      <div class="page-number">8-1</div>
+    </div>
+
+    <!-- 제7장: 반응형 디자인 -->
+    <div class="page page-break" id="section-7">
+      <div class="section-header">
+        <div class="section-badge">Chapter 07</div>
+        <h2 class="section-title">반응형 디자인</h2>
+        <p class="section-desc">모바일, 태블릿, 데스크탑 대응</p>
+      </div>
+
+      <h3>7.1. 브레이크포인트</h3>
+
+      <table>
+        <thead>
+          <tr>
+            <th>기기</th>
+            <th>너비</th>
+            <th>Tailwind</th>
+            <th>Flutter</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>모바일</td>
+            <td>&lt; 640px</td>
+            <td><code>default</code></td>
+            <td>기본 (항상 모바일)</td>
+          </tr>
+          <tr>
+            <td>태블릿</td>
+            <td>640px - 1024px</td>
+            <td><code>md:</code></td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td>데스크탑</td>
+            <td>&gt; 1024px</td>
+            <td><code>lg:</code></td>
+            <td>-</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>7.2. 모바일 우선 접근</h3>
+
+      <p>모바일을 기본으로 디자인하고, 데스크탑에서 확장합니다.</p>
+
+      <pre><code>// Tailwind 예시
+&lt;div className="p-5 md:p-8 lg:p-12"&gt;
+  &lt;h1 className="text-2xl md:text-3xl lg:text-4xl"&gt;제목&lt;/h1&gt;
+&lt;/div&gt;</code></pre>
+
+      <h3>7.3. 적응형 레이아웃</h3>
+
+      <h4>그리드 레이아웃</h4>
+      <pre><code>// 모바일: 1열, 태블릿: 2열, 데스크탑: 3열
+&lt;div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"&gt;
+  {items.map(item => &lt;Card key={item.id} /&gt;)}
+&lt;/div&gt;</code></pre>
+
+      <div class="alert alert-info">
+        <div class="alert-title">Flutter 반응형</div>
+        <p>
+          Flutter는 모바일 앱이므로 기본적으로 모바일 최적화되어 있습니다.
+          태블릿은 레이아웃만 조정하면 됩니다.
+        </p>
+      </div>
+
+      <div class="page-number">9</div>
+    </div>
+
+    <!-- 제8장: 접근성 가이드 -->
+    <div class="page page-break" id="section-8">
+      <div class="section-header">
+        <div class="section-badge">Chapter 08</div>
+        <h2 class="section-title">접근성 가이드</h2>
+        <p class="section-desc">WCAG AA 준수 가이드</p>
+      </div>
+
+      <h3>8.1. 컬러 대비</h3>
+
+      <table>
+        <thead>
+          <tr>
+            <th>요소</th>
+            <th>최소 대비비</th>
+            <th>대상</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>본문 텍스트</td>
+            <td>4.5:1</td>
+            <td>WCAG AA</td>
+          </tr>
+          <tr>
+            <td>큰 텍스트 (18px+)</td>
+            <td>3:1</td>
+            <td>WCAG AA</td>
+          </tr>
+          <tr>
+            <td>UI 컴포넌트</td>
+            <td>3:1</td>
+            <td>WCAG AA</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="alert alert-warning">
+        <div class="alert-title">컬러 대비 확인</div>
+        <p>온라인 도구를 사용하여 컬러 대비를 확인하세요:</p>
+        <ul>
+          <li>WebAIM Contrast Checker</li>
+          <li>Contrast Ratio (contrast-ratio.com)</li>
+        </ul>
+      </div>
+
+      <h3>8.2. 터치 타겟</h3>
+
+      <table>
+        <thead>
+          <tr>
+            <th>요소</th>
+            <th>최소 크기</th>
+            <th>권장 크기</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Primary 버튼</td>
+            <td>44×44px</td>
+            <td>48×48px</td>
+          </tr>
+          <tr>
+            <td>Icon 버튼</td>
+            <td>44×44px</td>
+            <td>48×48px</td>
+          </tr>
+          <tr>
+            <td>리스트 아이템</td>
+            <td>44px 높이</td>
+            <td>48px 높이</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>8.3. 스크린 리더</h3>
+
+      <h4>Flutter</h4>
+      <pre><code>// 의미 있는 라벨 제공
+Semantics(
+  label: '프리랜서 프로필 카드',
+  child: Card(...),
+)
+
+// 아이콘 버튼에 라벨
+IconButton(
+  icon: Icon(Icons.favorite),
+  tooltip: '좋아요',
+  onPressed: () {},
+)</code></pre>
+
+      <h4>Next.js</h4>
+      <pre><code>// 이미지 alt 텍스트
+&lt;img src="..." alt="프리랜서 프로필 사진" /&gt;
+
+// 버튼 aria-label
+&lt;button aria-label="좋아요"&gt;
+  &lt;HeartIcon /&gt;
+&lt;/button&gt;</code></pre>
+
+      <h3>8.4. 키보드 네비게이션 (웹)</h3>
+
+      <ul>
+        <li>모든 인터랙티브 요소에 키보드 접근 가능</li>
+        <li>Focus 상태 명확히 표시 (3px+ outline)</li>
+        <li>Tab 순서 논리적으로 구성</li>
+      </ul>
+
+      <div class="page-number">10</div>
+    </div>
+
+    <!-- 마지막 페이지 -->
+    <div class="page page-break">
+      <div class="section-header">
+        <div class="section-badge">Document Information</div>
+        <h2 class="section-title">문서 이력 및 참고 자료</h2>
+      </div>
+
+      <h3>문서 버전 이력</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>버전</th>
+            <th>날짜</th>
+            <th>변경 내용</th>
+            <th>작성자</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1.0</td>
+            <td>2026-01-02</td>
+            <td>초판 작성 (컬러, 타이포그래피, 기본 컴포넌트)</td>
+            <td>Design Team</td>
+          </tr>
+          <tr>
+            <td>1.1</td>
+            <td>2026-01-02</td>
+            <td>
+              컬러 피커 & 폰트 미리보기 도구 추가, 컴포넌트 확장 (리스트, 탭,
+              Bottom Sheet, 애니메이션)
+            </td>
+            <td>Design Team</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>참고 자료</h3>
+      <ul>
+        <li>Flutter Material Design: https://material.io/design</li>
+        <li>
+          Apple Human Interface Guidelines: https://developer.apple.com/design/
+        </li>
+        <li>WCAG 2.1: https://www.w3.org/WAI/WCAG21/quickref/</li>
+        <li>Pretendard 폰트: https://cactus.tistory.com/306</li>
+        <li>Tailwind CSS: https://tailwindcss.com/docs</li>
+      </ul>
+
+      <div class="alert alert-info" style="margin-top: 40px">
+        <div class="alert-title">문서 업데이트</div>
+        디자인 시스템 변경사항이 있을 경우 즉시 이 문서를 업데이트하세요.
+      </div>
+
+      <div
+        style="
+          margin-top: 60px;
+          padding-top: 20px;
+          border-top: 2px solid var(--border);
+          text-align: center;
+          color: var(--text-light);
+        "
+      >
+        <p>
+          <strong
+            >© 2026 The Special Time Design Team. All Rights Reserved.</strong
+          >
+        </p>
+        <p style="margin-top: 8px; font-size: 12px">
+          본 문서의 무단 배포 및 복제를 금지합니다.
+        </p>
+      </div>
+
+      <div class="page-number">11</div>
+    </div>
+
+    <script>
+      // Smooth scroll
+      document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+        anchor.addEventListener("click", function (e) {
+          e.preventDefault();
+          const target = document.querySelector(this.getAttribute("href"));
+          if (target) {
+            target.scrollIntoView({ behavior: "smooth", block: "start" });
+          }
+        });
+      });
+
+      // Active navigation
+      window.addEventListener("scroll", () => {
+        const sections = document.querySelectorAll('[id^="section-"]');
+        const navLinks = document.querySelectorAll(".sidebar-nav a");
+
+        let current = "";
+        sections.forEach((section) => {
+          const sectionTop = section.offsetTop;
+          if (window.pageYOffset >= sectionTop - 100) {
+            current = section.getAttribute("id");
+          }
+        });
+
+        navLinks.forEach((link) => {
+          link.classList.remove("active");
+          if (link.getAttribute("href") === `#${current}`) {
+            link.classList.add("active");
+          }
+        });
+      });
+
+      // 컬러 피커 기능
+      function hexToRgb(hex) {
+        const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+        return result
+          ? {
+              r: parseInt(result[1], 16),
+              g: parseInt(result[2], 16),
+              b: parseInt(result[3], 16),
+            }
+          : null;
+      }
+
+      function hexToFlutterColor(hex) {
+        // #RRGGBB -> Color(0xFFFFFFFF) 형식
+        const hexWithoutHash = hex.replace("#", "");
+        return `Color(0xFF${hexWithoutHash.toUpperCase()})`;
+      }
+
+      function updateColorCodes(hex) {
+        // HEX 코드 업데이트
+        const hexEl = document.getElementById("hexCode");
+        if (hexEl) hexEl.textContent = hex.toUpperCase();
+
+        // RGB 코드 업데이트
+        const rgb = hexToRgb(hex);
+        const rgbEl = document.getElementById("rgbCode");
+        if (rgbEl && rgb) {
+          rgbEl.textContent = `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`;
+        }
+
+        // Flutter 코드 업데이트
+        const flutterEl = document.getElementById("flutterCode");
+        if (flutterEl) flutterEl.textContent = hexToFlutterColor(hex);
+
+        // 미리보기 업데이트
+        const previewEl = document.getElementById("selectedColorPreview");
+        if (previewEl) previewEl.style.background = hex;
+      }
+
+      // 컬러 피커 이벤트 리스너
+      const colorPicker = document.getElementById("colorPicker");
+      if (colorPicker) {
+        colorPicker.addEventListener("input", function (e) {
+          updateColorCodes(e.target.value);
+        });
+
+        // 초기값 설정
+        updateColorCodes(colorPicker.value);
+      }
+
+      // 버튼 인터랙티브 기능
+      document.addEventListener("DOMContentLoaded", function () {
+        const buttons = document.querySelectorAll(".demo-btn:not(.disabled)");
+        const stateDisplay = document.getElementById("button-state");
+
+        if (buttons.length && stateDisplay) {
+          buttons.forEach((button) => {
+            const buttonId = button.id;
+            let buttonType = "";
+            if (buttonId && buttonId.includes("primary"))
+              buttonType = "Primary";
+            else if (buttonId && buttonId.includes("secondary"))
+              buttonType = "Secondary";
+            else if (buttonId && buttonId.includes("tertiary"))
+              buttonType = "Tertiary";
+
+            if (!buttonType) return;
+
+            // Hover 효과
+            button.addEventListener("mouseenter", function () {
+              stateDisplay.textContent = `${buttonType} 버튼: Hover 상태`;
+              if (buttonId.includes("primary")) {
+                button.style.opacity = "0.9";
+                button.style.transform = "translateY(-1px)";
+                button.style.boxShadow = "0 4px 12px rgba(184, 134, 11, 0.3)";
+              } else if (buttonId.includes("secondary")) {
+                button.style.background = "#FDF5E6";
+                button.style.transform = "translateY(-1px)";
+              } else if (buttonId.includes("tertiary")) {
+                button.style.background = "#F5F0E8";
+                button.style.transform = "translateY(-1px)";
+              }
+            });
+
+            button.addEventListener("mouseleave", function () {
+              stateDisplay.textContent =
+                "버튼에 마우스를 올리거나 클릭해보세요";
+              if (buttonId.includes("primary")) {
+                button.style.opacity = "1";
+                button.style.transform = "translateY(0)";
+                button.style.boxShadow = "0 1px 2px rgba(0,0,0,0.05)";
+              } else if (buttonId.includes("secondary")) {
+                button.style.background = "transparent";
+                button.style.transform = "translateY(0)";
+              } else if (buttonId.includes("tertiary")) {
+                button.style.background = "#FAF7F2";
+                button.style.transform = "translateY(0)";
+              }
+            });
+
+            // Click 효과
+            button.addEventListener("mousedown", function () {
+              stateDisplay.textContent = `${buttonType} 버튼: Active (클릭됨)`;
+              button.style.transform = "scale(0.95)";
+            });
+
+            button.addEventListener("mouseup", function () {
+              button.style.transform = "scale(1)";
+              setTimeout(() => {
+                stateDisplay.textContent = `${buttonType} 버튼: 클릭 완료`;
+              }, 150);
+            });
+          });
+        }
+      });
+
+      // 카드 hover 효과
+      document.addEventListener("DOMContentLoaded", function () {
+        const cardDemo = document.getElementById("card-demo");
+        if (cardDemo) {
+          cardDemo.addEventListener("mouseenter", function () {
+            this.style.boxShadow = "0 4px 12px rgba(0, 0, 0, 0.1)";
+            this.style.transform = "translateY(-2px)";
+          });
+          cardDemo.addEventListener("mouseleave", function () {
+            this.style.boxShadow = "0 1px 3px rgba(0, 0, 0, 0.08)";
+            this.style.transform = "translateY(0)";
+          });
+        }
+
+        // 입력 필드 focus 효과
+        const inputDemo = document.getElementById("input-demo");
+        if (inputDemo) {
+          inputDemo.addEventListener("focus", function () {
+            this.style.borderColor = "#b8860b";
+            this.style.boxShadow = "0 0 0 3px rgba(184, 134, 11, 0.1)";
+          });
+          inputDemo.addEventListener("blur", function () {
+            this.style.borderColor = "transparent";
+            this.style.boxShadow = "none";
+          });
+        }
+      });
+
+      // 토스트 함수
+      function showToast(type) {
+        const container = document.getElementById("toast-container");
+        if (!container) return;
+
+        const config = {
+          success: {
+            bg: "#ecfdf5",
+            color: "#4caf50",
+            text: "성공적으로 처리되었습니다!",
+            icon: "✓",
+          },
+          error: {
+            bg: "#ffebee",
+            color: "#e57373",
+            text: "오류가 발생했습니다.",
+            icon: "✕",
+          },
+          warning: {
+            bg: "#fff3e0",
+            color: "#ffb74d",
+            text: "경고: 확인이 필요합니다.",
+            icon: "⚠",
+          },
+          info: {
+            bg: "#e3f2fd",
+            color: "#64b5f6",
+            text: "정보를 확인해주세요.",
+            icon: "ℹ",
+          },
+        };
+
+        const toast = config[type] || config.info;
+        const toastEl = document.createElement("div");
+        toastEl.style.cssText = `
+          background: ${toast.bg};
+          color: ${toast.color};
+          padding: 12px 16px;
+          border-radius: 8px;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+          margin-bottom: 12px;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          font-size: 14px;
+          font-weight: 500;
+          animation: toastSlideIn 300ms ease-out;
+          pointer-events: auto;
+        `;
+        toastEl.innerHTML = `<span style="font-weight: 700">${toast.icon}</span> ${toast.text}`;
+
+        container.appendChild(toastEl);
+        setTimeout(() => {
+          toastEl.style.animation = "toastSlideOut 300ms ease-in";
+          setTimeout(() => toastEl.remove(), 300);
+        }, 3000);
+      }
+
+      // 모달 함수
+      function showModal() {
+        const overlay = document.getElementById("modal-overlay");
+        if (overlay) {
+          overlay.style.display = "flex";
+        }
+      }
+
+      function closeModal() {
+        const overlay = document.getElementById("modal-overlay");
+        if (overlay) {
+          overlay.style.display = "none";
+        }
+      }
+
+      // Bottom Sheet 함수
+      function showBottomSheet() {
+        const overlay = document.getElementById("bottom-sheet-overlay");
+        if (overlay) {
+          overlay.style.display = "flex";
+        }
+      }
+
+      function closeBottomSheet() {
+        const overlay = document.getElementById("bottom-sheet-overlay");
+        if (overlay) {
+          overlay.style.display = "none";
+        }
+      }
+
+      // 애니메이션 스타일 추가
+      const style = document.createElement("style");
+      style.textContent = `
+        @keyframes toastSlideIn {
+          from {
+            transform: translateX(100%);
+            opacity: 0;
+          }
+          to {
+            transform: translateX(0);
+            opacity: 1;
+          }
+        }
+        @keyframes toastSlideOut {
+          from {
+            transform: translateX(0);
+            opacity: 1;
+          }
+          to {
+            transform: translateX(100%);
+            opacity: 0;
+          }
+        }
+      `;
+      document.head.appendChild(style);
+
+      // 애니메이션 인터랙티브 기능
+      document.addEventListener("DOMContentLoaded", function () {
+        const animationDemo = document.getElementById("animation-demo");
+        const playButton = document.getElementById("play-animation");
+        const typeSelect = document.getElementById("animation-type");
+        const durationSlider = document.getElementById("duration-slider");
+        const durationValue = document.getElementById("duration-value");
+        const easingSelect = document.getElementById("easing-select");
+        const settingsDisplay = document.getElementById("animation-settings");
+
+        if (!animationDemo || !playButton) return;
+
+        // Easing 함수 매핑
+        const easingMap = {
+          linear: "linear",
+          "ease-out": "ease-out",
+          "ease-in": "ease-in",
+          "ease-in-out": "ease-in-out",
+          "ease-out-cubic": "cubic-bezier(0.33, 1, 0.68, 1)",
+        };
+
+        function updateSettings() {
+          if (settingsDisplay && typeSelect && durationSlider && easingSelect) {
+            const type = typeSelect.options[typeSelect.selectedIndex].text;
+            const duration = durationSlider.value;
+            const easing =
+              easingSelect.options[easingSelect.selectedIndex].text;
+            settingsDisplay.textContent = `Type: ${type} | Duration: ${duration}ms | Easing: ${easing}`;
+          }
+        }
+
+        // Duration 업데이트
+        if (durationSlider && durationValue) {
+          durationSlider.addEventListener("input", function () {
+            durationValue.textContent = this.value;
+            updateSettings();
+          });
+        }
+
+        // 애니메이션 재생
+        if (playButton) {
+          playButton.addEventListener("click", function () {
+            if (
+              !animationDemo ||
+              !typeSelect ||
+              !durationSlider ||
+              !easingSelect
+            )
+              return;
+
+            const type = typeSelect.value;
+            const duration = parseInt(durationSlider.value);
+            const easing = easingMap[easingSelect.value] || "ease-out";
+
+            // 애니메이션 초기화
+            animationDemo.style.transition = "none";
+            animationDemo.style.opacity = "1";
+            animationDemo.style.transform =
+              "translate(0, 0) scale(1) rotate(0deg)";
+
+            // 리플로우 강제
+            animationDemo.offsetHeight;
+
+            // 애니메이션 적용
+            animationDemo.style.transition = `all ${duration}ms ${easing}`;
+
+            setTimeout(() => {
+              switch (type) {
+                case "fade":
+                  animationDemo.style.opacity = "0";
+                  break;
+                case "slide-up":
+                  animationDemo.style.transform = "translateY(-50px)";
+                  animationDemo.style.opacity = "0";
+                  break;
+                case "slide-down":
+                  animationDemo.style.transform = "translateY(50px)";
+                  animationDemo.style.opacity = "0";
+                  break;
+                case "slide-left":
+                  animationDemo.style.transform = "translateX(-50px)";
+                  animationDemo.style.opacity = "0";
+                  break;
+                case "slide-right":
+                  animationDemo.style.transform = "translateX(50px)";
+                  animationDemo.style.opacity = "0";
+                  break;
+                case "scale":
+                  animationDemo.style.transform = "scale(0.5)";
+                  animationDemo.style.opacity = "0";
+                  break;
+                case "rotate":
+                  animationDemo.style.transform = "rotate(360deg)";
+                  break;
+              }
+            }, 10);
+
+            // 애니메이션 완료 후 리셋
+            setTimeout(() => {
+              animationDemo.style.transition = "none";
+              animationDemo.style.opacity = "1";
+              animationDemo.style.transform =
+                "translate(0, 0) scale(1) rotate(0deg)";
+              animationDemo.offsetHeight; // 리플로우
+            }, duration + 100);
+          });
+        }
+
+        // 설정 변경 시 업데이트
+        if (typeSelect) typeSelect.addEventListener("change", updateSettings);
+        if (easingSelect)
+          easingSelect.addEventListener("change", updateSettings);
+        updateSettings();
+      });
+
+      // 클립보드 복사 기능
+      function copyToClipboard(elementId) {
+        const element = document.getElementById(elementId);
+        if (!element) return;
+
+        const text = element.textContent;
+
+        // 클립보드 API 사용
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard
+            .writeText(text)
+            .then(() => {
+              // 복사 성공 피드백
+              const button = element.nextElementSibling;
+              if (button) {
+                const originalText = button.textContent;
+                button.textContent = "복사됨!";
+                button.style.background = "#4CAF50";
+
+                setTimeout(() => {
+                  button.textContent = originalText;
+                  button.style.background = "";
+                }, 2000);
+              }
+            })
+            .catch((err) => {
+              console.error("복사 실패:", err);
+              alert("복사에 실패했습니다. 코드를 직접 선택하여 복사해주세요.");
+            });
+        } else {
+          // Fallback: 텍스트 선택 방식
+          const range = document.createRange();
+          range.selectNode(element);
+          window.getSelection().removeAllRanges();
+          window.getSelection().addRange(range);
+
+          try {
+            document.execCommand("copy");
+            window.getSelection().removeAllRanges();
+
+            const button = element.nextElementSibling;
+            if (button) {
+              const originalText = button.textContent;
+              button.textContent = "복사됨!";
+              button.style.background = "#4CAF50";
+
+              setTimeout(() => {
+                button.textContent = originalText;
+                button.style.background = "";
+              }, 2000);
+            }
+          } catch (err) {
+            alert("복사에 실패했습니다. 코드를 직접 선택하여 복사해주세요.");
+          }
+        }
+      }
+
+      // 전역으로 export (onclick에서 사용)
+      window.copyToClipboard = copyToClipboard;
+
+      // 폰트 미리보기 기능
+      function updateFontPreview() {
+        const fontSelector = document.getElementById("fontSelector");
+        const previewText = document.getElementById("fontPreviewText");
+        const fontSizeSlider = document.getElementById("fontSizeSlider");
+        const fontSizeValue = document.getElementById("fontSizeValue");
+        const fontWeightSelect = document.getElementById("fontWeightSelect");
+        const fontPreview = document.getElementById("fontPreview");
+        const cssFontCode = document.getElementById("cssFontCode");
+        const flutterFontCode = document.getElementById("flutterFontCode");
+
+        if (
+          !fontSelector ||
+          !previewText ||
+          !fontSizeSlider ||
+          !fontWeightSelect ||
+          !fontPreview
+        )
+          return;
+
+        const fontFamily = fontSelector.value;
+        const text = previewText.value || "특별한 순간을 만들어드립니다";
+        const fontSize = parseInt(fontSizeSlider.value);
+        const fontWeight = parseInt(fontWeightSelect.value);
+
+        // 미리보기 업데이트
+        fontPreview.style.fontFamily = fontFamily;
+        fontPreview.textContent = text;
+        fontPreview.style.fontSize = fontSize + "px";
+        fontPreview.style.fontWeight = fontWeight;
+
+        // 크기 값 표시
+        if (fontSizeValue) fontSizeValue.textContent = fontSize;
+
+        // CSS 코드 생성
+        const cssText = `font-family: ${fontFamily};
+font-size: ${fontSize}px;
+font-weight: ${fontWeight};`;
+        if (cssFontCode) cssFontCode.textContent = cssText;
+
+        // Flutter 코드 생성
+        const flutterWeight =
+          fontWeight === 300
+            ? "FontWeight.w300"
+            : fontWeight === 400
+            ? "FontWeight.w400"
+            : fontWeight === 500
+            ? "FontWeight.w500"
+            : fontWeight === 600
+            ? "FontWeight.w600"
+            : "FontWeight.w700";
+        const fontFamilyClean =
+          fontFamily.split("'")[1] || fontFamily.split(",")[0].trim();
+        const flutterText = `TextStyle(fontFamily: '${fontFamilyClean}', fontSize: ${fontSize}, fontWeight: ${flutterWeight})`;
+        if (flutterFontCode) flutterFontCode.textContent = flutterText;
+      }
+
+      // 이벤트 리스너
+      document.addEventListener("DOMContentLoaded", function () {
+        const fontSelector = document.getElementById("fontSelector");
+        const previewText = document.getElementById("fontPreviewText");
+        const fontSizeSlider = document.getElementById("fontSizeSlider");
+        const fontWeightSelect = document.getElementById("fontWeightSelect");
+
+        if (fontSelector) {
+          fontSelector.addEventListener("change", updateFontPreview);
+          fontSelector.addEventListener("input", updateFontPreview);
+        }
+        if (previewText) {
+          previewText.addEventListener("input", updateFontPreview);
+          previewText.addEventListener("keyup", updateFontPreview);
+        }
+        if (fontSizeSlider) {
+          fontSizeSlider.addEventListener("input", updateFontPreview);
+          fontSizeSlider.addEventListener("change", updateFontPreview);
+        }
+        if (fontWeightSelect) {
+          fontWeightSelect.addEventListener("change", updateFontPreview);
+        }
+
+        // 초기 실행
+        updateFontPreview();
+      });
+    </script>
+  </body>
+</html>

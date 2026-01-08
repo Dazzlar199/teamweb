@@ -197,7 +197,7 @@ export default function TasksPage() {
                         <span className="text-xs font-bold text-slate-700">{task.assignedTo}</span>
                       </div>
                       <div className="text-[11px] font-bold text-slate-400 bg-slate-50 px-2 py-1 rounded-md">
-                        📅 {task.dueDate}
+                        {task.dueDate}
                       </div>
                     </div>
                   </div>
@@ -290,7 +290,7 @@ export default function TasksPage() {
               {/* 하단 액션 바 */}
               <div className="p-6 bg-slate-50/50 border-t border-slate-100 flex justify-end gap-4 px-12">
                 <button onClick={() => setShowAddForm(false)} className="px-8 py-3 text-sm font-bold text-slate-400 hover:text-slate-900 transition-colors">나중에 작성</button>
-                <button onClick={handleCreatePost} className="px-10 py-3 bg-indigo-600 text-white font-black rounded-2xl hover:bg-indigo-700 shadow-xl shadow-indigo-100 transition-all active:scale-95">작업 문서 저장하기</button>
+                <button onClick={handleCreateTask} className="px-10 py-3 bg-indigo-600 text-white font-black rounded-2xl hover:bg-indigo-700 shadow-xl shadow-indigo-100 transition-all active:scale-95">작업 문서 저장하기</button>
               </div>
             </div>
           </div>

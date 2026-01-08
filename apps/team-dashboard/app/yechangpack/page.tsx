@@ -153,7 +153,7 @@ export default function YechangpackPage() {
     setEvidenceDocuments(getDocuments());
 
     // 문서 목록 (항상 최신 경로 반영)
-    const YECHANG_DOCS_PATH = "/inbloom/docs/예창패";
+    const YECHANG_DOCS_PATH = "/docs/yechangpack";
     const actualDocs: YechangpackDocument[] = [
       { id: "yp-doc-1", name: "[참고용] 2025년도 예창패 모집공고문", type: "pdf", size: "1.2MB", path: `${YECHANG_DOCS_PATH}/[공고문] 2025년도 예비창업패키지 예비창업자 모집공고.pdf`, category: "공고" },
       { id: "yp-doc-2", name: "[양식] 2025년도 예창패 사업계획서 (PSST)", type: "docx", size: "450KB", path: `${YECHANG_DOCS_PATH}/[별첨 1] 2025년도 예비창업패키지 사업계획서 양식.docx`, category: "양식" },

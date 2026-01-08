@@ -105,7 +105,7 @@ export default function ResearchPage() {
                 <h3 className="text-base font-bold text-slate-900 mb-2 group-hover:text-indigo-600 transition-colors">{item.interviewee.name} 고객 인터뷰</h3>
                 <p className="text-xs text-slate-500 font-medium line-clamp-2 mb-6">{item.summary || "인터뷰 내용 요약이 없습니다."}</p>
                 <div className="pt-4 border-t border-slate-50 flex items-center justify-between">
-                  <span className="text-[11px] font-bold text-slate-400">📅 {new Date(item.scheduledDate).toLocaleDateString()}</span>
+                  <span className="text-[11px] font-bold text-slate-400">{new Date(item.scheduledDate).toLocaleDateString()}</span>
                   <button className="text-[11px] font-black text-indigo-600">상세 보기 →</button>
                 </div>
               </div>
