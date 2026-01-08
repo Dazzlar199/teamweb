@@ -20,7 +20,7 @@ export default function NotificationBell() {
       loadNotifications();
       
       // Supabase Realtime 구독 (실시간 업데이트)
-      const unsubscribe = subscribeToNotifications(() => {
+      const unsubscribe = subscribeToNotifications(currentUser, () => {
         loadNotifications();
       });
       
@@ -39,32 +39,33 @@ export default function NotificationBell() {
     requestNotificationPermission();
   }, []);
 
-  const loadNotifications = () => {
+  const loadNotifications = async () => {
     if (!currentUser) return;
-    const notifs = getNotifications(currentUser);
+    const notifs = await getNotifications(currentUser);
+    const unread = await getUnreadCount(currentUser);
     setNotifications(notifs);
-    setUnreadCount(getUnreadCount(currentUser));
+    setUnreadCount(unread);
   };
 
-  const handleMarkAsRead = (id: string) => {
+  const handleMarkAsRead = async (id: string) => {
     if (!currentUser) return;
-    markAsRead(id, currentUser);
+    await markAsRead(id);
     loadNotifications();
   };
 
-  const handleMarkAllAsRead = () => {
+  const handleMarkAllAsRead = async () => {
     if (!currentUser) return;
-    markAllAsRead(currentUser);
+    await markAllAsRead(currentUser);
     loadNotifications();
   };
 
   const isReadByCurrentUser = (notif: Notification): boolean => {
-    if (!currentUser) return false;
-    return notif.readBy[currentUser] === true;
+    // Supabase 연동 시 read 필드 사용
+    return notif.read === true;
   };
 
-  const handleDelete = (id: string) => {
-    deleteNotification(id);
+  const handleDelete = async (id: string) => {
+    await deleteNotification(id);
     loadNotifications();
   };
 
