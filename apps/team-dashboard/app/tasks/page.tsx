@@ -167,7 +167,11 @@ export default function TasksPage() {
             filteredTasks.map((task) => {
               const member = TEAM_MEMBERS[task.assignedTo as keyof typeof TEAM_MEMBERS] || { color: "#64748b" };
               return (
-                <div key={task.id} className="glass-card rounded-2xl overflow-hidden group">
+                <div 
+                  key={task.id} 
+                  onClick={() => setSelectedTask(task)}
+                  className="glass-card rounded-2xl overflow-hidden group cursor-pointer hover:ring-2 hover:ring-indigo-500/20 transition-all"
+                >
                   <div className="p-5 space-y-4">
                     <div className="flex justify-between items-start">
                       <span className={`px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider ${
@@ -176,7 +180,13 @@ export default function TasksPage() {
                         {task.priority}
                       </span>
                       <div className="flex gap-1">
-                        <button onClick={() => updateTaskStatus(task.id, 'done')} className="p-1.5 text-slate-300 hover:text-emerald-500 transition-colors">
+                        <button 
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            updateTaskStatus(task.id, 'done');
+                          }} 
+                          className="p-1.5 text-slate-300 hover:text-emerald-500 transition-colors"
+                        >
                           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
                         </button>
                       </div>
@@ -291,6 +301,104 @@ export default function TasksPage() {
               <div className="p-6 bg-slate-50/50 border-t border-slate-100 flex justify-end gap-4 px-12">
                 <button onClick={() => setShowAddForm(false)} className="px-8 py-3 text-sm font-bold text-slate-400 hover:text-slate-900 transition-colors">나중에 작성</button>
                 <button onClick={handleCreateTask} className="px-10 py-3 bg-indigo-600 text-white font-black rounded-2xl hover:bg-indigo-700 shadow-xl shadow-indigo-100 transition-all active:scale-95">작업 문서 저장하기</button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* 작업 상세보기 모달 */}
+        {selectedTask && (
+          <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center z-[110] p-4 sm:p-8">
+            <div className="bg-white rounded-[2rem] w-full max-w-4xl max-h-[90vh] shadow-2xl overflow-hidden animate-slide-in flex flex-col">
+              {/* 모달 헤더 */}
+              <div className="px-8 py-5 border-b border-slate-100 flex justify-between items-center bg-white">
+                <div className="flex items-center gap-2">
+                  <span className={`px-2 py-0.5 rounded text-[10px] font-black uppercase ${
+                    selectedTask.priority === 'high' ? 'bg-rose-100 text-rose-600' : 'bg-blue-100 text-blue-600'
+                  }`}>
+                    {selectedTask.priority} Priority
+                  </span>
+                  <span className="text-slate-300">/</span>
+                  <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">Task Details</span>
+                </div>
+                <button onClick={() => setSelectedTask(null)} className="w-10 h-10 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-400 transition-colors">✕</button>
+              </div>
+
+              {/* 본문 */}
+              <div className="flex-1 overflow-y-auto custom-scrollbar p-8 sm:p-12">
+                <div className="max-w-3xl mx-auto space-y-8">
+                  <div>
+                    <h2 className="text-3xl font-black text-slate-900 mb-6">{selectedTask.title}</h2>
+                    
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 py-6 border-y border-slate-50">
+                      <div className="space-y-1">
+                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider">담당자</span>
+                        <div className="flex items-center gap-2">
+                          <div className="w-6 h-6 rounded-full bg-indigo-600 flex items-center justify-center text-[10px] font-bold text-white">
+                            {selectedTask.assignedTo[0]}
+                          </div>
+                          <span className="text-sm font-bold text-slate-700">{selectedTask.assignedTo}</span>
+                        </div>
+                      </div>
+                      <div className="space-y-1">
+                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider">상태</span>
+                        <div className="flex items-center gap-1.5">
+                          <div className={`w-2 h-2 rounded-full ${
+                            selectedTask.status === 'done' ? 'bg-emerald-500' : selectedTask.status === 'in_progress' ? 'bg-indigo-500' : 'bg-slate-300'
+                          }`} />
+                          <span className="text-sm font-bold text-slate-700 uppercase">{selectedTask.status}</span>
+                        </div>
+                      </div>
+                      <div className="space-y-1">
+                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider">마감일</span>
+                        <div className="text-sm font-bold text-slate-700">{selectedTask.dueDate}</div>
+                      </div>
+                      <div className="space-y-1">
+                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider">작성자</span>
+                        <div className="text-sm font-bold text-slate-500">{selectedTask.createdBy || "미지정"}</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="prose prose-slate max-w-none">
+                    <div 
+                      className="text-slate-600 leading-relaxed min-h-[200px]"
+                      dangerouslySetInnerHTML={{ __html: selectedTask.description || "<p className='text-slate-400 italic'>작업 내용이 없습니다.</p>" }}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* 하단 바 */}
+              <div className="p-6 bg-slate-50/50 border-t border-slate-100 flex justify-between items-center px-12">
+                <button 
+                  onClick={() => {
+                    if(confirm("이 작업을 삭제하시겠습니까?")) {
+                      const updated = tasks.filter(t => t.id !== selectedTask.id);
+                      setTasks(updated);
+                      localStorage.setItem("team-dashboard-tasks", JSON.stringify(updated));
+                      setSelectedTask(null);
+                      showToast("작업이 삭제되었습니다.", "info");
+                    }
+                  }}
+                  className="text-xs font-bold text-rose-400 hover:text-rose-600 transition-colors"
+                >
+                  작업 삭제하기
+                </button>
+                <div className="flex gap-3">
+                  <button onClick={() => setSelectedTask(null)} className="px-6 py-2.5 text-sm font-bold text-slate-500">닫기</button>
+                  {selectedTask.status !== 'done' && (
+                    <button 
+                      onClick={() => {
+                        updateTaskStatus(selectedTask.id, 'done');
+                        setSelectedTask(null);
+                      }}
+                      className="px-6 py-2.5 bg-emerald-500 text-white font-black rounded-xl hover:bg-emerald-600 transition-all shadow-lg shadow-emerald-100"
+                    >
+                      완료 처리
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
           </div>
