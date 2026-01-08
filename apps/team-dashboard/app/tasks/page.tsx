@@ -218,62 +218,79 @@ export default function TasksPage() {
           )}
         </div>
 
-        {/* 새 작업 추가 모달 (간소화된 하이엔드 디자인) */}
+        {/* 새 작업 추가 모달 (노션 스타일 대형 에디터) */}
         {showAddForm && (
-          <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center z-[100] p-4">
-            <div className="bg-white rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden animate-slide-in">
-              <div className="p-6 border-b border-slate-100 flex justify-between items-center">
-                <h2 className="text-xl font-black text-slate-900">새 작업 생성</h2>
-                <button onClick={() => setShowAddForm(false)} className="w-8 h-8 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-400 transition-colors">✕</button>
+          <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center z-[100] p-4 sm:p-8">
+            <div className="bg-white rounded-[2rem] w-full max-w-5xl h-[90vh] shadow-2xl overflow-hidden animate-slide-in flex flex-col">
+              {/* 모달 상단 바 */}
+              <div className="px-8 py-5 border-b border-slate-100 flex justify-between items-center bg-white">
+                <div className="flex items-center gap-3">
+                  <div className="w-3 h-3 rounded-full bg-rose-400"></div>
+                  <div className="w-3 h-3 rounded-full bg-amber-400"></div>
+                  <div className="w-3 h-3 rounded-full bg-emerald-400"></div>
+                  <span className="ml-2 text-xs font-black text-slate-400 uppercase tracking-widest">New Project Document</span>
+                </div>
+                <button onClick={() => setShowAddForm(false)} className="w-10 h-10 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-400 transition-colors">✕</button>
               </div>
-              <div className="p-8 space-y-5">
-                <div className="space-y-1">
-                  <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">작업 명칭</label>
+
+              {/* 스크롤 가능한 에디터 본문 */}
+              <div className="flex-1 overflow-y-auto custom-scrollbar p-8 sm:p-12 space-y-10">
+                {/* 제목 영역 (노션 스타일) */}
+                <div className="space-y-4">
                   <input 
                     type="text"
                     value={newTask.title}
                     onChange={(e) => setNewTask({...newTask, title: e.target.value})}
-                    placeholder="무엇을 해야 하나요?"
-                    className="w-full px-4 py-3 bg-slate-50 border-none rounded-2xl text-base font-bold focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
+                    placeholder="작업 제목을 입력하세요..."
+                    className="w-full bg-transparent border-none text-4xl font-black text-slate-900 placeholder:text-slate-200 outline-none p-0 focus:ring-0"
+                  />
+                  
+                  <div className="flex flex-wrap gap-6 border-y border-slate-50 py-6">
+                    <div className="flex items-center gap-3">
+                      <span className="text-[11px] font-black text-slate-400 uppercase w-20">담당자</span>
+                      <div className="flex items-center gap-2 px-3 py-1.5 bg-slate-50 rounded-xl">
+                        <div className="w-5 h-5 rounded-full bg-indigo-600 flex items-center justify-center text-[10px] font-bold text-white">{currentUser[0]}</div>
+                        <span className="text-sm font-bold text-slate-700">{currentUser}</span>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <span className="text-[11px] font-black text-slate-400 uppercase w-20">우선순위</span>
+                      <select 
+                        value={newTask.priority}
+                        onChange={(e) => setNewTask({...newTask, priority: e.target.value as "low" | "medium" | "high"})}
+                        className="bg-slate-50 border-none rounded-xl text-sm font-bold text-slate-700 px-3 py-1.5 outline-none cursor-pointer hover:bg-slate-100 transition-colors"
+                      >
+                        <option value="high">🔴 긴급</option>
+                        <option value="medium">🟡 보통</option>
+                        <option value="low">🟢 낮음</option>
+                      </select>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <span className="text-[11px] font-black text-slate-400 uppercase w-20">마감일</span>
+                      <input 
+                        type="date"
+                        value={newTask.dueDate}
+                        onChange={(e) => setNewTask({...newTask, dueDate: e.target.value})}
+                        className="bg-slate-50 border-none rounded-xl text-sm font-bold text-slate-700 px-3 py-1.5 outline-none cursor-pointer hover:bg-slate-100 transition-colors"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* 에디터 영역 */}
+                <div className="min-h-[500px]">
+                  <RichTextEditor 
+                    value={newTask.description}
+                    onChange={(content) => setNewTask({...newTask, description: content})}
+                    placeholder="내용을 입력하거나 이미지를 붙여넣으세요. 유투브 링크를 넣으면 영상이 바로 표시됩니다..."
                   />
                 </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-1">
-                    <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">우선순위</label>
-                    <select 
-                      value={newTask.priority}
-                      onChange={(e) => setNewTask({...newTask, priority: e.target.value as "low" | "medium" | "high"})}
-                      className="w-full px-4 py-3 bg-slate-50 border-none rounded-2xl text-sm font-bold outline-none cursor-pointer"
-                    >
-                      <option value="high">긴급 (High)</option>
-                      <option value="medium">보통 (Medium)</option>
-                      <option value="low">낮음 (Low)</option>
-                    </select>
-                  </div>
-                  <div className="space-y-1">
-                    <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">마감일</label>
-                    <input 
-                      type="date"
-                      value={newTask.dueDate}
-                      onChange={(e) => setNewTask({...newTask, dueDate: e.target.value})}
-                      className="w-full px-4 py-3 bg-slate-50 border-none rounded-2xl text-sm font-bold outline-none"
-                    />
-                  </div>
-                </div>
-                <div className="space-y-1">
-                  <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">설명 (선택)</label>
-                  <div className="border border-slate-100 rounded-2xl overflow-hidden bg-slate-50">
-                    <RichTextEditor 
-                      value={newTask.description}
-                      onChange={(content) => setNewTask({...newTask, description: content})}
-                      placeholder="상세 내용을 입력하세요... (이미지 첨부 가능)"
-                    />
-                  </div>
-                </div>
               </div>
-              <div className="p-6 bg-slate-50 flex gap-3">
-                <button onClick={() => setShowAddForm(false)} className="flex-1 py-3 text-sm font-bold text-slate-500 hover:text-slate-800 transition-colors">취소</button>
-                <button onClick={handleCreateTask} className="flex-1 py-3 bg-indigo-600 text-white font-bold rounded-2xl hover:bg-indigo-700 shadow-lg shadow-indigo-200 transition-all">작업 등록</button>
+
+              {/* 하단 액션 바 */}
+              <div className="p-6 bg-slate-50/50 border-t border-slate-100 flex justify-end gap-4 px-12">
+                <button onClick={() => setShowAddForm(false)} className="px-8 py-3 text-sm font-bold text-slate-400 hover:text-slate-900 transition-colors">나중에 작성</button>
+                <button onClick={handleCreatePost} className="px-10 py-3 bg-indigo-600 text-white font-black rounded-2xl hover:bg-indigo-700 shadow-xl shadow-indigo-100 transition-all active:scale-95">작업 문서 저장하기</button>
               </div>
             </div>
           </div>

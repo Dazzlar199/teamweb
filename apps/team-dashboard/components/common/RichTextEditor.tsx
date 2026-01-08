@@ -20,7 +20,7 @@ const modules = {
     [{ list: "ordered" }, { list: "bullet" }],
     [{ color: [] }, { background: [] }],
     ["blockquote", "code-block"],
-    ["link", "image"],
+    ["link", "image", "video"],
     ["clean"],
   ],
 };
@@ -39,6 +39,7 @@ const formats = [
   "code-block",
   "link",
   "image",
+  "video",
 ];
 
 export default function RichTextEditor({ value, onChange, placeholder }: EditorProps) {
@@ -51,27 +52,37 @@ export default function RichTextEditor({ value, onChange, placeholder }: EditorP
         modules={modules}
         formats={formats}
         placeholder={placeholder}
-        className="h-72 mb-12"
+        className="h-[500px] mb-16"
       />
       <style jsx global>{`
         .ql-container.ql-snow {
           border: none !important;
           font-family: inherit;
-          font-size: 15px;
+          font-size: 16px;
         }
         .ql-toolbar.ql-snow {
           border: none !important;
           border-bottom: 1px solid #f1f5f9 !important;
-          padding: 12px !important;
+          padding: 16px !important;
+          position: sticky;
+          top: 0;
+          z-index: 10;
+          background: white;
         }
         .ql-editor {
-          min-height: 250px;
-          padding: 20px !important;
-          line-height: 1.6;
+          min-height: 450px;
+          padding: 30px !important;
+          line-height: 1.8;
         }
         .ql-editor.ql-blank::before {
-          color: #94a3b8;
+          color: #cbd5e1;
           font-style: normal;
+          left: 30px;
+        }
+        .ql-video {
+          width: 100%;
+          aspect-ratio: 16 / 9;
+          border-radius: 12px;
         }
         .ql-snow .ql-picker.ql-header .ql-picker-label::before {
           content: '본문';
