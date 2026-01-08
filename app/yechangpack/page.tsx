@@ -238,13 +238,13 @@ export default function YechangpackPage() {
               documents={documents}
               currentUser={currentUser}
               evaluationScores={evaluationScores}
-              onUpdateScores={(s) => { setEvaluationScores(s); setLocalStorage("yechangpack-scores", s); }}
+              onUpdateScores={(s: { 문제인식: number; 해결방안: number; 성장전략: number; 팀구성: number; }) => { setEvaluationScores(s); setLocalStorage("yechangpack-scores", s); }}
               onTaskToggle={handleTaskToggle}
               onTaskSave={handleTaskSave}
-              onTaskDelete={(pid, tid) => { updateRoadmapPhases(roadmapPhases.map(p => p.id === pid ? {...p, tasks: p.tasks.filter(t => t.id !== tid)} : p)); }}
+              onTaskDelete={(pid: string, tid: string) => { updateRoadmapPhases(roadmapPhases.map(p => p.id === pid ? {...p, tasks: p.tasks.filter(t => t.id !== tid)} : p)); }}
               onTaskNoteAdd={() => {}}
               onTaskNoteDelete={() => {}}
-              onDownloadDocument={(d) => window.open(encodeURI(d.path), "_blank")}
+              onDownloadDocument={(d: YechangpackDocument) => window.open(encodeURI(d.path), "_blank")}
             />
           )}
 
@@ -252,13 +252,13 @@ export default function YechangpackPage() {
             <ChecklistTab 
               checklistItems={checklistItems} 
               roadmapPhases={roadmapPhases} 
-              onToggle={(id) => { const next = checklistItems.map(i => i.id === id ? {...i, completed: !i.completed} : i); setChecklistItems(next); setLocalStorage("yechangpack-checklist", next); }} 
+              onToggle={(id: string) => { const next = checklistItems.map(i => i.id === id ? {...i, completed: !i.completed} : i); setChecklistItems(next); setLocalStorage("yechangpack-checklist", next); }} 
               onEdit={() => {}} 
-              onDelete={(id) => { const next = checklistItems.filter(i => i.id !== id); setChecklistItems(next); setLocalStorage("yechangpack-checklist", next); }} 
+              onDelete={(id: string) => { const next = checklistItems.filter(i => i.id !== id); setChecklistItems(next); setLocalStorage("yechangpack-checklist", next); }} 
               onAdd={() => {
                 const title = prompt("추가할 항목:");
                 if(title) {
-                  const next = [...checklistItems, { id: Date.now().toString(), title, completed: false, category: '일반', phase: 'phase-1' }];
+                  const next: ChecklistItem[] = [...checklistItems, { id: Date.now().toString(), title, completed: false, category: '일반', phase: 'phase-1' }];
                   setChecklistItems(next);
                   setLocalStorage("yechangpack-checklist", next);
                 }
@@ -267,7 +267,13 @@ export default function YechangpackPage() {
           )}
 
           {activeTab === "evidence" && (
-            <EvidenceTab evidenceDocuments={evidenceDocuments} onDelete={(id) => { setEvidenceDocuments(getDocuments()); }} onSave={(d, f) => {}} selectedCategory={selectedEvidenceCategory} onCategoryChange={setSelectedEvidenceCategory} />
+            <EvidenceTab 
+              evidenceDocuments={evidenceDocuments} 
+              onDelete={(id: string) => { setEvidenceDocuments(prev => prev.filter(d => d.id !== id)); }} 
+              onSave={(d, f) => { showToast("증빙자료가 저장되었습니다 (시뮬레이션)", "success"); }} 
+              selectedCategory={selectedEvidenceCategory} 
+              onCategoryChange={(c: DocumentCategory | "all") => setSelectedEvidenceCategory(c)} 
+            />
           )}
           
           {activeTab === "documents" && (

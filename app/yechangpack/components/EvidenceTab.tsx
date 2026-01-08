@@ -31,13 +31,27 @@ export default function EvidenceTab({
 }: EvidenceTabProps) {
   const [showAddEvidence, setShowAddEvidence] = useState(false);
   const [evidenceFile, setEvidenceFile] = useState<File | null>(null);
-  const [newEvidence, setNewEvidence] = useState({
+  const [newEvidence, setNewEvidence] = useState<{
+    name: string;
+    category: DocumentCategory;
+    type: string;
+    required: boolean;
+    description: string;
+  }>({
     name: "",
-    category: "corporate" as DocumentCategory,
+    category: "corporate",
     type: "",
     required: false,
     description: "",
   });
+
+  const categoryNames: Record<DocumentCategory, string> = {
+    corporate: "법인/사업자",
+    team: "팀 구성",
+    technical: "기술 역량",
+    validation: "검증 자료",
+    market: "시장 조사",
+  };
 
   const handleAddEvidence = () => {
     if (!newEvidence.name.trim()) {
@@ -157,14 +171,6 @@ export default function EvidenceTab({
           </h3>
           <div className="space-y-4">
             {getDocumentChecklist().map((category) => {
-              const categoryNames = {
-                corporate: "법인/사업자",
-                team: "팀 구성",
-                technical: "기술 역량",
-                validation: "검증 자료",
-                market: "시장 조사",
-              };
-
               if (
                 selectedCategory !== "all" &&
                 selectedCategory !== category.category
@@ -277,14 +283,6 @@ export default function EvidenceTab({
                     doc.category === selectedCategory
                 )
                 .map((doc) => {
-                  const categoryNames = {
-                    corporate: "법인/사업자",
-                    team: "팀 구성",
-                    technical: "기술 역량",
-                    validation: "검증 자료",
-                    market: "시장 조사",
-                  };
-
                   return (
                     <div
                       key={doc.id}
@@ -296,8 +294,7 @@ export default function EvidenceTab({
                             {doc.name}
                           </span>
                           <span className="px-2 py-0.5 bg-[#EFF6FF] text-[#1E40AF] text-xs font-medium rounded">
-                            {/* @ts-ignore */}
-                            {categoryNames[doc.category] || doc.category}
+                            {categoryNames[doc.category]}
                           </span>
                           {doc.required && (
                             <span className="px-2 py-0.5 bg-[#FEF2F2] text-[#991B1B] text-xs font-medium rounded">
