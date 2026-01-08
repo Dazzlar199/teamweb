@@ -15,7 +15,7 @@ interface RoadmapTabProps {
   documents: YechangpackDocument[];
   currentUser: string;
   evaluationScores: { 문제인식: number; 해결방안: number; 성장전략: number; 팀구성: number; };
-  onUpdateScores: (scores: any) => void;
+  onUpdateScores: (scores: { 문제인식: number; 해결방안: number; 성장전략: number; 팀구성: number; }) => void;
   onTaskToggle: (phaseId: string, taskId: string) => void;
   onTaskSave: (taskData: Partial<RoadmapTask>, phaseId: string, existingTaskId?: string) => void;
   onTaskDelete: (phaseId: string, taskId: string) => void;
@@ -50,6 +50,13 @@ export default function RoadmapTab({
     if (!phase.tasks || phase.tasks.length === 0) return 0;
     const completed = phase.tasks.filter((t) => t.completed).length;
     return Math.round((completed / phase.tasks.length) * 100);
+  };
+
+  const getInitialPhaseId = (): string => {
+    if (editingTask?.phaseId) return editingTask.phaseId;
+    if (expandedPhase) return expandedPhase;
+    if (roadmapPhases && roadmapPhases.length > 0) return roadmapPhases[0].id;
+    return "";
   };
 
   // 공고문 기반 평가 가이드 데이터 (복구)
@@ -216,9 +223,14 @@ export default function RoadmapTab({
 
       {showAddTask && (
         <AddTaskModal 
-          phases={roadmapPhases} initialTask={editingTask?.task || null} 
-          initialPhaseId={selectedPhaseForTask} onClose={() => setShowAddTask(false)} 
-          onSave={(data, pid) => onTaskSave(data, pid, editingTask?.task.id)} 
+          phases={roadmapPhases} 
+          initialTask={editingTask?.task || null} 
+          initialPhaseId={getInitialPhaseId()} 
+          onClose={() => {
+            setShowAddTask(false);
+            setEditingTask(null);
+          }} 
+          onSave={(data, pid) => onTaskSave(data, pid, editingTask?.task?.id)} 
         />
       )}
     </div>
