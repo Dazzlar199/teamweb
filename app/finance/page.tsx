@@ -215,7 +215,7 @@ export default function FinancePage() {
                         <p className={`text-sm font-black ${e.type === '구독' ? 'text-indigo-600' : 'text-slate-900'}`}>- {formatCurrency(e.amount_in_krw)}</p>
                         <button onClick={() => { if(confirm("삭제할까요?")) deleteExpenditure(e.id).then(() => loadInitialData()); }} className="text-[9px] font-bold text-rose-400 opacity-0 group-hover:opacity-100 transition-all uppercase">Delete</button>
                       </div>
-                      <button onClick={() => { const next = e.evidence_status === "미첨부" ? "검토중" : e.evidence_status === "검토중" ? "완료" : "미첨부"; updateExpenditureStatus(e.id, next).then(() => loadInitialData()); }} className={`px-3 py-1.5 rounded-xl text-[10px] font-black transition-all ${e.evidence_status === '완료' ? 'bg-emerald-50 text-emerald-600' : e.evidence_status === '검토중' ? 'bg-amber-50 text-amber-600' : 'bg-rose-50 text-rose-600'}`}>
+                      <button onClick={() => { const next = e.evidence_status === "미첨부" ? "검토중" : e.evidence_status === "검토중" ? "완료" : "미첨부"; updateExpenditureStatus(e.id, next).then(() => loadInitialData()); }} className={`px-3 py-1.5 rounded-xl text-[10px] font-black transition-all ${e.evidence_status === '완료' ? 'bg-emerald-50 text-emerald-600' : e.evidence_status === '검토중' ? 'bg-amber-50 text-amber-600' : 'bg-slate-100 text-slate-400'}`}>
                         {e.evidence_status}
                       </button>
                     </div>
