@@ -20,6 +20,11 @@ const CATEGORY_LABELS: Record<DocumentCategory, string> = {
   technical: "기술 증빙",
   validation: "고객 검증",
   market: "시장 조사",
+  공고: "공고문",
+  양식: "제출 양식",
+  참고: "참고 자료",
+  증빙: "실적 증빙",
+  기타: "기타 자료",
 };
 
 export default function DocumentsPage() {
@@ -51,17 +56,7 @@ export default function DocumentsPage() {
     try {
       const loaded = getDocuments();
       setDocuments(loaded);
-      
-      // 카테고리별 문서 수 계산
-      const counts = {
-        전체: loaded.length,
-        공고: loaded.filter(d => d.category === '공고').length,
-        양식: loaded.filter(d => d.category === '양식').length,
-        참고: loaded.filter(d => d.category === '참고').length,
-        증빙: loaded.filter(d => d.category === '증빙').length,
-        기타: loaded.filter(d => d.category === '기타').length,
-      };
-      setCategoryCounts(counts);
+      setStats(getDocumentStats());
     } catch (e) {
       console.error("문서 로드 실패:", e);
     }
