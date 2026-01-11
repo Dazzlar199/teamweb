@@ -34,7 +34,17 @@ export default function SurveysPage() {
     try {
       const loaded = getSurveys();
       setSurveys(loaded);
-      setStats(getSurveyStats());
+      // 통계 계산
+      const activeCount = loaded.filter(s => s.status === 'active').length;
+      const closedCount = loaded.filter(s => s.status === 'closed').length;
+      const totalResponsesCount = loaded.reduce((acc, curr) => acc + (curr.responseCount || 0), 0);
+
+      setStats({
+        total: loaded.length,
+        active: activeCount,
+        closed: closedCount,
+        responseCount: totalResponsesCount
+      });
     } catch (error) {
       handleError(error as Error, {
         component: "SurveysPage",

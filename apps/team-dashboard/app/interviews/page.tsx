@@ -63,14 +63,22 @@ export default function InterviewsPage() {
       const loaded = getInterviews();
       setInterviews(loaded);
       
-      const upcoming = loaded.filter(i => i.status === 'scheduled');
-      const completed = loaded.filter(i => i.status === 'completed');
-      
+      // 통계 계산
+      const coupleCount = loaded.filter(i => i.type === 'couple').length;
+      const freelancerCount = loaded.filter(i => i.type === 'freelancer').length;
+      const completedCount = loaded.filter(i => i.status === 'completed').length;
+      const scheduledCount = loaded.filter(i => i.status === 'scheduled').length;
+      const painPointsCount = loaded.reduce((acc, curr) => acc + (curr.painPoints?.length || 0), 0);
+      const quotesCount = loaded.reduce((acc, curr) => acc + (curr.quotes?.length || 0), 0);
+
       setStats({
         total: loaded.length,
-        upcoming: upcoming.length,
-        completed: completed.length,
-        insightCount: loaded.reduce((acc, curr) => acc + (curr.painPoints?.length || 0), 0)
+        couple: coupleCount,
+        freelancer: freelancerCount,
+        completed: completedCount,
+        scheduled: scheduledCount,
+        painPoints: painPointsCount,
+        quotes: quotesCount
       });
     } catch (e) {
       console.error("인터뷰 로드 실패:", e);
