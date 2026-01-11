@@ -13,15 +13,22 @@ interface NotesTabProps {
 export default function NotesTab({ notes, onAdd, onUpdate, onDelete }: NotesTabProps) {
   const [showAddNote, setShowAddNote] = useState(false);
   const [selectedNote, setSelectedNote] = useState<Note | null>(null);
-  const [newNote, setNewNote] = useState({ title: "", content: "", category: "메모" as Note["category"] });
+  const [isEditing, setIsEditing] = useState(false);
+  const [newNote, setNewNote] = useState({ title: "", content: "", tags: [] as string[] });
 
-  const handleAddClick = () => {
-    if (!newNote.title.trim()) return;
-    const note: Note = { id: Date.now().toString(), title: newNote.title, content: newNote.content, category: newNote.category, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() };
+  const handleAdd = () => {
+    if (!newNote.title || !newNote.content) return;
+    const note: Note = { 
+      id: Date.now().toString(), 
+      title: newNote.title, 
+      content: newNote.content, 
+      tags: newNote.tags.length > 0 ? newNote.tags : ["메모"], 
+      createdAt: new Date().toISOString(), 
+      updatedAt: new Date().toISOString() 
+    };
     onAdd(note);
-    setNewNote({ title: "", content: "", category: "메모" });
-    setShowAddNote(false);
-    setSelectedNote(note);
+    setNewNote({ title: "", content: "", tags: [] });
+    setIsEditing(false);
   };
 
   return (
@@ -56,7 +63,7 @@ export default function NotesTab({ notes, onAdd, onUpdate, onDelete }: NotesTabP
               className="w-full text-xs font-medium bg-transparent outline-none resize-none"
             />
             <div className="flex gap-2">
-              <button onClick={handleAddClick} className="flex-1 py-2 bg-indigo-600 text-white text-[11px] font-black rounded-lg">저장</button>
+              <button onClick={handleAdd} className="flex-1 py-2 bg-indigo-600 text-white text-[11px] font-black rounded-lg">저장</button>
               <button onClick={() => setShowAddNote(false)} className="flex-1 py-2 bg-slate-100 text-slate-500 text-[11px] font-black rounded-lg">취소</button>
             </div>
           </div>
@@ -93,8 +100,8 @@ export default function NotesTab({ notes, onAdd, onUpdate, onDelete }: NotesTabP
         {selectedNote ? (
           <div className="glass-card rounded-3xl bg-white p-10 h-full flex flex-col animate-slide-in">
             <div className="flex items-center gap-3 mb-6">
-              <span className="px-2.5 py-1 bg-slate-100 text-slate-500 text-[10px] font-black uppercase tracking-wider rounded-md">{selectedNote.category}</span>
-              <span className="text-[11px] font-bold text-slate-300">Updated {new Date(selectedNote.updatedAt).toLocaleDateString()}</span>
+              <span className="px-2.5 py-1 bg-slate-100 text-slate-500 text-[10px] font-black uppercase tracking-wider rounded-md">{selectedNote.tags?.[0] || "메모"}</span>
+              <span className="text-xs text-slate-400 font-medium">최종 수정: {new Date(selectedNote.updatedAt).toLocaleDateString()}</span>
             </div>
             <input
               type="text"
