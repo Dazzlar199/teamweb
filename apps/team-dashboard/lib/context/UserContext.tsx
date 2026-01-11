@@ -1,8 +1,8 @@
 "use client";
 
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
-import { User, getUserInfo, TeamMemberName, isAdmin as checkIsAdmin, canModify as checkCanModify } from "@/lib/types/user";
-import { TEAM_MEMBERS } from "@/lib/constants/team";
+import { User, getUserInfo, isAdmin as checkIsAdmin, canModify as checkCanModify } from "@/lib/types/user";
+import { createClient } from "@/lib/supabase/client";
 
 interface UserContextType {
   user: User | null;
@@ -16,32 +16,41 @@ const UserContext = createContext<UserContextType | undefined>(undefined);
 
 export function UserProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
+  const supabase = createClient();
 
   useEffect(() => {
-    // LocalStorage에서 사용자 정보 로드
-    const savedUser = localStorage.getItem("team-dashboard-user");
-    if (savedUser) {
-      try {
-        const userData = JSON.parse(savedUser);
-        setUser(getUserInfo(userData.name));
-      } catch (e) {
-        console.error("사용자 정보 로드 실패:", e);
-        // 로그인하지 않은 상태로 유지
+    // 초기 세션 확인
+    const checkSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user) {
+         // 이메일 주소의 로컬 파트(아이디)를 이름으로 사용하거나, 메타데이터 사용
+        const name = session.user.user_metadata?.name || session.user.email?.split('@')[0] || "Unknown";
+        setUser(getUserInfo(name));
+      }
+    };
+    
+    checkSession();
+
+    // Auth 상태 변경 감지
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session?.user) {
+        const name = session.user.user_metadata?.name || session.user.email?.split('@')[0] || "Unknown";
+        setUser(getUserInfo(name));
+      } else {
         setUser(null);
       }
-    }
-    // 로그인하지 않은 경우 user는 null로 유지
-  }, []);
+    });
 
-  const handleSetUser = (newUser: User | null) => {
-    setUser(newUser);
-    if (newUser) {
-      localStorage.setItem(
-        "team-dashboard-user",
-        JSON.stringify({ name: newUser.name })
-      );
+    return () => subscription.unsubscribe();
+  }, [supabase]);
+
+  const handleSetUser = async (newUser: User | null) => {
+    if (newUser === null) {
+      await supabase.auth.signOut();
+      setUser(null);
     } else {
-      localStorage.removeItem("team-dashboard-user");
+       // setUser는 이제 내부 상태 업데이트용보다는 로그아웃용으로 주로 쓰임
+       setUser(newUser);
     }
   };
 

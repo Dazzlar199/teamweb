@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { getTotalUnreadCount, getConversations } from "@/lib/utils/message";
+import { getTotalUnreadCount, getConversations, subscribeToMessages } from "@/lib/utils/message";
 import { useUser } from "@/lib/context/UserContext";
 import { TEAM_MEMBERS } from "@/lib/constants/team";
 import { PaperPlaneIcon } from "../icons/Icon";
@@ -17,55 +17,48 @@ export default function MessageBell() {
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const buttonRef = useRef<HTMLButtonElement>(null);
 
+  const loadUnreadCount = async () => {
+    if (!currentUser) return;
+    try {
+      const count = await getTotalUnreadCount(currentUser);
+      setUnreadCount(count);
+    } catch (e) {
+      console.error("메시지 카운트 로드 실패:", e);
+    }
+  };
+
   useEffect(() => {
     if (currentUser) {
       loadUnreadCount();
       
       // localStorage 변경 감지 (다른 탭에서 변경 시)
       const handleStorageChange = (e: StorageEvent) => {
-        if (e.key === "team-dashboard-messages") {
+        if (e.key && e.key.includes('message')) {
           loadUnreadCount();
         }
       };
-      window.addEventListener("storage", handleStorageChange);
       
-      // 커스텀 이벤트 감지 (같은 탭에서 변경 시)
-      const handleMessagesUpdated = () => {
+      // 커스텀 이벤트 감지 (같은 탭 내 업데이트)
+      const handleMessageUpdate = () => {
         loadUnreadCount();
       };
-      window.addEventListener("messages-updated", handleMessagesUpdated);
+
+      window.addEventListener('storage', handleStorageChange);
+      window.addEventListener('message-update', handleMessageUpdate);
       
-      // 페이지 포커스 시 업데이트
-      const handleFocus = () => {
+      // Supabase Realtime 구독
+      const unsubscribe = subscribeToMessages(currentUser, () => {
         loadUnreadCount();
-      };
-      window.addEventListener("focus", handleFocus);
-      
-      // 주기적 업데이트 (10초마다) - 너무 빈번하지 않도록
-      const interval = setInterval(loadUnreadCount, 10000);
-      
+        // 소리 알림 등 추가 가능
+      });
+
       return () => {
-        window.removeEventListener("storage", handleStorageChange);
-        window.removeEventListener("messages-updated", handleMessagesUpdated);
-        window.removeEventListener("focus", handleFocus);
-        clearInterval(interval);
+        window.removeEventListener('storage', handleStorageChange);
+        window.removeEventListener('message-update', handleMessageUpdate);
+        unsubscribe();
       };
     }
   }, [currentUser]);
-
-  const loadUnreadCount = async () => {
-    if (!currentUser) return;
-    try {
-      const count = await getTotalUnreadCount(currentUser);
-      setUnreadCount(count);
-      
-      // 대화 목록도 가져와서 미리보기용으로 사용
-      const convs = await getConversations(currentUser);
-      setConversations(convs);
-    } catch (error) {
-      console.error("미읽음 메시지 개수 로드 실패:", error);
-    }
-  };
 
   const handleClick = () => {
     router.push("/messages");

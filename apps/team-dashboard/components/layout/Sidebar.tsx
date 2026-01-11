@@ -28,7 +28,7 @@ const menuItems = [
   { name: "소통공간", href: "/communication", Icon: CommunicationIcon },
   {
     name: "예창패 가이드북",
-    href: "/inbloom/index.html",
+    href: "https://inbloom-orpin.vercel.app/",
     Icon: FileIcon,
     external: true,
   },
@@ -83,19 +83,34 @@ export default function Sidebar() {
 
             return (
               <li key={item.href}>
-                <Link
-                  href={item.href}
-                  target={isExternal ? "_blank" : undefined}
-                  className={`flex items-center gap-3 px-4 py-2.5 rounded-xl text-[13.5px] font-bold transition-all ${
-                    isActive
-                      ? "bg-indigo-50 text-indigo-600 shadow-sm border border-indigo-100/50"
-                      : "text-slate-500 hover:bg-slate-50 hover:text-slate-900"
-                  }`}
-                >
-                  <Icon className={`${isActive ? "text-indigo-600" : "text-slate-400"} w-4 h-4 transition-colors`} />
-                  <span className="flex-1">{item.name}</span>
-                  {isExternal && <span className="text-[10px] opacity-40">↗</span>}
-                </Link>
+                {isExternal ? (
+                  <a
+                    href={item.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`flex items-center gap-3 px-4 py-2.5 rounded-xl text-[13.5px] font-bold transition-all ${
+                      isActive
+                        ? "bg-indigo-50 text-indigo-600 shadow-sm border border-indigo-100/50"
+                        : "text-slate-500 hover:bg-slate-50 hover:text-slate-900"
+                    }`}
+                  >
+                    <Icon className={`${isActive ? "text-indigo-600" : "text-slate-400"} w-4 h-4 transition-colors`} />
+                    <span className="flex-1">{item.name}</span>
+                    <span className="text-[10px] opacity-40">↗</span>
+                  </a>
+                ) : (
+                  <Link
+                    href={item.href}
+                    className={`flex items-center gap-3 px-4 py-2.5 rounded-xl text-[13.5px] font-bold transition-all ${
+                      isActive
+                        ? "bg-indigo-50 text-indigo-600 shadow-sm border border-indigo-100/50"
+                        : "text-slate-500 hover:bg-slate-50 hover:text-slate-900"
+                    }`}
+                  >
+                    <Icon className={`${isActive ? "text-indigo-600" : "text-slate-400"} w-4 h-4 transition-colors`} />
+                    <span className="flex-1">{item.name}</span>
+                  </Link>
+                )}
               </li>
             );
           })}

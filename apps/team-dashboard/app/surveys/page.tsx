@@ -30,10 +30,6 @@ export default function SurveysPage() {
     questions: [] as Question[],
   });
 
-  useEffect(() => {
-    loadSurveys();
-  }, []);
-
   const loadSurveys = () => {
     try {
       const loaded = getSurveys();
@@ -46,6 +42,10 @@ export default function SurveysPage() {
       });
     }
   };
+
+  useEffect(() => {
+    loadSurveys();
+  }, []);
 
   const handleAddSurvey = () => {
     if (!newSurvey.title || newSurvey.questions.length === 0) {

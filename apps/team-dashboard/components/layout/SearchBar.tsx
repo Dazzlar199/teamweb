@@ -11,16 +11,19 @@ export default function SearchBar() {
   const searchRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
 
-  useEffect(() => {
-    if (query.trim()) {
-      const searchResults = searchAll(query);
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newQuery = e.target.value;
+    setQuery(newQuery);
+    
+    if (newQuery.trim()) {
+      const searchResults = searchAll(newQuery);
       setResults(searchResults);
       setShowResults(true);
     } else {
       setResults([]);
       setShowResults(false);
     }
-  }, [query]);
+  };
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -65,7 +68,7 @@ export default function SearchBar() {
         <input
           type="text"
           value={query}
-          onChange={(e) => setQuery(e.target.value)}
+          onChange={handleSearchChange}
           onFocus={() => query.trim() && setShowResults(true)}
           placeholder="전체 검색... (작업, 일정, 파일)"
           className="w-full px-3 py-2 pl-9 bg-[#F9FAFB] border border-[#E5E7EB] rounded-md text-sm text-[#111827] placeholder-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-[#2563EB]"

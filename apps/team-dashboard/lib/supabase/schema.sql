@@ -133,6 +133,8 @@ CREATE TABLE IF NOT EXISTS notifications (
   type TEXT NOT NULL,
   read BOOLEAN DEFAULT FALSE,
   link TEXT,
+  "taskId" TEXT,
+  "eventId" TEXT,
   created_at BIGINT NOT NULL,
   created_timestamp TIMESTAMP DEFAULT NOW()
 );
@@ -209,6 +211,25 @@ CREATE TABLE IF NOT EXISTS nca_expenditures (
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
+-- 15. 태스크 테이블 (할 일 관리)
+CREATE TABLE IF NOT EXISTS tasks (
+  id TEXT PRIMARY KEY,
+  title TEXT NOT NULL,
+  description TEXT,
+  status TEXT NOT NULL CHECK (status IN ('todo', 'in_progress', 'done')),
+  priority TEXT NOT NULL CHECK (priority IN ('low', 'medium', 'high')),
+  assigned_to TEXT,
+  due_date TEXT,
+  comments JSONB DEFAULT '[]',
+  tags TEXT[] DEFAULT '{}',
+  is_bookmarked BOOLEAN DEFAULT FALSE,
+  progress INTEGER DEFAULT 0,
+  created_by TEXT,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  attachments JSONB DEFAULT '[]'
+);
+
 -- =====================================================
 -- 인덱스 생성 (성능 향상)
 -- =====================================================
@@ -246,6 +267,9 @@ CREATE INDEX IF NOT EXISTS idx_notifications_created_at ON notifications(created
 CREATE INDEX IF NOT EXISTS idx_nca_expenditures_date ON nca_expenditures(date DESC);
 CREATE INDEX IF NOT EXISTS idx_nca_expenditures_bimok ON nca_expenditures(bimok);
 
+CREATE INDEX IF NOT EXISTS idx_tasks_status ON tasks(status);
+CREATE INDEX IF NOT EXISTS idx_tasks_assigned_to ON tasks(assigned_to);
+
 -- =====================================================
 -- Row Level Security (RLS) 정책 설정
 -- =====================================================
@@ -265,6 +289,7 @@ ALTER TABLE yechangpack_checklist ENABLE ROW LEVEL SECURITY;
 ALTER TABLE yechangpack_notes ENABLE ROW LEVEL SECURITY;
 ALTER TABLE yechangpack_evidence ENABLE ROW LEVEL SECURITY;
 ALTER TABLE nca_expenditures ENABLE ROW LEVEL SECURITY;
+ALTER TABLE tasks ENABLE ROW LEVEL SECURITY;
 
 -- 정책: 모든 사용자가 읽기/쓰기 가능 (팀 내부 도구이므로)
 
@@ -325,6 +350,10 @@ CREATE POLICY "Allow all operations on yechangpack_evidence" ON yechangpack_evid
 DROP POLICY IF EXISTS "Allow all operations on nca_expenditures" ON nca_expenditures;
 CREATE POLICY "Allow all operations on nca_expenditures" ON nca_expenditures FOR ALL USING (true) WITH CHECK (true);
 
+-- Tasks 정책
+DROP POLICY IF EXISTS "Allow all operations on tasks" ON tasks;
+CREATE POLICY "Allow all operations on tasks" ON tasks FOR ALL USING (true) WITH CHECK (true);
+
 -- =====================================================
 -- 기존 테이블 업데이트 (컬럼 추가)
 -- =====================================================
@@ -359,5 +388,27 @@ BEGIN
     WHERE table_name = 'events' AND column_name = 'participants'
   ) THEN
     ALTER TABLE events ADD COLUMN participants TEXT[] DEFAULT '{}';
+  END IF;
+END $$;
+
+-- notifications 테이블에 taskId 컬럼 추가 (없는 경우에만)
+DO $$ 
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM information_schema.columns 
+    WHERE table_name = 'notifications' AND column_name = 'taskId'
+  ) THEN
+    ALTER TABLE notifications ADD COLUMN "taskId" TEXT;
+  END IF;
+END $$;
+
+-- notifications 테이블에 eventId 컬럼 추가 (없는 경우에만)
+DO $$ 
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM information_schema.columns 
+    WHERE table_name = 'notifications' AND column_name = 'eventId'
+  ) THEN
+    ALTER TABLE notifications ADD COLUMN "eventId" TEXT;
   END IF;
 END $$;

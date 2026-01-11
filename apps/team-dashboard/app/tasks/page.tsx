@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import Link from "next/link";
 import { TEAM_MEMBERS } from "@/lib/constants/team";
 import { useUser } from "@/lib/context/UserContext";
 import { useData } from "@/lib/context/DataContext";
@@ -11,8 +10,8 @@ import type { Task } from "@/lib/types/task";
 import RichTextEditor from "@/components/common/RichTextEditor";
 
 export default function TasksPage() {
-  const { user, canModify } = useUser();
-  const { tasks, setTasks, refreshTasks } = useData();
+  const { user } = useUser();
+  const { tasks, setTasks } = useData();
   const { showToast } = useToast();
   const currentUser = user?.name || "김찬주";
 
@@ -230,10 +229,10 @@ export default function TasksPage() {
 
         {/* 새 작업 추가 모달 (노션 스타일 대형 에디터) */}
         {showAddForm && (
-          <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center z-[100] p-4 sm:p-8">
-            <div className="bg-white rounded-[2rem] w-full max-w-5xl h-[90vh] shadow-2xl overflow-hidden animate-slide-in flex flex-col">
+          <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center z-[100] p-4 sm:p-6">
+            <div className="bg-white rounded-[1.5rem] w-full max-w-[90vw] h-[92vh] shadow-2xl overflow-hidden animate-slide-in flex flex-col transition-all">
               {/* 모달 상단 바 */}
-              <div className="px-8 py-5 border-b border-slate-100 flex justify-between items-center bg-white">
+              <div className="px-8 py-4 border-b border-slate-100 flex justify-between items-center bg-white shrink-0">
                 <div className="flex items-center gap-3">
                   <div className="w-3 h-3 rounded-full bg-rose-400"></div>
                   <div className="w-3 h-3 rounded-full bg-amber-400"></div>
@@ -244,31 +243,31 @@ export default function TasksPage() {
               </div>
 
               {/* 스크롤 가능한 에디터 본문 */}
-              <div className="flex-1 overflow-y-auto custom-scrollbar p-8 sm:p-12 space-y-10">
+              <div className="flex-1 overflow-y-auto custom-scrollbar p-8 sm:p-16 space-y-12">
                 {/* 제목 영역 (노션 스타일) */}
-                <div className="space-y-4">
+                <div className="max-w-5xl mx-auto w-full space-y-6">
                   <input 
                     type="text"
                     value={newTask.title}
                     onChange={(e) => setNewTask({...newTask, title: e.target.value})}
-                    placeholder="작업 제목을 입력하세요..."
-                    className="w-full bg-transparent border-none text-4xl font-black text-slate-900 placeholder:text-slate-200 outline-none p-0 focus:ring-0"
+                    placeholder="제목 없음"
+                    className="w-full bg-transparent border-none text-5xl font-black text-slate-900 placeholder:text-slate-200 outline-none p-0 focus:ring-0 leading-tight"
                   />
                   
-                  <div className="flex flex-wrap gap-6 border-y border-slate-50 py-6">
+                  <div className="flex flex-wrap gap-8 border-b border-slate-100 pb-8">
                     <div className="flex items-center gap-3">
-                      <span className="text-[11px] font-black text-slate-400 uppercase w-20">담당자</span>
-                      <div className="flex items-center gap-2 px-3 py-1.5 bg-slate-50 rounded-xl">
+                      <span className="text-xs font-bold text-slate-400 w-16">담당자</span>
+                      <div className="flex items-center gap-2 px-2 py-1 hover:bg-slate-50 rounded-md cursor-pointer transition-colors">
                         <div className="w-5 h-5 rounded-full bg-indigo-600 flex items-center justify-center text-[10px] font-bold text-white">{currentUser[0]}</div>
-                        <span className="text-sm font-bold text-slate-700">{currentUser}</span>
+                        <span className="text-sm font-medium text-slate-700">{currentUser}</span>
                       </div>
                     </div>
                     <div className="flex items-center gap-3">
-                      <span className="text-[11px] font-black text-slate-400 uppercase w-20">우선순위</span>
+                      <span className="text-xs font-bold text-slate-400 w-16">우선순위</span>
                       <select 
                         value={newTask.priority}
                         onChange={(e) => setNewTask({...newTask, priority: e.target.value as "low" | "medium" | "high"})}
-                        className="bg-slate-50 border-none rounded-xl text-sm font-bold text-slate-700 px-3 py-1.5 outline-none cursor-pointer hover:bg-slate-100 transition-colors"
+                        className="bg-transparent border-none text-sm font-medium text-slate-700 px-2 py-1 outline-none cursor-pointer hover:bg-slate-50 rounded-md transition-colors"
                       >
                         <option value="high">🔴 긴급</option>
                         <option value="medium">🟡 보통</option>
@@ -276,31 +275,31 @@ export default function TasksPage() {
                       </select>
                     </div>
                     <div className="flex items-center gap-3">
-                      <span className="text-[11px] font-black text-slate-400 uppercase w-20">마감일</span>
+                      <span className="text-xs font-bold text-slate-400 w-16">마감일</span>
                       <input 
                         type="date"
                         value={newTask.dueDate}
                         onChange={(e) => setNewTask({...newTask, dueDate: e.target.value})}
-                        className="bg-slate-50 border-none rounded-xl text-sm font-bold text-slate-700 px-3 py-1.5 outline-none cursor-pointer hover:bg-slate-100 transition-colors"
+                        className="bg-transparent border-none text-sm font-medium text-slate-700 px-2 py-1 outline-none cursor-pointer hover:bg-slate-50 rounded-md transition-colors"
                       />
                     </div>
                   </div>
                 </div>
 
                 {/* 에디터 영역 */}
-                <div className="min-h-[500px]">
+                <div className="max-w-5xl mx-auto w-full min-h-[600px]">
                   <RichTextEditor 
                     value={newTask.description}
                     onChange={(content) => setNewTask({...newTask, description: content})}
-                    placeholder="내용을 입력하거나 이미지를 붙여넣으세요. 유투브 링크를 넣으면 영상이 바로 표시됩니다..."
+                    placeholder="내용을 입력하세요..."
                   />
                 </div>
               </div>
 
               {/* 하단 액션 바 */}
-              <div className="p-6 bg-slate-50/50 border-t border-slate-100 flex justify-end gap-4 px-12">
-                <button onClick={() => setShowAddForm(false)} className="px-8 py-3 text-sm font-bold text-slate-400 hover:text-slate-900 transition-colors">나중에 작성</button>
-                <button onClick={handleCreateTask} className="px-10 py-3 bg-indigo-600 text-white font-black rounded-2xl hover:bg-indigo-700 shadow-xl shadow-indigo-100 transition-all active:scale-95">작업 문서 저장하기</button>
+              <div className="p-6 bg-slate-50/80 backdrop-blur-sm border-t border-slate-100 flex justify-end gap-3 px-12 shrink-0">
+                <button onClick={() => setShowAddForm(false)} className="px-6 py-2.5 text-sm font-bold text-slate-500 hover:text-slate-800 transition-colors">닫기</button>
+                <button onClick={handleCreateTask} className="px-8 py-2.5 bg-indigo-600 text-white font-bold rounded-xl hover:bg-indigo-700 shadow-lg shadow-indigo-100 transition-all active:scale-95">저장</button>
               </div>
             </div>
           </div>
@@ -308,8 +307,8 @@ export default function TasksPage() {
 
         {/* 작업 상세보기 모달 */}
         {selectedTask && (
-          <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center z-[110] p-4 sm:p-8">
-            <div className="bg-white rounded-[2rem] w-full max-w-4xl max-h-[90vh] shadow-2xl overflow-hidden animate-slide-in flex flex-col">
+          <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center z-[110] p-4 sm:p-6">
+            <div className="bg-white rounded-[1.5rem] w-full max-w-[1200px] h-[90vh] shadow-2xl overflow-hidden animate-slide-in flex flex-col">
               {/* 모달 헤더 */}
               <div className="px-8 py-5 border-b border-slate-100 flex justify-between items-center bg-white">
                 <div className="flex items-center gap-2">
@@ -360,12 +359,42 @@ export default function TasksPage() {
                     </div>
                   </div>
 
-                  <div className="prose prose-slate max-w-none">
+                  <div className="prose prose-slate max-w-none task-content-view">
                     <div 
                       className="text-slate-600 leading-relaxed min-h-[200px]"
                       dangerouslySetInnerHTML={{ __html: selectedTask.description || "<p className='text-slate-400 italic'>작업 내용이 없습니다.</p>" }}
                     />
                   </div>
+                  {/* 뷰어 전용 스타일 */}
+                  <style jsx global>{`
+                    .task-content-view img {
+                      max-width: 100%;
+                      /* height: auto;  <-- 제거: 리사이징된 높이 유지 */
+                      border-radius: 8px;
+                      margin: 16px 0;
+                      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+                    }
+                    .task-content-view a {
+                      color: #4f46e5;
+                      text-decoration: underline;
+                    }
+                    .task-content-view ul {
+                      list-style-type: disc;
+                      padding-left: 1.5em;
+                      margin: 1em 0;
+                    }
+                    .task-content-view ol {
+                      list-style-type: decimal;
+                      padding-left: 1.5em;
+                      margin: 1em 0;
+                    }
+                    .task-content-view blockquote {
+                      border-left: 4px solid #e2e8f0;
+                      padding-left: 1em;
+                      color: #64748b;
+                      font-style: italic;
+                    }
+                  `}</style>
                 </div>
               </div>
 

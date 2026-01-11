@@ -41,11 +41,15 @@ export default function CalendarPage() {
     refreshEvents();
   }, [refreshEvents]);
 
-  // 월 변경 시 선택된 날짜 유효성 검사
   useEffect(() => {
+    // 월이 변경되었을 때, 선택된 날짜가 해당 월의 마지막 날보다 크면 마지막 날로 조정
     const daysInNewMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
     if (selectedDate > daysInNewMonth) {
-      setSelectedDate(daysInNewMonth);
+      // 상태 업데이트를 비동기로 예약하거나, 렌더링 중에 값을 조정하는 대신
+      // 월 변경 핸들러에서 처리하는 것이 좋지만, 여기서는 안전하게 조건부로만 실행
+      // setTimeout을 사용하여 렌더링 사이클 이후에 실행되도록 함
+      const timer = setTimeout(() => setSelectedDate(daysInNewMonth), 0);
+      return () => clearTimeout(timer);
     }
   }, [currentYear, currentMonth, selectedDate]);
 

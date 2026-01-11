@@ -47,36 +47,44 @@ export default function DocumentsPage() {
     description: "",
   });
 
-  useEffect(() => {
-    loadDocuments();
-    checkExpired();
-  }, []);
-
   const loadDocuments = () => {
     try {
       const loaded = getDocuments();
       setDocuments(loaded);
-      setStats(getDocumentStats());
-    } catch (error) {
-      handleError(error as Error, {
-        component: "DocumentsPage",
-        action: "증빙 자료 로드",
-      });
+      
+      // 카테고리별 문서 수 계산
+      const counts = {
+        전체: loaded.length,
+        공고: loaded.filter(d => d.category === '공고').length,
+        양식: loaded.filter(d => d.category === '양식').length,
+        참고: loaded.filter(d => d.category === '참고').length,
+        증빙: loaded.filter(d => d.category === '증빙').length,
+        기타: loaded.filter(d => d.category === '기타').length,
+      };
+      setCategoryCounts(counts);
+    } catch (e) {
+      console.error("문서 로드 실패:", e);
     }
   };
 
   const checkExpired = () => {
     const expired = getExpiredDocuments();
     if (expired.length > 0) {
-      // 만료된 문서 상태 업데이트
-      expired.forEach((doc) => {
-        if (doc.status !== "expired") {
-          const updated = { ...doc, status: "expired" as const };
-          saveDocument(updated).then(() => loadDocuments());
-        }
-      });
+      // 만료된 문서가 있으면 알림 표시 (실제 구현 시 Toast 등 사용)
+      console.warn("만료된 문서가 있습니다:", expired.map(d => d.name));
+      // 상태 업데이트를 통해 UI에 표시 가능
+      // 예: setShowExpiredAlert(true);
+      
+      // 만료 상태 업데이트 (필요시)
+      const updatedDocs = getDocuments(); // 최신 상태 다시 가져옴
+      setDocuments(updatedDocs);
     }
   };
+
+  useEffect(() => {
+    loadDocuments();
+    checkExpired();
+  }, []);
 
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];

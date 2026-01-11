@@ -4,7 +4,7 @@ import { supabase, isSupabaseConfigured } from "@/lib/supabase/client";
 
 export interface Notification {
   id: string;
-  type: 'deadline' | 'comment' | 'feedback' | 'event' | 'mention' | 'finance';
+  type: 'deadline' | 'comment' | 'feedback' | 'event' | 'mention' | 'finance' | 'task';
   title: string;
   message: string;
   taskId?: string;
@@ -72,9 +72,12 @@ export async function addNotification(
   if (isSupabaseConfigured()) {
     try {
       const { error } = await supabase.from('notifications').insert(newNotifications);
-      if (error) throw error;
+      if (error) {
+        console.error("알림 DB 저장 실패 (상세):", JSON.stringify(error, null, 2));
+        throw error;
+      }
     } catch (e) {
-      console.error("알림 DB 저장 실패", e);
+      console.error("알림 DB 저장 중 예외 발생:", e);
     }
   } else {
     // LocalStorage fallback

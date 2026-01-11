@@ -6,6 +6,7 @@ import { getPosts } from "@/lib/utils/post";
 import { Event, Holiday } from "@/lib/types/event";
 import { getEvents } from "@/lib/utils/event";
 import { Task } from "@/lib/types/task";
+import { getTasks } from "@/lib/utils/task";
 
 interface DataContextType {
   posts: Post[];
@@ -13,7 +14,7 @@ interface DataContextType {
   tasks: Task[];
   refreshPosts: () => Promise<void>;
   refreshEvents: () => Promise<void>;
-  refreshTasks: () => void;
+  refreshTasks: () => Promise<void>;
   // 로컬 상태 즉시 업데이트용 (낙관적 업데이트)
   setPosts: React.Dispatch<React.SetStateAction<Post[]>>;
   setEvents: React.Dispatch<React.SetStateAction<(Event | Holiday)[]>>;
@@ -37,17 +38,16 @@ export function DataProvider({ children }: { children: ReactNode }) {
     setEvents(data);
   }, []);
 
-  const refreshTasks = useCallback(() => {
-    const savedTasks = localStorage.getItem("team-dashboard-tasks");
-    if (savedTasks) {
-      setTasks(JSON.parse(savedTasks));
-    }
+  const refreshTasks = useCallback(async () => {
+    const data = await getTasks();
+    setTasks(data);
   }, []);
 
   useEffect(() => {
-    refreshPosts();
-    refreshEvents();
-    refreshTasks();
+    const initData = async () => {
+      await Promise.all([refreshPosts(), refreshEvents(), refreshTasks()]);
+    };
+    initData();
     
     // 타 탭에서의 변경 감지
     const handleStorage = (e: StorageEvent) => {

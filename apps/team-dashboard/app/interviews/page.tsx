@@ -58,22 +58,28 @@ export default function InterviewsPage() {
     script: COUPLE_INTERVIEW_SCRIPT,
   });
 
-  useEffect(() => {
-    loadInterviews();
-  }, []);
-
   const loadInterviews = () => {
     try {
       const loaded = getInterviews();
       setInterviews(loaded);
-      setStats(getInterviewStats());
-    } catch (error) {
-      handleError(error as Error, {
-        component: "InterviewsPage",
-        action: "인터뷰 로드",
+      
+      const upcoming = loaded.filter(i => i.status === 'scheduled');
+      const completed = loaded.filter(i => i.status === 'completed');
+      
+      setStats({
+        total: loaded.length,
+        upcoming: upcoming.length,
+        completed: completed.length,
+        insightCount: loaded.reduce((acc, curr) => acc + (curr.painPoints?.length || 0), 0)
       });
+    } catch (e) {
+      console.error("인터뷰 로드 실패:", e);
     }
   };
+
+  useEffect(() => {
+    loadInterviews();
+  }, []);
 
   const handleAddInterview = () => {
     try {

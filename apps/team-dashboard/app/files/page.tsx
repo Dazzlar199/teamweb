@@ -36,10 +36,6 @@ export default function FilesPage() {
   const [activeCategory, setActiveCategory] = useState<FileCategory | "전체">("전체");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  useEffect(() => {
-    loadFiles();
-  }, []);
-
   const loadFiles = async () => {
     try {
       const allFiles = await getAllFiles();
@@ -48,6 +44,10 @@ export default function FilesPage() {
       console.error("파일 로드 실패:", e);
     }
   };
+
+  useEffect(() => {
+    loadFiles();
+  }, []);
 
   const filteredFiles = useMemo(() => {
     return files.filter(f => {

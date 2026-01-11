@@ -1,6 +1,7 @@
 {
-  "name": "root-proxy",
+  "name": "wedding-demo-root",
   "version": "1.0.0",
+  "private": true,
   "scripts": {
     "dev": "cd apps/team-dashboard && npm run dev",
     "build": "cd apps/team-dashboard && npm run build",

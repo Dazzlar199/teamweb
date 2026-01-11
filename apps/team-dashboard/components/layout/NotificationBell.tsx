@@ -15,6 +15,14 @@ export default function NotificationBell() {
   const buttonRef = useRef<HTMLButtonElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
+  const loadNotifications = async () => {
+    if (!currentUser) return;
+    const notifs = await getNotifications(currentUser);
+    const unread = await getUnreadCount(currentUser);
+    setNotifications(notifs);
+    setUnreadCount(unread);
+  };
+
   useEffect(() => {
     if (currentUser) {
       loadNotifications();
@@ -38,14 +46,6 @@ export default function NotificationBell() {
     // 브라우저 알림 권한 요청
     requestNotificationPermission();
   }, []);
-
-  const loadNotifications = async () => {
-    if (!currentUser) return;
-    const notifs = await getNotifications(currentUser);
-    const unread = await getUnreadCount(currentUser);
-    setNotifications(notifs);
-    setUnreadCount(unread);
-  };
 
   const handleMarkAsRead = async (id: string) => {
     if (!currentUser) return;
