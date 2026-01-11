@@ -1,6 +1,6 @@
 // 증빙 자료 관련 타입 정의
 
-export type DocumentCategory = 'corporate' | 'team' | 'technical' | 'validation' | 'market';
+export type DocumentCategory = 'corporate' | 'team' | 'technical' | 'validation' | 'market' | '공고' | '양식' | '참고' | '증빙' | '기타';
 export type DocumentStatus = 'pending' | 'uploaded' | 'expired';
 
 export interface Document {
