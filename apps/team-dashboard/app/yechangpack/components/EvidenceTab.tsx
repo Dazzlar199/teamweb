@@ -46,11 +46,16 @@ export default function EvidenceTab({
   });
 
   const categoryNames: Record<DocumentCategory, string> = {
-    corporate: "법인/사업자",
-    team: "팀 구성",
-    technical: "기술 역량",
-    validation: "검증 자료",
-    market: "시장 조사",
+    corporate: "법인/행정",
+    team: "팀/인력",
+    technical: "기술/특허",
+    validation: "고객검증",
+    market: "시장조사",
+    공고: "공고문",
+    양식: "제출양식",
+    참고: "참고자료",
+    증빙: "실적증빙",
+    기타: "기타자료",
   };
 
   const handleAddEvidence = () => {
