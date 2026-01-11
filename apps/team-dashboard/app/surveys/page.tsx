@@ -30,6 +30,7 @@ export default function SurveysPage() {
     questions: [] as Question[],
   });
 
+  // Force update for Vercel build
   const loadSurveys = () => {
     try {
       const loaded = getSurveys();
@@ -42,8 +43,8 @@ export default function SurveysPage() {
       setStats({
         total: loaded.length,
         active: activeCount,
-        closed: closedCount,
-        responseCount: totalResponsesCount
+        completed: closedCount,
+        totalResponses: totalResponsesCount
       });
     } catch (error) {
       handleError(error as Error, {
