@@ -47,7 +47,7 @@ export default function MessageBell() {
       window.addEventListener('message-update', handleMessageUpdate);
       
       // Supabase Realtime 구독
-      const unsubscribe = subscribeToMessages(currentUser, () => {
+      const unsubscribe = subscribeToMessages(() => {
         loadUnreadCount();
         // 소리 알림 등 추가 가능
       });

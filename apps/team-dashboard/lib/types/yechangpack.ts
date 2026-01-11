@@ -21,7 +21,7 @@ export interface RoadmapTask {
   id: string;
   title: string;
   completed: boolean;
-  category: "아카데미" | "예창패" | "공통";
+  category: string;
   description?: string;
   details?: {
     목표?: string;
@@ -46,7 +46,7 @@ export interface RoadmapPhase {
 export interface YechangpackDocument {
   id: string;
   name: string;
-  type: "pdf" | "docx" | "hwp" | "md";
+  type: "pdf" | "docx" | "hwp" | "md" | "html";
   size: string;
   path: string;
   category: "공고" | "양식" | "가이드" | "참고";
@@ -56,8 +56,8 @@ export interface Note {
   id: string;
   title: string;
   content: string;
-  category: "일정" | "체크리스트" | "메모" | "아이디어";
-  createdAt: string;
+  tags?: string[];
+  createdAt?: string;
   updatedAt: string;
 }
 
