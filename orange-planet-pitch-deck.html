@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>특별시 IR 피칭덱 - Orange Planet 2026</title>
+  <style>
+    @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+
+    :root {
+      --primary: #E8A4B8;
+      --primary-dark: #C4788E;
+      --primary-light: #F2C4D0;
+      --bg-dark: #0D0D0F;
+      --bg-card: #1E1E22;
+      --bg-panel: #151518;
+      --text: #FAFAFA;
+      --muted: #9CA3AF;
+      --accent: #FF6B00;
+      --accent-2: #7C3AED;
+      --border: rgba(255,255,255,0.08);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-dark);
+      color: var(--text);
+    }
+
+    .deck {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      padding: 40px 0 80px;
+    }
+
+    .slide {
+      width: 1920px;
+      height: 1080px;
+      padding: 90px 120px;
+      background: var(--bg-panel);
+      border-radius: 24px;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.45);
+      page-break-after: always;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .slide::after {
+      content: "";
+      position: absolute;
+      inset: 40px;
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 18px;
+      pointer-events: none;
+    }
+
+    .slide-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 50px;
+    }
+
+    .slide-title {
+      font-size: 56px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+
+    .slide-badge {
+      font-size: 20px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+    }
+
+    .slide-content {
+      display: grid;
+      gap: 24px;
+      font-size: 28px;
+      line-height: 1.5;
+    }
+
+    p, li, td {
+      font-size: 28px;
+      line-height: 1.5;
+    }
+
+    .highlight {
+      color: var(--primary);
+      font-weight: 700;
+    }
+
+    ul {
+      list-style: none;
+    }
+
+    li {
+      margin-bottom: 14px;
+      padding-left: 32px;
+      position: relative;
+    }
+
+    li::before {
+      content: '•';
+      position: absolute;
+      left: 0;
+      color: var(--primary);
+      font-size: 32px;
+      line-height: 1;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      border: 1px solid var(--border);
+      padding: 18px 20px;
+      text-align: left;
+    }
+
+    th {
+      font-size: 26px;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 24px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 24px;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 28px;
+      height: 100%;
+    }
+
+    .card h3 {
+      font-size: 32px;
+      margin-bottom: 16px;
+      color: var(--primary-light);
+    }
+
+    .stat-value {
+      font-size: 64px;
+      font-weight: 800;
+      color: var(--primary);
+      margin-bottom: 8px;
+    }
+
+    .stat-label {
+      font-size: 26px;
+      color: var(--muted);
+    }
+
+    .timeline {
+      display: flex;
+      justify-content: space-between;
+      gap: 30px;
+    }
+
+    .timeline-step {
+      flex: 1;
+      background: var(--bg-card);
+      border-radius: 18px;
+      padding: 24px;
+      border: 1px solid var(--border);
+      position: relative;
+    }
+
+    .timeline-step::before {
+      content: attr(data-phase);
+      position: absolute;
+      top: -28px;
+      left: 24px;
+      padding: 6px 16px;
+      border-radius: 999px;
+      background: var(--accent);
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    .logo-mark {
+      font-size: 36px;
+      font-weight: 700;
+      letter-spacing: 0.3em;
+      color: rgba(255,255,255,0.3);
+    }
+
+    .cover-title {
+      font-size: 88px;
+      font-weight: 800;
+      margin-bottom: 20px;
+    }
+
+    .cover-subtitle {
+      font-size: 40px;
+      color: var(--muted);
+      margin-bottom: 60px;
+    }
+
+    .cover-tagline {
+      font-size: 42px;
+      font-weight: 600;
+      color: var(--primary);
+      margin-bottom: 30px;
+    }
+
+    .ask-list li::before {
+      content: '▶';
+      color: var(--accent);
+    }
+
+    @media print {
+      body { background: #000; }
+      .slide { box-shadow: none; margin: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="deck">
+    <!-- Slide 1: Cover -->
+    <section class="slide slide-cover">
+      <div class="slide-header">
+        <div class="slide-badge">ORANGE PLANET 2026</div>
+        <div class="logo-mark">SPECIAI</div>
+      </div>
+      <div>
+        <div class="cover-title">특별시 · Speci-AI</div>
+        <div class="cover-tagline">AI 웨딩플래너가 서브서비스를 끝까지 동행합니다.</div>
+        <div class="cover-subtitle">LLM 기반 예비부부 동행형 버티컬 슈퍼앱</div>
+        <div class="grid-2" style="margin-top: 80px;">
+          <div class="card">
+            <h3>한 줄 요약</h3>
+            <p>"검색하지 말고, <span class="highlight">컨펌만</span> 하세요." 특별시가 일정·예산·매칭·결제까지 대신 챙기는 AI 웨딩플래너.</p>
+          </div>
+          <div class="card">
+            <h3>현재 단계</h3>
+            <p>팀 빌딩 완료 · MVP 개발 중 · 고객/공급자 파일럿 진행</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 2: Summary -->
+    <section class="slide">
+      <div class="slide-header">
+        <div>
+          <div class="slide-badge">Slide 2</div>
+          <h2 class="slide-title">요약 한 장</h2>
+        </div>
+      </div>
+      <div class="slide-content">
+        <table>
+          <tr>
+            <th>문제</th>
+            <td>축가, 촬영, 2차, 답례품 등 서브서비스는 지금도 카페·DM 의존 → 정보 비대칭, 사기·노쇼 위험, 일정 혼선.</td>
+          </tr>
+          <tr>
+            <th>솔루션</th>
+            <td>AI 플래너 ‘특별씨’가 예산·스타일을 학습해 추천, 계약, 결제, 후기를 한곳에서 처리.</td>
+          </tr>
+          <tr>
+            <th>타깃</th>
+            <td>연 50만 팀 이상의 예비부부 중 모바일 선호·DIY 웨딩 지향 MZ 중심.</td>
+          </tr>
+          <tr>
+            <th>시장</th>
+            <td>TAM 888억 / SAM 266억 / SOM 27억 (서브서비스 거래, 서울·수도권 집중).</td>
+          </tr>
+          <tr>
+            <th>현재</th>
+            <td>고객 인터뷰 50건, 프리랜서 25명 온보딩, 파일럿 매칭 5건, MVP 4월 런칭 예정.</td>
+          </tr>
+          <tr>
+            <th>6개월 목표</th>
+            <td>파트너 100명+, 월 매칭 50건+, 월 거래액 1억+, 수수료 모델 검증.</td>
+          </tr>
+        </table>
+      </div>
+    </section>
+
+    <!-- Slide 3: Problem -->
+    <section class="slide">
+      <div class="slide-header">
+        <div>
+          <div class="slide-badge">Slide 3</div>
+          <h2 class="slide-title">숨겨진 비효율</h2>
+        </div>
+        <div class="logo-mark">PROBLEM</div>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <h3>정보 비대칭</h3>
+          <ul>
+            <li>서브서비스 추천 경로 70% 이상이 카페·지인 DM.</li>
+            <li>후기·검증 시스템 부재 → 사기/노쇼 위험 증가.</li>
+            <li>예비부부 1팀당 평균 52일 조사, 50명 이상 공급자 접촉.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>가격·일정 혼란</h3>
+          <ul>
+            <li>같은 카테고리 견적이 3배 이상 차이, 계약서 미비율 60%.</li>
+            <li>일정 조율이 카톡/엑셀에 흩어져 당일 사고 발생.</li>
+            <li>웨딩 피해 상담 2년간 64% 증가 (한국소비자원).</li>
+          </ul>
+        </div>
+      </div>
+      <div class="card" style="margin-top: 30px;">
+        <h3>공급자 Pain</h3>
+        <ul>
+          <li>리드당 결제(Pay-per-lead)로 ROI 불확실, 저품질 문의 대응 비용 상승.</li>
+          <li>캘린더·정산 SaaS 부재로 1:1 상담 과부하.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Slide 4: Solution -->
+    <section class="slide">
+      <div class="slide-header">
+        <div>
+          <div class="slide-badge">Slide 4</div>
+          <h2 class="slide-title">특별시, 동행형 솔루션</h2>
+        </div>
+        <div class="logo-mark">SOLUTION</div>
+      </div>
+      <div class="slide-content">
+        <div class="grid-2">
+          <div class="card">
+            <h3>고객 경험</h3>
+            <ol style="font-size: 28px; line-height: 1.5; counter-reset: step; list-style: none;">
+              <li style="margin-bottom: 18px; padding-left: 50px; position: relative;">
+                <span style="counter-increment: step; position: absolute; left: 0; top: 0; background: var(--primary); color: #0D0D0F; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700;">1</span>
+                일정·예산·스타일 입력 → AI 브리핑 리포트.
+              </li>
+              <li style="margin-bottom: 18px; padding-left: 50px; position: relative;">
+                <span style="counter-increment: step; position: absolute; left: 0; top: 0; background: var(--primary); color: #0D0D0F; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700;">2</span>
+                ‘특별씨’가 필요한 서브서비스 카드 3개 추천.
+              </li>
+              <li style="padding-left: 50px; position: relative;">
+                <span style="counter-increment: step; position: absolute; left: 0; top: 0; background: var(--primary); color: #0D0D0F; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700;">3</span>
+                채팅·계약·결제·후기까지 앱 내에서 완료.
+              </li>
+            </ol>
+          </div>
+          <div class="card">
+            <h3>공급자 경험</h3>
+            <ul>
+              <li>포트폴리오·가격·가능 일정 등록 → 자동 매칭.</li>
+              <li>AI 추천 성공률이 높을수록 우선 노출·배지 부여.</li>
+              <li>예약 캘린더, 전자계약, 에스크로 정산 SaaS 제공.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="card">
+          <h3>기술 구조</h3>
+          <ul>
+            <li>LLM + 벡터DB RAG로 스타일 태그·리뷰·이미지를 동시 분석.</li>
+            <li>AI → Human 플래너 핸드오프 규칙으로 품질 통제.</li>
+            <li>결제/계약/알림 모듈을 스택으로 묶어 웨딩 OS 구현.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 5: Product -->
+    <section class="slide">
+      <div class="slide-header">
+        <div>
+          <div class="slide-badge">Slide 5</div>
+          <h2 class="slide-title">제품 하이라이트</h2>
+        </div>
+        <div class="logo-mark">PRODUCT</div>
+      </div>
+      <div class="grid-3">
+        <div class="card">
+          <h3>온보딩 & 감성톤</h3>
+          <p>결혼식 날짜·예산·감성을 질문 카드로 수집, ‘특별씨’ 캐릭터가 감정선까지 케어.</p>
+        </div>
+        <div class="card">
+          <h3>추천 보드</h3>
+          <p>“지금 필요한 것” 모듈이 서브서비스·프리랜서를 카드로 제시, 비교·저장·컨펌 버튼 제공.</p>
+        </div>
+        <div class="card">
+          <h3>실행 패널</h3>
+          <p>타임라인·체크리스트·전자계약·결제 상태를 한 화면에서 관리, D-30/D-7 알림.</p>
+        </div>
+      </div>
+      <div class="card" style="margin-top: 40px;">
+        <h3>MVP 상태</h3>
+        <p>고객 입력 → 추천 카드 → 상담 연결 플로우 완성, 결제/계약 모듈은 6월 구축 예정.</p>
+      </div>
+    </section>
+
+    <!-- Slide 6: Market -->
+    <section class="slide">
+      <div class="slide-header">
+        <div>
+          <div class="slide-badge">Slide 6</div>
+          <h2 class="slide-title">시장 기회</h2>
+        </div>
+        <div class="logo-mark">MARKET</div>
+      </div>
+      <div class="grid-3">
+        <div class="card">
+          <h3>TAM</h3>
+          <div class="stat-value">₩888억</div>
+          <div class="stat-label">연 22.2만 혼인 × 서브서비스 40만원</div>
+        </div>
+        <div class="card">
+          <h3>SAM</h3>
+          <div class="stat-value">₩266억</div>
+          <div class="stat-label">온라인/프리랜서 비중 30%</div>
+        </div>
+        <div class="card">
+          <h3>SOM</h3>
+          <div class="stat-value">₩27억</div>
+          <div class="stat-label">3년 내 10% 점유 목표</div>
+        </div>
+      </div>
+      <div class="card" style="margin-top: 40px;">
+        <h3>타깃 세그먼트</h3>
+        <table>
+          <tr>
+            <th>세그먼트</th>
+            <th>규모</th>
+            <th>핵심 니즈</th>
+          </tr>
+          <tr>
+            <td>MZ 예비부부</td>
+            <td>연 20만 팀</td>
+            <td>감성 연출 + 모바일 중심 일정 관리</td>
+          </tr>
+          <tr>
+            <td>바쁜 직장인</td>
+            <td>연 15만 팀</td>
+            <td>시간 절약, 전문가 추천, 신뢰 계약</td>
+          </tr>
+          <tr>
+            <td>해외 경험층</td>
+            <td>연 10만 팀</td>
+            <td>투명 가격, 글로벌 감성, 다국어 상담</td>
+          </tr>
+        </table>
+      </div>
+    </section>
+
+    <!-- Slide 7: Competition -->
+    <section class="slide">
+      <div class="slide-header">
+        <div>
+          <div class="slide-badge">Slide 7</div>
+          <h2 class="slide-title">경쟁 & 차별화</h2>
+        </div>
+        <div class="logo-mark">EDGE</div>
+      </div>
+      <div class="card">
+        <table>
+          <tr>
+            <th>축</th>
+            <th>특별시</th>
+            <th>숨고</th>
+            <th>웨딩북</th>
+            <th>인스타/카페</th>
+          </tr>
+          <tr>
+            <td>전문 영역</td>
+            <td>웨딩 서브서비스 특화</td>
+            <td>전문가 전반</td>
+            <td>예식장·콘텐츠</td>
+            <td>비정형 커뮤니티</td>
+          </tr>
+          <tr>
+            <td>AI 매칭</td>
+            <td>✓ 스타일 태그 + 추천</td>
+            <td>△ 검색 수준</td>
+            <td>✗</td>
+            <td>✗</td>
+          </tr>
+          <tr>
+            <td>일정/결제</td>
+            <td>✓ 타임라인 + 에스크로</td>
+            <td>✗</td>
+            <td>△ 일정표</td>
+            <td>✗</td>
+          </tr>
+          <tr>
+            <td>감성 UX</td>
+            <td>✓ 캐릭터 ‘특별씨’</td>
+            <td>✗</td>
+            <td>△ 콘텐츠 중심</td>
+            <td>△ 사용자 생성</td>
+          </tr>
+          <tr>
+            <td>수익 모델</td>
+            <td>구독 + 수수료 + SaaS</td>
+            <td>리드당 과금</td>
+            <td>광고/프리미엄</td>
+            <td>광고/협찬</td>
+          </tr>
+        </table>
+      </div>
+    </section>
+
+    <!-- Slide 8: Business Model -->
+    <section class="slide">
+      <div class="slide-header">
+        <div>
+          <div class="slide-badge">Slide 8</div>
+          <h2 class="slide-title">수익 모델</h2>
+        </div>
+        <div class="logo-mark">MODEL</div>
+      </div>
+      <div class="grid-3">
+        <div class="card">
+          <h3>1단계 · 중개 수수료</h3>
+          <p>축가/촬영 중심. 거래액 10% 내외. 월 매칭 50건 × 200만원 → 월 수익 1,000만원 목표.</p>
+        </div>
+        <div class="card">
+          <h3>2단계 · 프리미엄</h3>
+          <p>프리랜서 배지·우선 노출(월 5.9만원~), 고객 프리미엄 상담권(회당 9.9만원).</p>
+        </div>
+        <div class="card">
+          <h3>3단계 · SaaS & 데이터</h3>
+          <p>공급자 예약/정산 SaaS 월 5.9만원, 라이프이벤트 확장(돌잔치·주년) 데이터 제휴.</p>
+        </div>
+      </div>
+      <div class="card" style="margin-top: 40px;">
+        <h3>재무 가설</h3>
+        <ul>
+          <li>2025 Q4 월 거래액 1억 · 매출 1천만 달성 → 2026 Q2 3배 확대.</li>
+          <li>LTV/CAC 4배 이상 유지, CAC는 커뮤니티/플래너 제휴로 최적화.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Slide 9: Traction -->
+    <section class="slide">
+      <div class="slide-header">
+        <div>
+          <div class="slide-badge">Slide 9</div>
+          <h2 class="slide-title">실행 & 학습</h2>
+        </div>
+        <div class="logo-mark">TRACTION</div>
+      </div>
+      <div class="card">
+        <table>
+          <tr>
+            <th>실행</th>
+            <th>진행도</th>
+            <th>배운 점</th>
+            <th>조정</th>
+          </tr>
+          <tr>
+            <td>고객 인터뷰</td>
+            <td>50건</td>
+            <td>축가·촬영이 가장 긴급, 일정 스트레스</td>
+            <td>2개 카테고리 집중 전략</td>
+          </tr>
+          <tr>
+            <td>채널 테스트</td>
+            <td>인스타/카페/커뮤니티</td>
+            <td>카페 전환율 최고</td>
+            <td>카페 제휴 + 콘텐츠 집중</td>
+          </tr>
+          <tr>
+            <td>프리랜서 온보딩</td>
+            <td>25명</td>
+            <td>신청서보다 DM 대화 선호</td>
+            <td>AI 추천 전 DM 라운지 운영</td>
+          </tr>
+          <tr>
+            <td>파일럿 매칭</td>
+            <td>5건</td>
+            <td>계약서/결제 표준 필요</td>
+            <td>전자계약·에스크로 내장</td>
+          </tr>
+        </table>
+      </div>
+    </section>
+
+    <!-- Slide 10: 6M Roadmap -->
+    <section class="slide">
+      <div class="slide-header">
+        <div>
+          <div class="slide-badge">Slide 10</div>
+          <h2 class="slide-title">오렌지가든 6개월 로드맵</h2>
+        </div>
+        <div class="logo-mark">ROADMAP</div>
+      </div>
+      <div class="timeline">
+        <div class="timeline-step" data-phase="0-3M">
+          <h3>PMF 가설 검증</h3>
+          <ul>
+            <li>MVP 출시 (축가/촬영 풀 플로우)</li>
+            <li>고객 인터뷰 100명, 베타 매칭 20건</li>
+            <li>AI 추천 로직 1차 (규칙+LLM) 완성</li>
+          </ul>
+        </div>
+        <div class="timeline-step" data-phase="3-6M">
+          <h3>BM · 확장 준비</h3>
+          <ul>
+            <li>월 매칭 50건, 거래액 1억</li>
+            <li>수수료율 A/B, 프리미엄 옵션 판매</li>
+            <li>파트너 150명, 만족도 NPS 50+</li>
+          </ul>
+        </div>
+        <div class="timeline-step" data-phase="Post">
+          <h3>가든 이후</h3>
+          <ul>
+            <li>오렌지팜/시드 투자 연계</li>
+            <li>카테고리 확장 & 데스티네이션 웨딩</li>
+            <li>글로벌 PoC (일본·동남아)</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 11: Team -->
+    <section class="slide">
+      <div class="slide-header">
+        <div>
+          <div class="slide-badge">Slide 11</div>
+          <h2 class="slide-title">팀 소개</h2>
+        </div>
+        <div class="logo-mark">TEAM</div>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <h3>대표 · 서비스</h3>
+          <ul>
+            <li>웨딩 플래너 6년, 프리랜서 커뮤니티 1만명 운영.</li>
+            <li>고객 인터뷰 50건, 파트너 온보딩 프로세스 설계.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>공동대표/CTO</h3>
+          <ul>
+            <li>AI 추천/LLM 프로덕트 10년, Series-B Exit.</li>
+            <li>벡터DB·LLM 워크플로 구축, 데이터 거버넌스 리드.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="grid-2" style="margin-top: 30px;">
+        <div class="card">
+          <h3>CPO · UX</h3>
+          <ul>
+            <li>모바일/웹 UX 8년, 글로벌 디자인 어워드 3회.</li>
+            <li>특별씨 캐릭터·감성 톤앤매너 개발.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>COO · 운영</h3>
+          <ul>
+            <li>웨딩 스튜디오 영업 7년, PG/에스크로 운영 경험.</li>
+            <li>크루 정책, QA, 고객 성공 프로세스 담당.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="card" style="margin-top: 40px;">
+        <h3>협력 네트워크</h3>
+        <ul>
+          <li>AI 연구소: 멀티모달 LLM 파인튜닝.</li>
+          <li>웨딩 스튜디오 연합: 데이터·콘텐츠 제공.</li>
+          <li>PG/전자계약사: 에스크로 및 보안 인증.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Slide 12: Global & Ask -->
+    <section class="slide">
+      <div class="slide-header">
+        <div>
+          <div class="slide-badge">Slide 12</div>
+          <h2 class="slide-title">글로벌 & Ask</h2>
+        </div>
+        <div class="logo-mark">VISION</div>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <h3>글로벌 시나리오</h3>
+          <ul>
+            <li>제주·강원 데스티네이션 웨딩 → K-웨딩 팬 글로벌 온보딩.</li>
+            <li>일본·대만·동남아 PoC: 현지 프리랜서 × 한국 고객 매칭.</li>
+            <li>AI 스택은 다국어/다통화 확장 준비 완료.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>오렌지가든에서 원하는 것</h3>
+          <ul class="ask-list">
+            <li>BM·수익 구조 멘토링, AI/데이터 품질 검증 지원.</li>
+            <li>웨딩/라이프스타일 파트너 네트워크 연결.</li>
+            <li>글로벌 확장 노하우 및 팜/투자 연계.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="card" style="margin-top: 40px;">
+        <h3>비전</h3>
+        <p>특별시는 웨딩 서브서비스의 비효율을 해결하고, 인생의 모든 큰 순간을 케어하는 라이프 이벤트 매칭 플랫폼으로 성장하겠습니다.</p>
+      </div>
+    </section>
+  </div>
+</body>
+</html>

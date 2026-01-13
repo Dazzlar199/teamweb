@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2025년 예비창업패키지 사업계획서 - 특별시</title>
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+    <style>
+        :root {
+            --primary: #1A2B4C; /* Deep Navy */
+            --accent: #FF6B00; /* Orange */
+            --text-main: #111827;
+            --text-sub: #4B5563;
+            --border: #E5E7EB;
+            --bg-gray: #F9FAFB;
+        }
+
+        @page {
+            size: A4;
+            margin: 20mm;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Pretendard', sans-serif;
+            line-height: 1.6;
+            color: var(--text-main);
+            background: #555; /* Viewer background */
+            margin: 0;
+            padding: 40px 0;
+        }
+
+        /* A4 Paper Layout */
+        .paper {
+            width: 210mm;
+            min-height: 297mm;
+            background: white;
+            margin: 0 auto 40px auto;
+            padding: 25mm;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        /* Heading Styles */
+        h1.doc-title {
+            font-size: 24pt;
+            font-weight: 900;
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid var(--primary);
+            color: var(--primary);
+        }
+
+        h2.section-title {
+            font-size: 16pt;
+            font-weight: 800;
+            color: white;
+            background: var(--primary);
+            padding: 10px 20px;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            display: inline-block; /* Inline to look like a tab/label */
+            width: 100%;
+        }
+
+        h3.subsection-title {
+            font-size: 13pt;
+            font-weight: 700;
+            color: var(--primary);
+            border-left: 5px solid var(--accent);
+            padding-left: 15px;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+
+        h4.mini-title {
+            font-size: 11pt;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-top: 20px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+        }
+        
+        h4.mini-title::before {
+            content: "•";
+            color: var(--accent);
+            margin-right: 8px;
+            font-size: 14pt;
+        }
+
+        /* Text Styles */
+        p {
+            font-size: 10.5pt;
+            margin-bottom: 10px;
+            text-align: justify;
+            color: var(--text-sub);
+        }
+
+        .highlight {
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        .emphasis-box {
+            background: var(--bg-gray);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            font-size: 10pt;
+        }
+
+        /* Table Styles */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            font-size: 10pt;
+        }
+
+        th {
+            background: #E8F1F5; /* Light Navy tint */
+            color: var(--primary);
+            font-weight: 700;
+            padding: 10px;
+            border: 1px solid #B0C4DE;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        td {
+            padding: 10px;
+            border: 1px solid #CFD8DC;
+            vertical-align: middle;
+        }
+
+        .td-center { text-align: center; }
+        .td-bg { background: var(--bg-gray); }
+
+        /* Images & Figures */
+        .figure-box {
+            border: 1px dashed var(--border);
+            padding: 10px;
+            margin: 15px 0;
+            text-align: center;
+            background: white;
+        }
+        
+        .figure-caption {
+            font-size: 9pt;
+            color: #666;
+            margin-top: 5px;
+            font-weight: 600;
+        }
+
+        .img-placeholder {
+            background: #eee;
+            color: #888;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 200px;
+            font-size: 11pt;
+            border-radius: 4px;
+        }
+
+        /* Print Settings */
+        @media print {
+            body { background: none; padding: 0; }
+            .paper { margin: 0; padding: 0; box-shadow: none; width: 100%; height: auto; page-break-after: always; }
+            h2.section-title { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            th { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- [Cover Page] 일반현황 -->
+    <div class="paper">
+        <h1 class="doc-title">예비창업패키지 예비창업자 사업계획서</h1>
+
+        <h2 class="section-title">□ 일반현황</h2>
+        
+        <table>
+            <colgroup>
+                <col style="width: 20%;">
+                <col style="width: 80%;">
+            </colgroup>
+            <tr>
+                <th>창업아이템명</th>
+                <td style="font-weight: 700; font-size: 12pt; color: var(--primary);">
+                    생성형 AI 에이전트 기반 웨딩 서브서비스(스냅·영상·축가) 큐레이션 및 원스톱 매칭 플랫폼, '특별시'
+                </td>
+            </tr>
+            <tr>
+                <th>산출물<br><span style="font-size:9pt; font-weight:400;">(협약기간 내 목표)</span></th>
+                <td>
+                    1. <strong>모바일 애플리케이션 (iOS/Android):</strong> AI 스타일 매칭 및 결제 시스템 탑재<br>
+                    2. <strong>관리자 웹사이트 (Admin):</strong> 프리랜서 포트폴리오 관리 및 정산 시스템<br>
+                    3. <strong>AI 매칭 엔진:</strong> 이미지/자연어 처리 기반 추천 알고리즘 (특허 출원 예정)<br>
+                    4. <strong>프리랜서 DB:</strong> 검증된 웨딩 전문가 1,000명 확보
+                </td>
+            </tr>
+            <tr>
+                <th>직업</th>
+                <td>
+                    <div style="display:flex;">
+                        <div style="flex:1;">□ 대표자: 프리랜서/엔지니어</div>
+                        <div style="flex:1;">□ 현재 소속: NT Studio (실장)</div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+
+        <h3 class="subsection-title">팀 구성 현황 (대표자 본인 제외)</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 10%;">순번</th>
+                    <th style="width: 15%;">직위</th>
+                    <th style="width: 25%;">담당 업무</th>
+                    <th style="width: 35%;">보유 역량 (경력 및 학력 등)</th>
+                    <th style="width: 15%;">구성 상태</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="td-center">1</td>
+                    <td class="td-center">CTO</td>
+                    <td class="td-center">개발 총괄 / AI</td>
+                    <td>
+                        - 풀스택 개발 5년 (Flutter, Next.js)<br>
+                        - LLM/RAG 기반 서비스 상용화 경험
+                    </td>
+                    <td class="td-center"><strong>완료</strong></td>
+                </tr>
+                <tr>
+                    <td class="td-center">2</td>
+                    <td class="td-center">CPO</td>
+                    <td class="td-center">서비스 기획 / UX</td>
+                    <td>
+                        - 커머스 플랫폼 기획 4년<br>
+                        - 데이터 기반 UX 설계 및 최적화
+                    </td>
+                    <td class="td-center"><strong>완료</strong></td>
+                </tr>
+                <tr>
+                    <td class="td-center">3</td>
+                    <td class="td-center">CMO</td>
+                    <td class="td-center">마케팅 / 운영</td>
+                    <td>
+                        - 퍼포먼스 마케팅 경력 3년<br>
+                        - SNS 채널(인스타/틱톡) 성장 경험
+                    </td>
+                    <td class="td-center"><strong>완료</strong></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- [Summary] 개요 -->
+    <div class="paper">
+        <h2 class="section-title">□ 창업 아이템 개요(요약)</h2>
+
+        <table>
+            <colgroup>
+                <col style="width: 15%;">
+                <col style="width: 85%;">
+            </colgroup>
+            <tr>
+                <th>명 칭</th>
+                <td><strong>특별시 (Special City)</strong> - 당신의 특별한 날을 위한 AI 웨딩 에이전트</td>
+            </tr>
+            <tr>
+                <th>아이템 개요</th>
+                <td>
+                    <div class="emphasis-box" style="margin: 0; background: white; border: none; padding: 0;">
+                        <strong>"복잡한 결혼 준비, 검색은 AI가 하고 결정은 고객이 합니다."</strong><br>
+                        본 서비스는 스드메(메인) 이외의 파편화된 <strong>웨딩 서브서비스(스냅, 영상, 축가, 사회자 등) 시장</strong>을 타겟으로 하는 버티컬 플랫폼입니다.<br>
+                        기존의 비효율적인 '검색-비교-연락' 프로세스를 <strong>AI 스타일 매칭 기술</strong>로 혁신하여, 고객에게는 <strong>'개인화된 큐레이션'</strong>을, 프리랜서에게는 <strong>'투명한 수익 기회'</strong>를 제공합니다.
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <th>문제 인식<br>(Problem)</th>
+                <td>
+                    <strong>1. 극심한 정보 탐색 비용:</strong> 예비부부 78%가 서브서비스 업체 선정에 평균 2개월 소요. 광고성 후기와 불투명한 가격 정보로 인한 '결정 피로' 호소.<br>
+                    <strong>2. 아날로그 방식의 비효율:</strong> 5~7개 업체를 각각 전화/카톡으로 예약하고 일정을 엑셀로 관리하는 낙후된 프로세스.<br>
+                    <strong>3. 공급자의 수수료 부담:</strong> 기존 플랫폼(숨고, 크몽)의 20~30%대 고수수료와 저가 경쟁으로 인한 전문가 이탈 심화.
+                </td>
+            </tr>
+            <tr>
+                <th>실현 가능성<br>(Solution)</th>
+                <td>
+                    <strong>1. AI 스타일 매칭 (Tech):</strong> 자연어/이미지 분석을 통해 고객 취향(빈티지, 필름톤 등)을 파악하고 최적의 프리랜서를 3~5명 큐레이션.<br>
+                    <strong>2. 웨딩 크루 시스템 (Product):</strong> 스냅+영상+축가를 하나의 팀(Crew)으로 묶어 원스톱 예약 및 할인 제공.<br>
+                    <strong>3. 3-Track 수익 모델 (BM):</strong> 거래 수수료(3~5%, 최저) + 프리랜서 구독(SaaS) + 매칭 크레딧의 하이브리드 구조.
+                </td>
+            </tr>
+            <tr>
+                <th>성장전략<br>(Scale-up)</th>
+                <td>
+                    <strong>1. 초기 진입 (Phase 1):</strong> CEO 네트워크를 활용해 검증된 프리랜서 200명 Pre-launch 확보. (현재 30명 인터뷰, LoI 20건 확보 완료)<br>
+                    <strong>2. 시장 안착 (Phase 2):</strong> 1년 내 프리랜서 1,000명, 월 매칭 350건 달성 및 BEP(손익분기) 돌파.<br>
+                    <strong>3. 확장 (Phase 3):</strong> 웨딩 데이터를 기반으로 돌잔치, 기업 행사 등 라이프스타일 이벤트 시장으로 확장 (TAM 6조원+).
+                </td>
+            </tr>
+            <tr>
+                <th>팀 구성<br>(Team)</th>
+                <td>
+                    <strong>• CEO 김찬주:</strong> 웨딩/엔터 현장 5년 경력, 플랫폼 상위 전문가 출신. 양면 시장의 페인포인트를 직접 경험.<br>
+                    <strong>• CTO:</strong> 풀스택 개발 및 AI/LLM 상용화 경험 보유. MVP 자체 개발 역량 확보.<br>
+                    <strong>• 실행력:</strong> 기획 단계에서 이미 고객 150명 설문 및 심층 인터뷰 완료, 시장 검증 데이터 확보.
+                </td>
+            </tr>
+        </table>
+        
+        <!-- 대표 이미지 영역 -->
+        <div class="figure-box">
+            <div style="display: flex; gap: 10px; justify-content: center;">
+                <div style="width: 30%; height: 180px; background: #eee; display: flex; align-items: center; justify-content: center; border-radius: 4px;">[앱 실행 화면: AI 채팅]</div>
+                <div style="width: 30%; height: 180px; background: #eee; display: flex; align-items: center; justify-content: center; border-radius: 4px;">[매칭 결과: 스타일 추천]</div>
+                <div style="width: 30%; height: 180px; background: #eee; display: flex; align-items: center; justify-content: center; border-radius: 4px;">[원스톱 결제/계약]</div>
+            </div>
+            <div class="figure-caption">&lt;특별시 서비스 주요 기능 예시&gt;</div>
+        </div>
+    </div>
+
+    <!-- [1. 문제 인식] -->
+    <div class="paper">
+        <h2 class="section-title">1. 문제 인식 (Problem)</h2>
+
+        <h3 class="subsection-title">1-1. 창업 아이템의 필요성</h3>
+
+        <h4 class="mini-title">국내 웨딩 서브서비스 시장의 정보 파편화 및 비효율성</h4>
+        
+        <p>
+            <strong>□ [현황] 웨딩 '서브서비스' 시장의 사각지대</strong><br>
+            국내 웨딩 시장은 스드메(스튜디오·드레스·메이크업)를 중심으로 구조화되어 있으나, <strong>본식 스냅, DVD 영상, 축가, 사회자, 부케 등 '서브서비스' 영역(연간 약 9,000억 원 규모)</strong>은 여전히 파편화되어 있습니다. 예비부부는 스드메 계약 후에도 약 5~7개의 업체를 개별적으로 알아봐야 하는 상황입니다.
+        </p>
+
+        <p>
+            <strong>□ [문제점 1] 예비부부: 탐색 비용 과다 및 '결정 피로(Decision Fatigue)'</strong><br>
+            자체 설문조사(N=150) 결과, 예비부부의 <strong>78%가 업체 선정에 평균 2개월 이상을 소요</strong>하며, 가장 큰 어려움으로 '광고성 정보로 인한 불신'과 '객관적 비교 불가'를 꼽았습니다. "블로그 후기는 다 광고 같고, 숨고는 견적서만 날아올 뿐 내 스타일인지 알 수 없다"는 것이 핵심 페인포인트입니다.
+        </p>
+        <div class="emphasis-box">
+            <strong>🗣️ 고객 인터뷰 (예비신부 A씨, 29세):</strong><br>
+            "인스타그램에서 본 '빈티지한 느낌'의 사진 작가를 찾고 싶은데, 숨고나 크몽에서는 그런 감성 검색이 안 돼요. 수십 명에게 일일이 가격을 물어보고 엑셀로 정리하는 게 너무 스트레스입니다."
+        </div>
+
+        <p>
+            <strong>□ [문제점 2] 프리랜서: 기존 플랫폼의 고수수료 및 저가 경쟁 구조</strong><br>
+            웨딩 전문 프리랜서들은 숨고, 크몽 등 범용 플랫폼을 이용하고 있으나, <strong>20~30%에 달하는 높은 수수료</strong>와 <strong>최저가 입찰 방식</strong>에 큰 불만을 가지고 있습니다. 이는 서비스 품질 저하로 이어지며, 실력 있는 전문가들이 플랫폼을 이탈하여 음지(개인 SNS 영업)로 숨어버리는 '레몬 마켓' 현상을 초래하고 있습니다.
+        </p>
+
+        <h4 class="mini-title">문제 해결을 위한 창업 아이템의 개발 필요성</h4>
+
+        <p>
+            <strong>□ '검색'이 아닌 '매칭'으로의 패러다임 전환 필요</strong><br>
+            정보 과잉 시대에 필요한 것은 더 많은 리스트가 아니라, <strong>나에게 딱 맞는 최적의 제안(Curation)</strong>입니다. 웨딩과 같이 고관여·감성적 소비재 시장에서는 텍스트 키워드 매칭이 아닌, <strong>이미지/스타일 기반의 정교한 AI 매칭</strong>이 필수적입니다.
+        </p>
+
+        <p>
+            <strong>□ 시장의 신뢰를 회복하는 '버티컬 플랫폼'의 필요성</strong><br>
+            범용 플랫폼이 해결하지 못하는 웨딩 특화 기능(일정 관리, 안심 결제, 크루 팀 매칭 등)을 제공하고, 검증된 전문가만을 큐레이션하여 <strong>'믿고 맡길 수 있는 에이전트'</strong> 서비스가 절실합니다. 특별시는 이러한 시장의 미충족 수요(Unmet Needs)를 기술과 운영 혁신으로 해결하고자 합니다.
+        </p>
+    </div>
+
+    <!-- [2. 실현 가능성] -->
+    <div class="paper">
+        <h2 class="section-title">2. 실현 가능성 (Solution)</h2>
+
+        <h3 class="subsection-title">2-1. 창업 아이템의 개발 계획</h3>
+
+        <h4 class="mini-title">제품·서비스 구체화 방안</h4>
+
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th style="width: 30%;">핵심 기능</th>
+                    <th style="width: 70%;">구현 내용 및 기술</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="td-center td-bg"><strong>1. AI 스타일 매칭<br>(Core Tech)</strong></td>
+                    <td>
+                        • <strong>멀티모달 입력:</strong> 자연어("따뜻한 필름 감성") + 레퍼런스 이미지 입력<br>
+                        • <strong>벡터 검색 (RAG):</strong> 프리랜서 포트폴리오를 벡터 DB화하여 고객 취향과 90% 이상 일치하는 전문가 추천<br>
+                        • <strong>기술 스택:</strong> OpenAI GPT-4o, CLIP 모델, Supabase(pgvector)
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td-center td-bg"><strong>2. 웨딩 크루 시스템<br>(Differentiation)</strong></td>
+                    <td>
+                        • <strong>팀 매칭:</strong> 스냅+영상+축가 등 연관 프리랜서를 '크루'로 묶어 패키지화<br>
+                        • <strong>효과:</strong> 고객은 원스톱 예약 및 10~15% 할인, 프리랜서는 팀 단위 수주로 매출 증대
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td-center td-bg"><strong>3. 안심 에이전트<br>(Stability)</strong></td>
+                    <td>
+                        • <strong>에스크로 결제:</strong> 서비스 완료 시까지 대금 보호 (노쇼/사기 방지)<br>
+                        • <strong>표준 계약서:</strong> AI가 자동 생성하는 전자 계약서로 분쟁 예방<br>
+                        • <strong>일정 관리:</strong> 예식일 기준 D-Day 자동 알림 및 체크리스트 제공
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h4 class="mini-title">창업 아이템의 차별성 및 경쟁력 확보 전략</h4>
+
+        <p><strong>□ 경쟁사 비교 분석</strong></p>
+        <table>
+            <thead>
+                <tr>
+                    <th>구분</th>
+                    <th>범용 플랫폼 (숨고, 크몽)</th>
+                    <th>웨딩 정보앱 (웨딩북, 다이렉트)</th>
+                    <th style="background: #FFF3E0; color: var(--accent);">특별시 (자사)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="td-center"><strong>핵심 가치</strong></td>
+                    <td class="td-center">다양한 카테고리, 최저가</td>
+                    <td class="td-center">커뮤니티 정보, 스드메 중심</td>
+                    <td class="td-center" style="background: #FFF3E0;"><strong>서브서비스 전문, AI 큐레이션</strong></td>
+                </tr>
+                <tr>
+                    <td class="td-center"><strong>탐색 방식</strong></td>
+                    <td class="td-center">키워드 검색, 다수 견적서</td>
+                    <td class="td-center">게시판 후기 검색</td>
+                    <td class="td-center" style="background: #FFF3E0;"><strong>취향 기반 AI 자동 추천</strong></td>
+                </tr>
+                <tr>
+                    <td class="td-center"><strong>수수료</strong></td>
+                    <td class="td-center">20~30% (고수수료)</td>
+                    <td class="td-center">비공개 (입점비)</td>
+                    <td class="td-center" style="background: #FFF3E0;"><strong>3~5% (업계 최저, 상생)</strong></td>
+                </tr>
+                <tr>
+                    <td class="td-center"><strong>품질 관리</strong></td>
+                    <td class="td-center">누구나 등록 가능 (검증 미흡)</td>
+                    <td class="td-center">제휴 업체 위주</td>
+                    <td class="td-center" style="background: #FFF3E0;"><strong>포트폴리오 심사 + 실거래 인증</strong></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <p>
+            <strong>□ 독보적 경쟁우위 확보 전략 (Moat)</strong><br>
+            1. <strong>Data Moat:</strong> 웨딩 특화 스타일 데이터(이미지-취향 매핑) 축적으로 후발 주자가 모방하기 어려운 AI 정확도 확보.<br>
+            2. <strong>Supply Chain Lock-in:</strong> 업계 최저 수수료와 SaaS(고객관리 툴) 제공으로 상위 20%의 고품질 프리랜서를 락인(Lock-in).<br>
+            3. <strong>Network Effect:</strong> '웨딩 크루' 시스템을 통해 프리랜서가 서로를 초대하고 고객을 데려오는 자발적 바이럴 구조 형성.
+        </p>
+
+        <h3 class="subsection-title">2-2. 정부지원사업비 집행 계획</h3>
+        
+        <p>※ 총 사업비: 100,000천원 (정부지원금 100%)</p>
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 25%;">비목</th>
+                    <th style="width: 50%;">산출 내역</th>
+                    <th style="width: 25%;">금액 (천원)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="td-center"><strong>인건비</strong></td>
+                    <td>팀원 4인 급여 (개발자, 기획자, 마케터 등)</td>
+                    <td class="td-center">42,000</td>
+                </tr>
+                <tr>
+                    <td class="td-center"><strong>외주용역비</strong></td>
+                    <td>UI/UX 고도화 디자인, 앱 보안 점검</td>
+                    <td class="td-center">15,000</td>
+                </tr>
+                <tr>
+                    <td class="td-center"><strong>광고선전비</strong></td>
+                    <td>SNS 타겟 광고, 웨딩박람회 부스 참가, 체험단 운영</td>
+                    <td class="td-center">30,000</td>
+                </tr>
+                <tr>
+                    <td class="td-center"><strong>기자재임차료</strong></td>
+                    <td>클라우드 서버(AWS) 및 AI API 사용료</td>
+                    <td class="td-center">8,000</td>
+                </tr>
+                <tr>
+                    <td class="td-center"><strong>지급수수료</strong></td>
+                    <td>특허 출원, 세무/회계 기장료, 플랫폼 이용료</td>
+                    <td class="td-center">5,000</td>
+                </tr>
+                <tr>
+                    <th colspan="2">합 계</th>
+                    <th>100,000</th>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- [3. 성장전략] -->
+    <div class="paper">
+        <h2 class="section-title">3. 성장전략 (Scale-up)</h2>
+
+        <h3 class="subsection-title">3-1. 사업화 추진 전략</h3>
+
+        <h4 class="mini-title">비즈니스 모델 (수익화 모델)</h4>
+        
+        <p><strong>□ 3-Track 하이브리드 수익 모델</strong></p>
+        <div class="figure-box" style="text-align: left; padding: 20px;">
+            <strong>1. 중개 수수료 (Transaction Fee):</strong> 거래액의 3~5% (업계 최저 수준)<br>
+            - 진입 장벽을 낮추고 거래량을 극대화하기 위한 전략적 저가 정책.<br>
+            - 크루(패키지) 거래 시 객단가 상승으로 수익성 보전.<br><br>
+            
+            <strong>2. 구독 모델 (SaaS Subscription):</strong> 월 19,900원 ~ 29,900원<br>
+            - 프리랜서에게 포트폴리오 관리, 정산 자동화, 상위 노출 기능 제공.<br>
+            - 안정적인 월 반복 매출(MRR) 확보 수단.<br><br>
+            
+            <strong>3. 데이터 비즈니스 (Data Monetization):</strong> Future Model<br>
+            - 신혼부부의 소비 패턴 데이터를 활용한 가전, 가구, 금융 타겟팅 광고 상품.
+        </div>
+
+        <h4 class="mini-title">시장 진입 및 마케팅 전략</h4>
+
+        <p>
+            <strong>□ 초기 시장 진입 (Go-to-Market) : "공급자 우선 확보" (Chicken & Egg 해결)</strong><br>
+            양면 플랫폼의 핵심인 '콜드 스타트' 문제를 해결하기 위해, <strong>매력적인 공급자(프리랜서) 200명</strong>을 먼저 확보합니다. 이를 위해 '첫 거래 수수료 0원', '포트폴리오 무료 촬영 지원' 등 파격적인 인센티브를 제공합니다. CEO의 기존 엔터테인먼트 업계 네트워크를 활용하여 초기 핵심 인플루언서 작가들을 직접 영입합니다.
+        </p>
+
+        <p>
+            <strong>□ 마케팅 채널 믹스</strong><br>
+            • <strong>Viral:</strong> AI 캐릭터 '결이'를 활용한 숏폼 콘텐츠(틱톡/릴스)로 자연 유입 유도 (제작비 90% 절감 효과).<br>
+            • <strong>Community:</strong> 앱 내 '웨딩 라운지' 커뮤니티를 통해 실거래 인증 후기를 확산시켜 신뢰도 구축.<br>
+            • <strong>Partnership:</strong> 웨딩홀 및 스드메 업체와 제휴하여 서브서비스가 필요한 고객을 직접 연결 (B2B2C).
+        </p>
+
+        <h4 class="mini-title">사업 추진 로드맵</h4>
+
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 20%;">단계</th>
+                    <th style="width: 25%;">시기</th>
+                    <th style="width: 55%;">주요 내용 및 목표</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="td-center"><strong>1단계<br>(기반 구축)</strong></td>
+                    <td class="td-center">협약 ~ 3개월</td>
+                    <td>
+                        • MVP 앱/웹 개발 완료 및 스토어 등록<br>
+                        • 핵심 공급자 200명 확보 및 온보딩<br>
+                        • 초기 매칭 알고리즘 테스트 (베타 서비스)
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td-center"><strong>2단계<br>(시장 검증)</strong></td>
+                    <td class="td-center">4개월 ~ 6개월</td>
+                    <td>
+                        • 정식 서비스 런칭 및 마케팅 본격화<br>
+                        • 월 매칭 100건 달성, 유료 구독 전환 테스트<br>
+                        • 고객 피드백 기반 UX 및 AI 모델 고도화
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td-center"><strong>3단계<br>(도약)</strong></td>
+                    <td class="td-center">7개월 ~ 12개월</td>
+                    <td>
+                        • 프리랜서 1,000명, 월 매칭 350건 달성<br>
+                        • BEP(손익분기점) 돌파 (월 매출 1,500만원+)<br>
+                        • Seed/Pre-A 투자 유치 추진
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h4 class="mini-title">중장기 사회적 가치 도입계획</h4>
+        <p>
+            • <strong>경력단절 여성 및 청년 예술가 지원:</strong> 재능은 있으나 판로가 없는 작가, 연주자들에게 공정한 수익 창출 기회 제공.<br>
+            • <strong>결혼 비용 절감 기여:</strong> 유통 거품을 제거하고 직거래를 활성화하여, 국가적 과제인 '고비용 결혼 문화' 개선 및 저출산 문제 해결에 기여.
+        </p>
+    </div>
+
+    <!-- [4. 팀 구성] -->
+    <div class="paper">
+        <h2 class="section-title">4. 대표자 및 팀원 구성 계획</h2>
+
+        <h3 class="subsection-title">4-1. 대표자 및 팀원 보유 역량</h3>
+
+        <h4 class="mini-title">대표자 현황 및 역량</h4>
+        <table>
+            <colgroup>
+                <col style="width: 20%;">
+                <col style="width: 80%;">
+            </colgroup>
+            <tr>
+                <th rowspan="3">대표자<br>(김찬주)</th>
+                <td>
+                    <strong>□ 현장 경험 및 전문성 (Domain Expertise)</strong><br>
+                    • 웨딩 및 엔터테인먼트 현장 실무 5년 (NT Studio 실장)<br>
+                    • 숨고/크몽 상위 랭커 활동 경험 → 공급자의 니즈 완벽 이해<br>
+                    • 수백 건의 고객 상담 경험 → 수요자의 페인포인트 체화
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>□ 사업화 및 실행 역량 (Execution)</strong><br>
+                    • 정부지원사업(뉴콘텐츠아카데미) 우수 수료 및 전시 성과<br>
+                    • 창업 전 30명 심층 인터뷰 및 20명 LoI(입점의향서) 확보 등 실행력 검증
+                </td>
+            </tr>
+        </table>
+
+        <h4 class="mini-title">팀원 구성 및 역량 (Team Building)</h4>
+        
+        <p>현재 CEO를 포함하여 개발, 기획, 마케팅 핵심 인력 4인이 팀 빌딩을 완료하였으며, 본업 병행 구조로 초기 리스크를 최소화하고 있습니다. 예비창업패키지 선정 시 100% 전념 가능한 구조로 전환 예정입니다.</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 15%;">직위</th>
+                    <th style="width: 25%;">담당 업무</th>
+                    <th style="width: 60%;">주요 역량 및 성과</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="td-center"><strong>CTO</strong></td>
+                    <td class="td-center">기술 총괄<br>(App/AI)</td>
+                    <td>
+                        • 풀스택 개발 5년 (Flutter, React, Node.js)<br>
+                        • AI 스타트업에서 LLM 기반 추천 시스템 상용화 경험<br>
+                        • 외주 없이 MVP 자체 개발 가능 (개발비 절감)
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td-center"><strong>CPO</strong></td>
+                    <td class="td-center">제품 총괄<br>(기획/UX)</td>
+                    <td>
+                        • 커머스 플랫폼 기획 및 PM 경력 4년<br>
+                        • 데이터 분석(GA, Amplitude) 기반 서비스 고도화 역량<br>
+                        • 사용자 중심의 직관적인 UI/UX 설계 전문가
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td-center"><strong>CMO</strong></td>
+                    <td class="td-center">마케팅 총괄<br>(Growth)</td>
+                    <td>
+                        • 퍼포먼스 마케팅 및 콘텐츠 마케팅 경력 3년<br>
+                        • 인스타그램/틱톡 채널 0 to 10k 성장 경험<br>
+                        • 저예산 고효율 마케팅 전략 수립 가능
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h4 class="mini-title">협력 네트워크 (Partnership)</h4>
+        <p>
+            • <strong>NT Studio:</strong> 음향/영상 기술 자문 및 초기 장비 지원 협약<br>
+            • <strong>서울과학기술대학교 창업지원단:</strong> 멘토링 및 보육 공간 지원<br>
+            • <strong>웨딩홀 연합회 (협의중):</strong> 서울/경기권 웨딩홀 5곳과 제휴 마케팅 논의 중
+        </p>
+    </div>
+
+</body>
+</html>

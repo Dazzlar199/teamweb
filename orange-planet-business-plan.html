@@ -1,0 +1,2739 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>AI특별시 · 특별시(The Special Time) 사업계획서</title>
+  <style>
+    @page {
+      size: A4;
+      margin: 0;
+    }
+
+    :root {
+      --primary: #18181B;
+      --primary-light: #3F3F46;
+      --primary-dark: #09090B;
+      --accent: #52525B;
+      --accent-light: #71717A;
+      --bg-light: #FAFAFA;
+      --bg-dark: #18181B;
+      --text-dark: #18181B;
+      --text-gray: #52525B;
+      --text-light: #A1A1AA;
+      --border: #E4E4E7;
+      --info: #1f2937;
+      --brand: #FF6B00;
+      --gradient-primary: linear-gradient(135deg, #18181B 0%, #3F3F46 100%);
+      --gradient-dark: linear-gradient(135deg, #09090B 0%, #27272A 100%);
+    }
+
+    * { box-sizing: border-box; }
+
+	    body {
+	      font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', 'Segoe UI', sans-serif;
+	      background: #ffffff;
+	      color: var(--text-dark);
+	      margin: 0;
+	      padding: 20px 0;
+	      line-height: 1.7;
+	      letter-spacing: -0.02em;
+	    }
+
+		    .page {
+		      --pad-x: 20mm;
+		      --footer-pad-x: 20mm;
+		      --footer-bottom: 10mm;
+		      width: 210mm;
+		      min-height: 297mm;
+		      margin: 0 auto 20px auto;
+		      padding: 15mm var(--pad-x) 25mm var(--pad-x);
+	      background: white;
+	      border: 1px solid var(--border);
+	      box-shadow: none;
+	      border-radius: 0;
+	      page-break-after: always;
+      page-break-inside: avoid;
+      position: relative;
+      overflow: visible;
+    }
+
+    h1, h2, h3, h4 {
+      color: var(--text-dark);
+      margin: 0 0 12px 0;
+    }
+
+    h1 { font-size: 28px; font-weight: 700; }
+    h2 { font-size: 22px; font-weight: 700; }
+    h3 {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--primary-dark);
+      margin: 24px 0 0 0;
+      padding: 0 0 12px 12px;
+      border-left: 4px solid var(--primary);
+      page-break-after: avoid !important;
+      page-break-inside: avoid !important;
+      break-after: avoid-page !important;
+      break-inside: avoid-page !important;
+    }
+
+    h4 {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-dark);
+      margin: 20px 0 0 0;
+      padding: 0 0 10px 0;
+      page-break-after: avoid !important;
+      page-break-inside: avoid !important;
+      break-after: avoid-page !important;
+      break-inside: avoid-page !important;
+    }
+
+    p { margin: 0 0 12px 0; font-size: 14px; text-align: justify; }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 14px;
+      font-size: 11px;
+      font-weight: 600;
+      color: #fff;
+      background: var(--primary);
+      margin-bottom: 14px;
+    }
+
+    .section-header {
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 3px solid var(--primary);
+      page-break-inside: avoid;
+      page-break-after: avoid;
+    }
+
+	    .doc-cover {
+	      border: 2px solid #111827;
+	      padding: 12mm 10mm;
+	      margin: 0 0 18px 0;
+	    }
+
+	    .doc-header-title {
+	      text-align: center;
+	      font-size: 22px;
+	      font-weight: 900;
+	      letter-spacing: -0.02em;
+	      margin: 0 0 10px 0;
+	      color: #111827;
+	    }
+
+	    .doc-cover .doc-title {
+	      font-size: 28px;
+	      font-weight: 800;
+	      margin: 0 0 10px 0;
+	      text-align: center;
+	    }
+
+    .label-box {
+      display: inline-block;
+      font-size: 13px;
+      font-weight: 800;
+      color: #111827;
+      margin: 0 0 8px 0;
+    }
+
+    .form-table th {
+      background: #F3F4F6;
+      color: #111827;
+      font-weight: 700;
+    }
+
+	    .form-table th, .form-table td {
+	      border: 1px solid #111827;
+	      vertical-align: middle;
+	    }
+
+	    .form-table th { text-align: center; }
+
+	    .cell-kv {
+	      display: grid;
+	      gap: 4px;
+	      font-size: 10.5px;
+	      color: #374151;
+	      line-height: 1.35;
+	    }
+
+	    .cell-kv .row {
+	      display: grid;
+	      grid-template-columns: 42px 1fr;
+	      gap: 8px;
+	      align-items: start;
+	    }
+
+	    .cell-kv .k {
+	      font-weight: 800;
+	      color: #111827;
+	      white-space: nowrap;
+	    }
+
+	    .cell-kv .v {
+	      color: #374151;
+	    }
+
+    .subform-title {
+      text-align: center;
+      font-weight: 800;
+      font-size: 14px;
+      margin: 10px 0 8px 0;
+      color: #111827;
+    }
+
+    .money {
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .compact-list {
+      margin: 0;
+      padding-left: 18px;
+    }
+
+    .compact-list li {
+      margin: 0 0 6px 0;
+    }
+
+    .figure-placeholder {
+      border: 2px dashed #9CA3AF;
+      border-radius: 12px;
+      background: #F9FAFB;
+      color: #6B7280;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 12px 14px;
+      min-height: 56mm;
+      page-break-inside: avoid;
+    }
+
+	    .figure-placeholder.small {
+	      min-height: 44mm;
+	    }
+
+	    .figure-media {
+	      border: 1px solid #111827;
+	      border-radius: 12px;
+	      background: #ffffff;
+	      overflow: hidden;
+	      display: flex;
+	      align-items: center;
+	      justify-content: center;
+	      min-height: 56mm;
+	      page-break-inside: avoid;
+	    }
+
+	    .figure-media.small { min-height: 44mm; }
+
+	    .figure-media img {
+	      width: 100%;
+	      height: 100%;
+	      object-fit: contain;
+	      display: block;
+	    }
+
+	    .figure-empty {
+	      font-size: 12px;
+	      font-weight: 800;
+	      color: #6B7280;
+	      letter-spacing: -0.01em;
+	    }
+
+	    .figure-caption {
+	      margin-top: 8px;
+	      font-size: 12px;
+	      color: var(--text-gray);
+	    }
+
+    .dense-table {
+      font-size: 12px;
+    }
+
+    .dense-table th, .dense-table td {
+      padding: 8px 10px;
+    }
+
+	    .page.tight p { margin-bottom: 8px; }
+	    .page.tight h3 { margin-top: 18px; }
+	    .page.tight table { margin: 10px 0 14px 0; }
+
+    .flow-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .flow-step {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: #ffffff;
+      padding: 8px 9px;
+      page-break-inside: avoid;
+    }
+
+    .flow-step .t {
+      font-size: 12px;
+      font-weight: 900;
+      color: #111827;
+      margin-bottom: 4px;
+    }
+
+    .flow-step .d {
+      font-size: 10px;
+      color: var(--text-gray);
+      line-height: 1.35;
+    }
+
+    .mini-title {
+      font-size: 13px;
+      font-weight: 900;
+      color: #111827;
+      margin: 0 0 6px 0;
+    }
+
+    .flow-line {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .flow-node {
+      border: 2px solid #111827;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #ffffff, #f8fafc);
+      padding: 14px 14px;
+      page-break-inside: avoid;
+    }
+
+    .flow-node .n {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 22px;
+      height: 22px;
+      border-radius: 999px;
+      background: #111827;
+      color: #ffffff;
+      font-weight: 900;
+      font-size: 12px;
+      margin-right: 8px;
+      flex: 0 0 auto;
+    }
+
+    .flow-node .t {
+      font-size: 13px;
+      font-weight: 900;
+      color: #111827;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 0;
+    }
+
+    .flow-node .d {
+      font-size: 11px;
+      color: var(--text-gray);
+      line-height: 1.4;
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .kpi-card {
+      border: 2px solid #111827;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #ffffff, #f8fafc);
+      padding: 14px 14px;
+      page-break-inside: avoid;
+    }
+
+    .kpi-card.span-2 {
+      grid-column: 1 / -1;
+    }
+
+    .kpi-card .k {
+      font-size: 13px;
+      font-weight: 900;
+      color: #111827;
+      margin-bottom: 8px;
+    }
+
+    .kpi-card .v {
+      font-size: 11px;
+      color: var(--text-gray);
+      line-height: 1.4;
+    }
+
+    .big-table {
+      font-size: 13px;
+    }
+
+    .big-table th, .big-table td {
+      padding: 11px 12px;
+    }
+
+    .mini-card {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px 10px;
+      background: #ffffff;
+      page-break-inside: avoid;
+    }
+
+    .mini-card .h {
+      font-weight: 900;
+      font-size: 12px;
+      margin: 0 0 6px 0;
+      color: #111827;
+    }
+
+    .mini-card ul {
+      margin: 0;
+      padding-left: 16px;
+    }
+
+    .mini-card li {
+      margin: 0 0 3px 0;
+      font-size: 11px;
+      color: var(--text-gray);
+    }
+
+    .mini-card .kpi {
+      margin-top: 8px;
+      font-size: 11px;
+      color: #111827;
+      font-weight: 700;
+    }
+
+    .section-title {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--text-dark);
+      margin-bottom: 8px;
+    }
+
+    .section-desc {
+      font-size: 15px;
+      color: var(--text-gray);
+      margin-bottom: 0;
+    }
+
+    .no-break {
+      page-break-inside: avoid;
+      break-inside: avoid;
+    }
+
+    .page-break {
+      page-break-before: always;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 14px 0 20px 0;
+      font-size: 13px;
+      page-break-inside: avoid;
+    }
+
+    /* 제목 바로 다음 요소는 제목과 함께 묶기 */
+    h3 + p, h3 + div, h3 + ul, h3 + ol, h3 + table,
+    h4 + p, h4 + div, h4 + ul, h4 + ol, h4 + table {
+      margin-top: 0 !important;
+      page-break-before: avoid !important;
+      break-before: avoid-page !important;
+    }
+
+    ul, ol {
+      page-break-inside: avoid !important;
+      break-inside: avoid-page !important;
+    }
+
+    th, td {
+      border: 1px solid var(--border);
+      padding: 10px 12px;
+      vertical-align: top;
+    }
+
+    th {
+      background: var(--primary);
+      color: white;
+      font-weight: 600;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .visual-flex {
+      display: flex;
+      gap: 32px;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .circle-chart {
+      position: relative;
+      width: 180px;
+      height: 180px;
+      flex-shrink: 0;
+    }
+
+    .circle {
+      position: absolute;
+      border-radius: 50%;
+    }
+
+    .circle.tam {
+      width: 180px;
+      height: 180px;
+      background: #e5e7eb;
+      opacity: 0.35;
+    }
+
+    .circle.sam {
+      width: 120px;
+      height: 120px;
+      top: 30px;
+      left: 30px;
+      background: #f87171;
+      opacity: 0.4;
+    }
+
+    .circle.som {
+      width: 60px;
+      height: 60px;
+      top: 60px;
+      left: 60px;
+      background: var(--primary);
+      opacity: 0.85;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 700;
+    }
+
+    .card {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 16px;
+      background: var(--bg-light);
+      page-break-inside: avoid;
+    }
+
+    .card h3 { margin-bottom: 8px; }
+
+    ul { margin: 0 0 12px 18px; padding: 0; }
+    li { margin-bottom: 6px; }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 10px;
+      border-radius: 20px;
+      background: #f1f5f9;
+      font-size: 11px;
+      margin-right: 6px;
+      color: var(--text-gray);
+    }
+
+    .highlight {
+      color: var(--primary-dark);
+      font-weight: 600;
+    }
+
+	    .note {
+	      border-left: 4px solid #111827;
+	      padding: 14px 16px;
+	      background: #f9fafb;
+	      font-size: 13px;
+	      margin: 16px 0;
+	    }
+
+    /* 공통 컴포넌트들 */
+	    .alert {
+	      padding: 16px 20px;
+	      border-radius: 8px;
+	      margin: 16px 0;
+	      font-size: 13px;
+	      line-height: 1.6;
+	      page-break-inside: avoid;
+	      background: #f9fafb;
+	      border: 1px solid #111827;
+	      border-left: 4px solid #111827;
+	      color: #111827;
+	    }
+	    .alert-danger, .alert-warning, .alert-success, .alert-info { background: #f9fafb; border-left-color: #111827; color: #111827; }
+
+	    .key-point {
+	      background: #ffffff;
+	      border: 2px solid #111827;
+	      border-radius: 12px;
+	      padding: 20px;
+	      margin: 20px 0;
+	      page-break-inside: avoid;
+	    }
+    .key-point-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 10px;
+    }
+
+    .compare-box {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin: 20px 0;
+      page-break-inside: avoid;
+    }
+    .compare-item {
+      padding: 20px;
+      border-radius: 12px;
+      background: #f3f4f6;
+      border: 1px solid #d1d5db;
+    }
+    .compare-title {
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: var(--text-dark);
+    }
+
+    .timeline-table td:first-child { width: 70px; font-weight: 600; color: var(--text-gray); }
+
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .stat-card {
+      border: 1px dashed var(--primary-light);
+      border-radius: 10px;
+      padding: 14px;
+      text-align: center;
+      page-break-inside: avoid;
+    }
+
+    .stat-card .value {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--primary-dark);
+    }
+
+    .stat-card .label {
+      font-size: 12px;
+      color: var(--text-gray);
+    }
+
+    .mockup-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .mockup-block {
+      background: linear-gradient(135deg, #111827, #1f2937);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+      padding: 16px;
+      min-height: 170px;
+      color: #f9fafb;
+      position: relative;
+    }
+
+    .mockup-label {
+      font-size: 12px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #9ca3af;
+    }
+
+    .mockup-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin: 6px 0 10px;
+    }
+
+    .mockup-screen {
+      border-radius: 14px;
+      background: rgba(255,255,255,0.05);
+      height: 110px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .mockup-screen img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .crew-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .crew-card {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 16px;
+      background: #fffdfa;
+    }
+
+    .full-mockup {
+      margin-top: 18px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      page-break-inside: avoid;
+    }
+
+    .full-mockup img {
+      width: 100%;
+      display: block;
+    }
+
+    /* 2-1. 서비스 화면 구성(프리랜서 채널/피드) */
+    #product-ui .ui-mockup {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 24px;
+      align-items: flex-start;
+    }
+
+    #product-ui .phone {
+      background: #ffffff;
+      border: 2px solid #E5E5E5;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.10);
+    }
+
+    #product-ui .phone--profile {
+      width: 190px;
+      flex: 0 0 auto;
+    }
+
+    #product-ui .phone-topbar {
+      background: #fafafa;
+      padding: 6px 12px;
+      border-bottom: 1px solid #eee;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 9px;
+      color: #888;
+    }
+
+	    #product-ui .profile-hero {
+	      background: linear-gradient(135deg, #18181B, #3F3F46);
+	      padding: 16px 12px;
+	      text-align: center;
+	      position: relative;
+	    }
+
+    #product-ui .pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 3px 6px;
+      border-radius: 4px;
+      font-size: 8px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+    }
+
+    #product-ui .pill--muted {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: rgba(255,255,255,0.20);
+      color: #ffffff;
+    }
+
+    #product-ui .avatar {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      margin: 0 auto 10px;
+      border: 3px solid #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.20);
+    }
+
+		    #product-ui .avatar--pink { background: linear-gradient(135deg, #fce4ec, #f8bbd0); }
+
+    #product-ui .avatar svg {
+      width: 22px;
+      height: 22px;
+      opacity: 0.9;
+    }
+
+    #product-ui .profile-name {
+      color: #ffffff;
+      font-weight: 800;
+      font-size: 13px;
+      line-height: 1.25;
+    }
+
+    #product-ui .profile-sub {
+      color: #D4D4D8;
+      font-size: 10px;
+      margin-top: 3px;
+      line-height: 1.25;
+    }
+
+    #product-ui .profile-tags {
+      margin-top: 8px;
+      display: inline-block;
+      background: rgba(255,255,255,0.18);
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 9px;
+      color: #ffffff;
+    }
+
+    #product-ui .stat-row {
+      display: flex;
+      padding: 12px 8px;
+      border-bottom: 1px solid #eee;
+      font-size: 11px;
+      text-align: center;
+    }
+
+    #product-ui .stat {
+      flex: 1;
+      padding: 0 6px;
+    }
+
+    #product-ui .stat + .stat { border-left: 1px solid #eee; }
+
+    #product-ui .stat .num {
+      font-weight: 800;
+      color: var(--primary);
+      font-size: 14px;
+      line-height: 1.2;
+    }
+
+    #product-ui .stat .lab {
+      color: #888;
+      font-size: 9px;
+      line-height: 1.2;
+      margin-top: 2px;
+    }
+
+    #product-ui .phone-actions {
+      padding: 10px 12px;
+      display: flex;
+      gap: 6px;
+    }
+
+    #product-ui .btn {
+      flex: 1;
+      text-align: center;
+      padding: 8px 0;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 800;
+      user-select: none;
+    }
+
+    #product-ui .btn--primary {
+      background: linear-gradient(135deg, var(--primary), #27272A);
+      color: #ffffff;
+    }
+
+    #product-ui .btn--ghost {
+      background: #ffffff;
+      border: 1.5px solid var(--primary);
+      color: var(--primary);
+    }
+
+    #product-ui .thumb-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 3px;
+      padding: 3px;
+      background: #f5f5f5;
+    }
+
+    #product-ui .thumb {
+      aspect-ratio: 1;
+      position: relative;
+      overflow: hidden;
+    }
+
+		    #product-ui .thumb--p { background: linear-gradient(135deg, #fce4ec, #f8bbd0); }
+		    #product-ui .thumb--b { background: linear-gradient(135deg, #e3f2fd, #bbdefb); }
+		    #product-ui .thumb--g { background: linear-gradient(135deg, #e8f5e9, #c8e6c9); }
+		    #product-ui .thumb--y { background: linear-gradient(135deg, #fff3e0, #ffe0b2); }
+		    #product-ui .thumb--i { background: linear-gradient(135deg, #f3e5f5, #e1bee7); }
+		    #product-ui .thumb--n { background: linear-gradient(135deg, #fce4ec, #f8bbd0); }
+
+    #product-ui .thumb-badge {
+      position: absolute;
+      bottom: 4px;
+      right: 4px;
+      background: rgba(0,0,0,0.6);
+      color: #ffffff;
+      font-size: 8px;
+      padding: 2px 4px;
+      border-radius: 3px;
+      font-weight: 700;
+    }
+
+    #product-ui .feed-stack {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    #product-ui .post-card {
+      background: #ffffff;
+      border: 2px solid #E5E5E5;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    #product-ui .post-head {
+      display: flex;
+      align-items: center;
+      padding: 10px 12px;
+      gap: 8px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    #product-ui .mini-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      flex: 0 0 auto;
+    }
+
+		    #product-ui .mini-avatar--pink { background: linear-gradient(135deg, #fce4ec, #f8bbd0); }
+
+    #product-ui .mini-avatar svg {
+      width: 16px;
+      height: 16px;
+      opacity: 0.9;
+    }
+
+    #product-ui .cta {
+      background: linear-gradient(135deg, var(--primary), #27272A);
+      color: #ffffff;
+      padding: 5px 12px;
+      border-radius: 6px;
+      font-size: 10px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    #product-ui .verify-chip {
+      background: #374151;
+      color: #ffffff;
+      font-size: 7px;
+      padding: 2px 4px;
+      border-radius: 3px;
+      font-weight: 700;
+    }
+
+		    .footer-label {
+		      position: absolute;
+		      bottom: var(--footer-bottom);
+		      left: var(--footer-pad-x);
+		      right: var(--footer-pad-x);
+		      font-size: 11px;
+		      color: #94a3b8;
+		      text-align: right;
+		    }
+
+    /* 화면용: 페이지 오버플로 검사 패널 */
+    #overflow-panel {
+      position: fixed;
+      top: 14px;
+      left: 14px;
+      z-index: 9999;
+      max-width: 520px;
+      background: rgba(255, 255, 255, 0.96);
+      border: 1px solid var(--border);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.10);
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-size: 12px;
+      color: var(--text-dark);
+    }
+
+    #overflow-panel.bad {
+      border-color: #ef4444;
+    }
+
+    #overflow-panel .row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 6px;
+    }
+
+    #overflow-panel button {
+      appearance: none;
+      border: 1px solid var(--border);
+      background: #111827;
+      color: #fff;
+      border-radius: 10px;
+      padding: 6px 10px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    #overflow-panel button.secondary {
+      background: #ffffff;
+      color: #111827;
+    }
+
+    #overflow-panel .items {
+      margin-top: 8px;
+      color: #111827;
+      line-height: 1.4;
+    }
+
+    .page.has-overflow {
+      outline: 3px solid rgba(239, 68, 68, 0.55);
+      outline-offset: 3px;
+    }
+
+    /* 화면에서 인쇄 레이아웃을 시뮬레이션 */
+    body.print-sim {
+      background: #ffffff;
+      padding: 0;
+    }
+
+		    body.print-sim .page {
+		      margin: 0 auto 20px auto;
+		      box-shadow: none;
+		      border: none;
+		      border-radius: 0;
+		      overflow: visible;
+		      --pad-x: 18mm;
+		      --footer-pad-x: 18mm;
+		      --footer-bottom: 8mm;
+		      padding: 14mm var(--pad-x) 22mm var(--pad-x);
+		    }
+
+		    body.print-sim .page.tight {
+		      --pad-x: 16mm;
+		      --footer-pad-x: 18mm;
+		      --footer-bottom: 8mm;
+		      padding: 12mm var(--pad-x) 22mm var(--pad-x);
+		    }
+
+	    body.print-sim p { font-size: 13px; }
+	    body.print-sim table { font-size: 12px; }
+	    body.print-sim th, body.print-sim td { padding: 9px 12px; }
+	    body.print-sim h1 { font-size: 26px; }
+	    body.print-sim h2 { font-size: 20px; }
+	    body.print-sim h3 { font-size: 17px; }
+	    body.print-sim #product-ui { padding-top: 12mm; }
+	    body.print-sim #product-ui .ui-mockup { zoom: 0.86; margin-bottom: 14px; }
+	    body.print-sim #product-ui .profile-hero { padding: 14px 10px; }
+	    body.print-sim #product-ui .stat-row { padding: 10px 8px; }
+	    body.print-sim #product-ui .btn { padding: 7px 0; font-size: 10px; }
+	    body.print-sim #product-ui .post-head { padding: 8px 10px; }
+		    body.print-sim #crew > :not(.footer-label),
+		    body.print-sim #crew-rules > :not(.footer-label),
+		    body.print-sim #crew-operation > :not(.footer-label),
+		    body.print-sim #crew-ai > :not(.footer-label) { zoom: 0.95; }
+
+	    @media print {
+	      body {
+	        background: white;
+	        padding: 0;
+	        orphans: 3;
+	        widows: 3;
+	      }
+		      .page {
+		        --pad-x: 18mm;
+		        --footer-pad-x: 18mm;
+		        --footer-bottom: 8mm;
+		        margin: 0;
+		        box-shadow: none;
+		        border: none;
+		        border-radius: 0;
+	        page-break-after: always;
+	        page-break-inside: avoid;
+	        overflow: visible;
+	        /* PDF 변환 시 여백·타이포를 약간 압축해 1페이지 초과를 방지 */
+	        padding: 14mm var(--pad-x) 22mm var(--pad-x);
+	      }
+		      .page.tight {
+		        --pad-x: 16mm;
+		        --footer-pad-x: 18mm;
+		        --footer-bottom: 8mm;
+		        padding: 12mm var(--pad-x) 22mm var(--pad-x);
+		      }
+      h3, h4 {
+        orphans: 4;
+        widows: 4;
+      }
+	      p { font-size: 13px; }
+	      table { font-size: 12px; }
+	      th, td { padding: 9px 12px; }
+	      h1 { font-size: 26px; }
+	      h2 { font-size: 20px; }
+	      h3 { font-size: 17px; }
+	      #product-ui { padding-top: 12mm; }
+	      #product-ui .ui-mockup { zoom: 0.86; margin-bottom: 14px; }
+	      #product-ui .profile-hero { padding: 14px 10px; }
+	      #product-ui .stat-row { padding: 10px 8px; }
+	      #product-ui .btn { padding: 7px 0; font-size: 10px; }
+	      #product-ui .post-head { padding: 8px 10px; }
+		      #crew > :not(.footer-label),
+		      #crew-rules > :not(.footer-label),
+		      #crew-operation > :not(.footer-label),
+		      #crew-ai > :not(.footer-label) { zoom: 0.95; }
+	      #overflow-panel { display: none !important; }
+	    }
+	  </style>
+</head>
+	<body>
+	  <div id="overflow-panel" aria-hidden="true">
+	    <strong>PDF 오버플로 검사</strong>
+    <div class="row">
+      <span>각 섹션이 A4 1페이지를 초과하는지 확인</span>
+      <div style="display:flex; gap:8px; align-items:center;">
+        <button type="button" class="secondary" id="toggle-print-sim">인쇄 시뮬</button>
+        <button type="button" id="recheck-overflow">재검사</button>
+      </div>
+    </div>
+	    <div class="items" id="overflow-items">계산 중…</div>
+	  </div>
+
+		  <div class="page" id="cover">
+		    <div class="doc-header-title">특별시(The Special Time) 사업계획서</div>
+		    <div class="label-box">□ 일반현황</div>
+		    <table class="form-table">
+		      <tr>
+		        <th style="width: 28%">창업아이템명</th>
+		        <td>
+		          특별시 (The Special Time)
+		          <div style="margin-top: 4px; font-size: 12px; color: #374151; line-height: 1.5;">
+		            AI 플래너가 결혼 준비 과정을 동행하며 이용자에 맞게 서비스를 매칭해주는 웨딩 플랫폼
+		          </div>
+		        </td>
+		      </tr>
+		      <tr>
+		        <th>산출물<br><span style="font-weight: 500; font-size: 11px;">(협약기간 내 목표)</span></th>
+		        <td>
+		          · 모바일 앱 1종 (AI 플래너+사용자 여정) <br>
+		          · 운영 대시보드 웹 1종 (공급자/크루 관리) <br>
+		          · AI 오케스트레이션 백오피스 1식 (LLM 워크플로·데이터 허브)
+		        </td>
+		      </tr>
+	      <tr>
+	        <th>직업<br><span style="font-weight: 500; font-size: 11px;">(직장명 기재 불가)</span></th>
+	        <td>서비스 기획·운영</td>
+	      </tr>
+	      <tr>
+	        <th>기업(예정)명</th>
+	        <td>AI특별시</td>
+	      </tr>
+	    </table>
+
+		    <h2>대표자 및 팀 구성 현황</h2>
+		    <table class="form-table" style="font-size: 12px;">
+		      <tr>
+		        <th style="width: 6%">순번</th>
+		        <th style="width: 15%">직위</th>
+	        <th style="width: 22%">담당 업무</th>
+	        <th style="width: 37%">보유 역량 (경력/학력 등)</th>
+	        <th style="width: 20%">구성 상태</th>
+	      </tr>
+	      <tr>
+	        <td>1</td>
+	        <td>대표자 (CEO)</td>
+	        <td>사업 총괄, 시장·공급자 확보, 운영 설계</td>
+		        <td>
+		          <div style="font-weight: 800;">김찬주</div>
+		          <div style="margin-top: 6px; font-size: 10.5px; color: #374151; line-height: 1.45;">
+		            <div><span style="font-weight: 800; color: #111827;">학력</span> 서울과학기술대학교 안전공학과(학사)</div>
+		            <div style="height: 6px;"></div>
+		            <div><span style="font-weight: 800; color: #111827;">경력</span> 숨고·크몽 음향/녹음 상위 전문가(5년+), NT Studio 음향 엔지니어 실장, NCA 뉴콘텐츠아카데미 2기 우수 전시(2025)</div>
+		          </div>
+		        </td>
+	        <td>확정</td>
+	      </tr>
+		      <tr>
+		        <td>2</td>
+		        <td>CTO</td>
+		        <td>AI/플랫폼 아키텍처</td>
+		        <td>LLM·RAG·추천/검색 기반 매칭, 데이터 파이프라인 및 MVP 단독 개발(풀스택) 역량</td>
+		        <td>확정</td>
+		      </tr>
+		      <tr>
+		        <td>3</td>
+		        <td>CPO</td>
+		        <td>제품 기획·UX 설계</td>
+		        <td>사용자 여정/정보 구조 설계, 실험·지표 기반 개선, 콘텐츠/커뮤니티 경험 설계 역량</td>
+		        <td>확정</td>
+		      </tr>
+		      <tr>
+		        <td>4</td>
+		        <td>CMO</td>
+		        <td>마케팅·브랜딩/채널 운영</td>
+		        <td>콘텐츠/커뮤니티 성장, 퍼포먼스 마케팅 운영, 크루·라운지 초기 유입 설계 역량</td>
+		        <td>확정</td>
+		      </tr>
+		    </table>
+			    <div class="footer-label"></div>
+			  </div>
+
+				  <div class="page" id="summary">
+				    <div class="label-box">□ 창업 아이템 개요(요약)</div>
+				    <table class="form-table">
+			      <tr>
+			        <th style="width: 22%">명&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;칭</th>
+			        <td>특별시 (The Special Time)</td>
+			      </tr>
+				      <tr>
+				        <th>범&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;주</th>
+				        <td>AI 플래너 동행 + 웨딩 서브서비스 플랫폼(추천·매칭·안전결제 등)</td>
+				      </tr>
+				      <tr>
+				        <th>아이템 개요</th>
+				        <td>
+				          <ul class="compact-list">
+				            <li>예비부부: AI 플래너가 대화로 취향·예산·일정을 구조화하고, 준비 흐름(체크리스트·브리프)을 끝까지 동행</li>
+				            <li>서브서비스: 스냅/영상/축가/메이크업/소품 등 후보를 근거 기반으로 추천·비교하고 예약·계약·결제까지 연결</li>
+				            <li>크루/프리랜서: 채널·포트폴리오·검증 리뷰·표준 계약/정산으로 신뢰 거래를 플랫폼화</li>
+				            <li>수익: 거래 수수료(매칭·패키지) + 공급자 유료 운영 도구(채널/CRM/프로모션) + 제휴/커머스(확장)</li>
+				          </ul>
+				        </td>
+				      </tr>
+					      <tr>
+					        <th>문제 인식(Problem)</th>
+					        <td>
+					          <ul class="compact-list">
+					            <li>홀/스드메는 제휴 중심의 폐쇄적 구조로 가격·조건 비교가 어렵고 정보 비대칭이 큼</li>
+					            <li>서브서비스(본식스냅·영상·축가·사회·메이크업·부케·데코·청첩장·웨딩버스 등)는 채널이 분산되어 검증/비교 비용이 과도</li>
+					            <li>DM 중심 거래는 표준 계약·결제·정산이 부재하여 취소·노쇼·분쟁 리스크가 반복</li>
+					          </ul>
+					        </td>
+					      </tr>
+					      <tr>
+					        <th>실현 가능성(Solution)</th>
+					        <td>
+					          <ul class="compact-list">
+					            <li>AI 플래너가 학습된 대화·요청 흐름을 통해 취향·예산·일정·조건을 구조화하고, 체크리스트·브리프를 일관되게 관리</li>
+					            <li>추천은 가격·정책·리뷰 근거를 함께 제시하고, 예약/계약/결제는 표준 플로우로 운영 리스크를 축소</li>
+					            <li>개별 매칭과 크루(팀) 패키지를 병행해 선택지를 단순화하고, 일정·예산·품질을 한 번에 관리</li>
+					            <li>예비부부 플래너 동행 기능은 기본 제공(무료)으로 진입 장벽을 낮추고, 거래 중심으로 수익을 회수</li>
+					          </ul>
+					        </td>
+					      </tr>
+				      <tr>
+				        <th>성장전략(Scale-up)</th>
+				        <td>
+				          <ul class="compact-list">
+				            <li>커뮤니티(웨딩 라운지)로 유입 → 거래(매칭/패키지)로 전환 → 데이터로 추천 고도화</li>
+				            <li>수도권에서 거래 표준·검증 리뷰 밀도 확보 후, 정보·인프라가 부족한 지역까지 표준 계약·안전결제로 확장</li>
+				            <li>검증 리뷰·거래 데이터 기반으로 제휴/커머스 확장</li>
+				          </ul>
+				        </td>
+				      </tr>
+				      <tr>
+				        <th>팀 구성(Team)</th>
+				        <td>
+				          <ul class="compact-list">
+				            <li>CEO/CTO/CPO/CMO 핵심 역할 중심으로 제품·기술·운영·채널을 동시에 실행</li>
+				            <li>공급자 네트워크·콘텐츠 운영 경험을 기반으로 초기 크루 생태계를 빠르게 구성</li>
+				          </ul>
+				        </td>
+				      </tr>
+				    </table>
+
+					    <div style="margin-top: 12px;">
+					      <div style="font-weight: 800; margin-bottom: 8px;">이미지</div>
+					      <div class="grid-2">
+					        <div>
+					          <div class="figure-media small">
+					            <div class="figure-empty">그림 1</div>
+					          </div>
+					          <div class="figure-caption">&lt; 그림 1 &gt; 서비스 주요 화면</div>
+					        </div>
+					        <div>
+					          <div class="figure-media small">
+					            <div class="figure-empty">그림 2</div>
+					          </div>
+					          <div class="figure-caption">&lt; 그림 2 &gt; AI 플래너 동행/서브서비스 연계</div>
+					        </div>
+					      </div>
+					    </div>
+					    <div class="footer-label"></div>
+					  </div>
+
+		  <div class="page" id="problem">
+		    <div class="label-box">1. 문제 인식 (Problem)_창업 아이템의 필요성</div>
+		    <p>결혼 준비는 ‘정보 탐색’이 아니라 ‘의사결정·실행’의 연속입니다. 그러나 현재는 카테고리별로 견적·일정·계약·결제가 분산되어, 소비자는 비교 피로와 리스크를 감수하고, 공급자는 비효율 운영과 과도한 리드 비용을 부담합니다.</p>
+
+	    <div class="grid-2" style="margin-top: 10px;">
+	      <div>
+	        <div class="figure-placeholder small">
+	          이미지 삽입 영역<br>
+	          (기존 결혼 준비 플로우: 검색/DM/카톡/엑셀 분산)
+	        </div>
+		        <div class="figure-caption">[그림 3] 기존 결혼 준비 프로세스의 분산</div>
+	      </div>
+	      <div>
+	        <table class="form-table" style="margin: 0;">
+	          <tr>
+	            <th style="width: 22%">핵심 문제</th>
+	            <td>
+	              <ul class="compact-list">
+	                <li>카테고리별 비교/검증 부담(견적·일정·위약 조건 상이)</li>
+	                <li>비표준 거래(카톡/DM)로 계약·정산·분쟁 처리의 일관성이 낮음</li>
+	                <li>콘텐츠는 많지만 ‘예약/결제’까지 이어지는 실행 도구가 부족</li>
+	              </ul>
+	            </td>
+	          </tr>
+	        </table>
+	      </div>
+	    </div>
+
+	    <h3>1.1 고객·공급자 Pain Point</h3>
+	    <table class="form-table">
+	      <tr>
+	        <th style="width: 22%">구분</th>
+	        <th>주요 Pain Point</th>
+	      </tr>
+	      <tr>
+	        <td><strong>예비부부</strong></td>
+	        <td>
+	          <ul class="compact-list">
+	            <li>다수 카테고리 동시 준비로 일정 충돌·누락이 발생</li>
+	            <li>리뷰/후기 신뢰도 편차로 검증 비용이 증가</li>
+	            <li>사후 분쟁(위약/불이행) 대응이 어렵고, 책임 소재가 불명확</li>
+	          </ul>
+	        </td>
+	      </tr>
+	      <tr>
+	        <td><strong>크루·프리랜서/공급자</strong></td>
+	        <td>
+	          <ul class="compact-list">
+	            <li>리드 과금 구조로 ROI 변동이 크고, 저품질 리드 대응 비용이 큼</li>
+	            <li>예약·정산·후기 관리가 도구/채널별로 분산되어 운영 효율이 낮음</li>
+	            <li>브랜딩·콘텐츠 운영 역량 격차로 상위 노출/재구매가 좌우됨</li>
+	          </ul>
+	        </td>
+	      </tr>
+	    </table>
+
+	    <h3>1.2 시장 정의(진입·확장)</h3>
+	    <table class="form-table">
+	      <tr>
+	        <th style="width: 22%">구분</th>
+	        <th>정의 및 포함 범위</th>
+	      </tr>
+	      <tr>
+	        <td><strong>진입 시장</strong></td>
+	        <td>
+	          <ul class="compact-list">
+	            <li>웨딩 서브서비스: 스냅/영상/메이크업/드레스 등 ‘예약·계약·정산’이 반복되는 영역</li>
+	            <li>초기에는 거래 표준화(계약·결제·정산)와 검증 리뷰 축적에 집중</li>
+	          </ul>
+	        </td>
+	      </tr>
+		      <tr>
+		        <td><strong>확장 시장</strong></td>
+		        <td>
+		          <ul class="compact-list">
+		            <li>AI 플래너 동행(기본 제공) + 매칭(수수료) + 웨딩 소품/혼수/가전 등 커머스(제휴·광고)로 확장</li>
+		            <li>동일 사용자 여정 내에서 ‘콘텐츠→상담→예약→구매’가 연결되는 구조로 확장 TAM을 확보</li>
+		          </ul>
+		        </td>
+		      </tr>
+	    </table>
+			    <div class="footer-label"></div>
+			  </div>
+
+		  <div class="page" id="market">
+		    <div class="label-box">1. 문제 인식 (Problem)_창업 아이템의 필요성</div>
+		    <h2 style="margin: 0 0 10px 0;">시장 규모(TAM · SAM · SOM) 산출</h2>
+		    <p>진입 시장(웨딩 서브서비스 거래)은 실제 결혼 준비 과정에서 반복 발생하는 결제·정산 영역을 기준으로 산정합니다.</p>
+
+	    <div style="display: flex; gap: 26px; margin: 12px 0 12px 0; align-items: center;">
+	      <div style="position: relative; width: 180px; height: 180px; flex-shrink: 0;">
+	        <div style="position: absolute; width: 180px; height: 180px; background: #d4d4d8; border-radius: 50%;"></div>
+	        <span style="position: absolute; top: 12px; left: 50%; transform: translateX(-50%); font-size: 11px; font-weight: 700; color: #52525b;">TAM</span>
+	        <div style="position: absolute; top: 35px; left: 35px; width: 110px; height: 110px; background: #71717a; border-radius: 50%;"></div>
+	        <span style="position: absolute; top: 42px; left: 50%; transform: translateX(-50%); font-size: 10px; font-weight: 700; color: white;">SAM</span>
+	        <div style="position: absolute; top: 65px; left: 65px; width: 50px; height: 50px; background: #18181b; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+	          <span style="font-size: 9px; font-weight: 800; color: white;">SOM</span>
+	        </div>
+	      </div>
+	      <div style="flex: 1;">
+	        <div style="margin-bottom: 12px;">
+	          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+	            <span style="width: 45px; font-size: 12px; font-weight: 800;">TAM</span>
+	            <span style="font-size: 11px; color: #666;">전체시장</span>
+	          </div>
+	          <div style="background: #e5e5e5; height: 22px; border-radius: 4px; position: relative; width: 100%;">
+	            <div style="background: #a1a1aa; height: 100%; width: 100%; border-radius: 4px;"></div>
+	            <span style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); font-size: 12px; font-weight: 800; color: #333;">2,900억원</span>
+	          </div>
+	        </div>
+	        <div style="margin-bottom: 12px;">
+	          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+	            <span style="width: 45px; font-size: 12px; font-weight: 800;">SAM</span>
+	            <span style="font-size: 11px; color: #666;">유효시장</span>
+	          </div>
+	          <div style="background: #e5e5e5; height: 22px; border-radius: 4px; position: relative; width: 100%;">
+	            <div style="background: #71717a; height: 100%; width: 30%; border-radius: 4px;"></div>
+	            <span style="position: absolute; left: calc(30% + 10px); top: 50%; transform: translateY(-50%); font-size: 12px; font-weight: 800; color: #333;">870억원</span>
+	          </div>
+	        </div>
+	        <div style="margin-bottom: 0;">
+	          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+	            <span style="width: 45px; font-size: 12px; font-weight: 800;">SOM</span>
+	            <span style="font-size: 11px; color: #666;">목표시장</span>
+	          </div>
+	          <div style="background: #e5e5e5; height: 22px; border-radius: 4px; position: relative; width: 100%;">
+	            <div style="background: #18181b; height: 100%; width: 3%; border-radius: 4px; min-width: 44px;"></div>
+	            <span style="position: absolute; left: calc(3% + 10px); top: 50%; transform: translateY(-50%); font-size: 12px; font-weight: 800; color: #333;">87억원</span>
+	          </div>
+	        </div>
+	      </div>
+	    </div>
+
+		    <table class="form-table">
+		      <tr>
+		        <th style="width: 15%">구분</th>
+		        <th style="width: 28%">산출 공식</th>
+		        <th style="width: 32%">계산</th>
+		        <th style="width: 25%">결과</th>
+		      </tr>
+		      <tr>
+		        <td><strong>TAM</strong><br>(전체시장)</td>
+		        <td>연간 혼인건수 × 웨딩 서브서비스 평균 지출</td>
+		        <td>22.2만건 × 130만원</td>
+		        <td><strong>2,900억원</strong></td>
+		      </tr>
+		      <tr>
+		        <td><strong>SAM</strong><br>(유효시장)</td>
+		        <td>TAM × 온라인/프리랜서 비중</td>
+		        <td>2,900억 × 30%</td>
+		        <td><strong>870억원</strong></td>
+		      </tr>
+		      <tr>
+		        <td><strong>SOM</strong><br>(목표시장)</td>
+		        <td>SAM × 3년 내 목표 점유율</td>
+		        <td>870억 × 10%</td>
+		        <td><strong>87억원</strong></td>
+		      </tr>
+		    </table>
+
+		    <h3>산출 근거 데이터</h3>
+		    <table class="form-table">
+		      <tr>
+		        <th style="width: 22%">데이터</th>
+		        <th style="width: 38%">수치</th>
+		        <th style="width: 40%">참고</th>
+		      </tr>
+		      <tr>
+		        <td>연간 혼인건수</td>
+		        <td>22.2만건 (2024, +14.8%)</td>
+		        <td>통계청 인구동향조사 (2025.03)</td>
+		      </tr>
+		      <tr>
+		        <td>평균 결혼 비용</td>
+		        <td>3,238만원</td>
+		        <td>듀오 2025 결혼비용 보고서</td>
+		      </tr>
+		      <tr>
+		        <td>서브서비스 평균</td>
+		        <td>130만원/쌍</td>
+		        <td>이용률 가중평균<br>(본식스냅 78만 + 영상 27만 + 축가 7만 + 이벤트 12만 + 메이크업 7만)</td>
+		      </tr>
+		      <tr>
+		        <td>온라인/프리랜서 비중</td>
+		        <td>30%</td>
+		        <td>업계 인터뷰 + 숨고/크몽 성장률 기반 추정</td>
+		      </tr>
+		      <tr>
+		        <td>목표 점유율</td>
+		        <td>10% (3년차)</td>
+		        <td>버티컬 플랫폼 성장 벤치마크</td>
+		      </tr>
+		    </table>
+		    <div class="footer-label"></div>
+		  </div>
+
+				  <div class="page tight" id="solution">
+				    <div class="label-box">2. 실현 가능성 (Solution)_창업 아이템의 개발 계획</div>
+				    <h2 style="margin: 0 0 10px 0;">창업 아이템의 개발 계획</h2>
+				    <p>특별시(The Special Time)는 LLM 기반 AI 플래너로 ‘결정→실행’(예약·계약·결제·정산)을 연결하고, 운영 품질을 데이터로 관리합니다.</p>
+
+			    <h3>2.1 AI 플래너(LLM) 고도화 방안</h3>
+				    <table class="form-table big-table">
+			      <tr>
+			        <th style="width: 28%">고도화 항목</th>
+			        <th>구현 방식</th>
+			      </tr>
+			      <tr>
+			        <td>근거·일관성</td>
+			        <td>RAG + 필터(지역/예산/일정) + 재랭킹으로 추천 근거를 고정</td>
+			      </tr>
+			      <tr>
+			        <td>개인화</td>
+			        <td>프로필(선호/금지/예산) 구조화 → 요약/리마인드/추천에 반영</td>
+			      </tr>
+			      <tr>
+			        <td>실행(툴 사용)</td>
+			        <td>툴(예약/계약/결제/정산) 자동 실행 + 단계별 승인</td>
+			      </tr>
+			      <tr>
+			        <td>품질 평가</td>
+			        <td>정답셋 자동평가 + 회귀 테스트로 품질 유지</td>
+			      </tr>
+			      <tr>
+			        <td>안전·비용</td>
+			        <td>최소 수집·비식별 + 캐시/요약 + 모델 라우팅으로 단가/지연 최적화</td>
+			      </tr>
+					    </table>
+
+			    <div style="margin-top: 10px;">
+			      <h3 style="margin-top: 16px;">오케스트레이션 플로우</h3>
+			      <div class="flow-line">
+			        <div class="flow-node">
+			          <div class="t"><span class="n">1</span>입력·프로필</div>
+			          <div class="d">선호/금지/예산/일정 구조화</div>
+			        </div>
+			        <div class="flow-node">
+			          <div class="t"><span class="n">2</span>검색(RAG)</div>
+			          <div class="d">가격·정책·리뷰·포트폴리오 검색</div>
+			        </div>
+			        <div class="flow-node">
+			          <div class="t"><span class="n">3</span>추천·결정</div>
+			          <div class="d">후보 비교 + 리스크 확인</div>
+			        </div>
+			        <div class="flow-node">
+			          <div class="t"><span class="n">4</span>실행·검증</div>
+			          <div class="d">툴 실행(승인) + 정책/가격 검증 + 로그</div>
+			        </div>
+			      </div>
+			    </div>
+
+			    <div style="margin-top: 12px;">
+			      <h3 style="margin-top: 16px;">평가·모니터링 지표</h3>
+			      <div class="kpi-grid">
+			        <div class="kpi-card">
+			          <div class="k">근거 포함률</div>
+			          <div class="v">추천이 가격·정책·근거와 일치하는 비율</div>
+			        </div>
+			        <div class="kpi-card">
+			          <div class="k">툴 성공률</div>
+			          <div class="v">예약/계약/결제/정산 실행 성공 비율</div>
+			        </div>
+			        <div class="kpi-card span-2">
+			          <div class="k">정책 위반률</div>
+			          <div class="v">금지/과장/민감정보 위반 탐지 비율</div>
+			        </div>
+			      </div>
+			    </div>
+
+	    <div class="footer-label"></div>
+	  </div>
+
+			  <div class="page" id="solution-detail">
+			    <div class="label-box">2. 실현 가능성 (Solution)_창업 아이템의 개발 계획</div>
+			    <h2 style="margin: 0 0 10px 0;">2.2 고객 동행 플로우</h2>
+			    <p>취향 입력부터 예약·결제·사후 관리까지 단일 플로우로 연결합니다.</p>
+
+		    <div class="flow-grid" style="margin-top: 12px;">
+		      <div class="flow-step">
+		        <div class="t">1) 취향 입력</div>
+		        <div class="d">대화·이미지·예산·일정 입력 → 선호/금지 조건 구조화</div>
+		      </div>
+		      <div class="flow-step">
+		        <div class="t">2) 브리프 자동 생성</div>
+		        <div class="d">스타일 태그·무드 요약 → 필요한 카테고리/우선순위 도출</div>
+		      </div>
+		      <div class="flow-step">
+		        <div class="t">3) 후보 추천·비교</div>
+		        <div class="d">가격·정책·리뷰 근거로 3~5개 후보 비교표 제공</div>
+		      </div>
+		      <div class="flow-step">
+		        <div class="t">4) 예약·계약·결제</div>
+		        <div class="d">일정 확인 → 전자계약 → 에스크로 결제 → 자동 정산 준비</div>
+		      </div>
+		      <div class="flow-step">
+		        <div class="t">5) 사후 관리</div>
+		        <div class="d">체크리스트/알림 → 검증 리뷰 수집 → 품질·추천 데이터로 환류</div>
+		      </div>
+		    </div>
+
+		    <div class="note">민감 정보는 최소 수집·비식별 처리 후 사용하며, 추천·정책 검증 로그는 품질 개선에 활용합니다.</div>
+
+		    <h3>단계별 KPI</h3>
+		    <table class="form-table">
+		      <tr>
+		        <th>단계</th>
+		        <th>주요 KPI</th>
+		        <th>목표(기간)</th>
+		      </tr>
+		      <tr>
+		        <td>데이터·MVP</td>
+		        <td>스타일 태그 50종, 벡터 DB 30만 임베딩, 추천 근거 노출률</td>
+		        <td>3개월 내 80% 달성</td>
+		      </tr>
+		      <tr>
+		        <td>베타 론칭</td>
+		        <td>베타 가입 500쌍, 반복 상담 65% 이상, 크루 150명</td>
+		        <td>6개월 내</td>
+		      </tr>
+			      <tr>
+			        <td>정식 출시</td>
+			        <td>월간 활성 예비부부 2,000쌍, 거래액(GMV) 12억원, LTV/CAC 4배</td>
+			        <td>12개월 내</td>
+			      </tr>
+			    </table>
+			    <div class="footer-label"></div>
+			  </div>
+
+	  <div class="page" id="product-ui">
+	    <div class="label-box">2. 실현 가능성 (Solution)_창업 아이템의 개발 계획</div>
+	    <h2 style="margin: 0 0 10px 0;">2.3 서비스 화면 구성</h2>
+	    <p>포트폴리오 탐색부터 예약 전환까지를 하나의 연속 흐름으로 설계합니다.</p>
+	    <div class="ui-mockup">
+      <!-- 프리랜서 프로필 카드 -->
+      <div class="phone phone--profile">
+        <div class="phone-topbar">
+          <div>프리랜서 채널</div>
+          <div>⋯</div>
+        </div>
+        <div class="profile-hero">
+          <div class="pill pill--muted">신규</div>
+          <div class="avatar avatar--pink" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#111827" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-2h4l2 2h4a2 2 0 0 1 2 2z"></path>
+              <circle cx="12" cy="13" r="4"></circle>
+            </svg>
+          </div>
+          <div class="profile-name">스냅사진작가 민지</div>
+          <div class="profile-sub">서울 성수·연남 | 빈티지 스냅 전문</div>
+          <div class="profile-tags">
+            #빈티지웨딩 #필름감성 #성수스냅
+          </div>
+        </div>
+        <div class="stat-row">
+          <div class="stat">
+            <div class="num">127</div>
+            <div class="lab">작업물</div>
+          </div>
+          <div class="stat">
+            <div class="num">2.4k</div>
+            <div class="lab">팔로워</div>
+          </div>
+          <div class="stat">
+            <div class="num" style="color: #374151;">4.7</div>
+            <div class="lab">평점(16)</div>
+          </div>
+        </div>
+        <div class="phone-actions">
+          <div class="btn btn--primary">팔로우</div>
+          <div class="btn btn--ghost">문의</div>
+        </div>
+        <div class="thumb-grid" aria-hidden="true">
+          <div class="thumb thumb--p">
+            <div class="thumb-badge">234</div>
+          </div>
+          <div class="thumb thumb--b">
+            <div class="thumb-badge">189</div>
+          </div>
+          <div class="thumb thumb--g">
+            <div class="thumb-badge">312</div>
+          </div>
+          <div class="thumb thumb--y">
+            <div class="thumb-badge">156</div>
+          </div>
+          <div class="thumb thumb--i">
+            <div class="thumb-badge">267</div>
+          </div>
+          <div class="thumb thumb--n">
+            <div class="thumb-badge">421</div>
+          </div>
+        </div>
+      </div>
+
+	      <!-- 피드 포스트 -->
+	      <div class="feed-stack">
+	        <div class="post-card">
+	          <div class="post-head">
+            <div class="mini-avatar mini-avatar--pink" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#111827" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-2h4l2 2h4a2 2 0 0 1 2 2z"></path>
+                <circle cx="12" cy="13" r="4"></circle>
+              </svg>
+            </div>
+            <div style="flex: 1;">
+              <div style="font-size: 12px; font-weight: 700; color: #18181B;">스냅사진작가 민지</div>
+              <div style="font-size: 9px; color: #A1A1AA;">서울 성수동 • 3시간 전</div>
+            </div>
+            <div class="cta">예약</div>
+          </div>
+	          <div style="aspect-ratio: 16/10; background: linear-gradient(135deg, #fce4ec 0%, #f8bbd0 40%, #e1bee7 100%); display: flex; align-items: center; justify-content: center; position: relative;">
+	            <div style="text-align: center;">
+	              <div style="font-size: 11px; color: rgba(0,0,0,0.5); font-weight: 600;">성수동 빈티지 웨딩 스냅</div>
+	            </div>
+	            <div style="position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.7); color: white; font-size: 9px; padding: 4px 8px; border-radius: 6px; font-weight: 600;">25만원</div>
+	          </div>
+		          <div style="padding: 8px 10px;">
+		            <div style="font-size: 10px; color: #6b7280; margin-bottom: 6px;">
+		              좋아요 234 · 대화 12 · 저장 55
+		            </div>
+		            <div style="font-size: 10px; color: #555; line-height: 1.45;">
+		              빈티지 감성 웨딩 스냅 촬영(예시)
+		            </div>
+		          </div>
+	        </div>
+	      </div>
+	    </div>
+	    <div class="footer-label"></div>
+	  </div>
+
+			  <div class="page tight" id="plan-budget">
+			    <div class="label-box">2. 실현 가능성 (Solution)_창업 아이템의 개발 계획</div>
+			    <h2 style="margin: 0 0 10px 0;">2.4 사업추진 일정 및 2.5 정부지원사업비 집행 계획</h2>
+
+			    <h3>2.4 사업추진 일정</h3>
+			    <div class="subform-title">&lt; 사업추진 일정(사업기간 내) &gt;</div>
+		    <table class="form-table dense-table">
+		      <tr>
+		        <th>구분</th>
+		        <th>추진 내용</th>
+		        <th>추진 기간</th>
+		        <th>세부 내용</th>
+		      </tr>
+		      <tr>
+		        <td>1</td>
+		        <td>데이터 구축</td>
+		        <td>2026.02~2026.03</td>
+		        <td>데이터 정제·태깅, 파트너 샘플 확보</td>
+		      </tr>
+		      <tr>
+		        <td>2</td>
+		        <td>MVP 개발</td>
+		        <td>2026.04~2026.06</td>
+		        <td>대화·브리핑, 추천·비교, 평가/로그</td>
+		      </tr>
+		      <tr>
+		        <td>3</td>
+		        <td>거래 기능</td>
+		        <td>2026.06~2026.09</td>
+		        <td>예약·계약·에스크로 결제·정산</td>
+		      </tr>
+		      <tr>
+		        <td>4</td>
+		        <td>베타/정식</td>
+		        <td>2026.10~2026.12</td>
+		        <td>베타 운영, QA, 온보딩/CS 체계화</td>
+		      </tr>
+		    </table>
+
+			    <h3>2.5 정부지원사업비 집행 계획</h3>
+			    <div class="subform-title">&lt; 1단계 정부지원사업비 집행계획 &gt;</div>
+			    <table class="form-table dense-table">
+			      <tr>
+			        <th style="width: 18%">비목</th>
+			        <th style="width: 42%">산출 근거</th>
+			        <th style="width: 20%">정부지원사업비(원)</th>
+			      </tr>
+		      <tr>
+		        <td>인건비</td>
+		        <td>AI 엔지니어 (3개월)</td>
+		        <td class="money">13,500,000</td>
+		      </tr>
+		      <tr>
+		        <td>데이터 확보</td>
+		        <td>태깅/라벨링 인력</td>
+		        <td class="money">4,800,000</td>
+		      </tr>
+		      <tr>
+		        <td>클라우드/도구</td>
+		        <td>LLM API·벡터DB·운영 도구</td>
+		        <td class="money">2,500,000</td>
+		      </tr>
+		      <tr>
+		        <td>합계</td>
+		        <td></td>
+		        <td class="money"><strong>20,800,000</strong></td>
+		      </tr>
+		    </table>
+
+		    <div class="subform-title">&lt; 2단계 정부지원사업비 집행계획 &gt;</div>
+		    <table class="form-table dense-table">
+		      <tr>
+		        <th style="width: 18%">비목</th>
+		        <th style="width: 42%">산출 근거</th>
+		        <th style="width: 20%">정부지원사업비(원)</th>
+		      </tr>
+		      <tr>
+		        <td>핵심 인력</td>
+		        <td>디자인/QA/운영 (4개월)</td>
+		        <td class="money">24,000,000</td>
+		      </tr>
+		      <tr>
+		        <td>외주용역</td>
+		        <td>PG·전자계약 연동, 보안 점검</td>
+		        <td class="money">8,000,000</td>
+		      </tr>
+		      <tr>
+		        <td>고객 검증</td>
+		        <td>베타 리서치, 커뮤니티 운영, 콘텐츠 제작</td>
+		        <td class="money">5,500,000</td>
+		      </tr>
+		      <tr>
+		        <td>기타</td>
+		        <td>법무·회계 자문, 인프라 예비비</td>
+		        <td class="money">3,500,000</td>
+		      </tr>
+		      <tr>
+		        <td>합계</td>
+		        <td></td>
+		        <td class="money"><strong>41,000,000</strong></td>
+		      </tr>
+		    </table>
+		    <div class="footer-label"></div>
+		  </div>
+
+	  <div class="page" id="crew">
+	    <div class="label-box">2. 실현 가능성 (Solution)_창업 아이템의 개발 계획</div>
+	    <h2 style="margin: 0 0 10px 0;">2.6 웨딩 크루 시스템</h2>
+	    <p>프리랜서들이 팀을 구성하여 통합 웨딩 서비스를 제공하는 운영 체계입니다.</p>
+
+    <h3>도입 배경 및 필요성</h3>
+	    <div class="compare-box" style="margin-bottom: 12px;">
+      <div class="compare-item">
+        <div class="compare-title">현행: 개별 섭외 방식</div>
+        <ul style="font-size:11px; padding-left:16px;">
+          <li><strong>평균 5~7개 업체</strong> 개별 섭외 필요</li>
+          <li>업체별 <strong>스타일 불일치</strong> (예: 영상은 모던, 스냅은 빈티지)</li>
+          <li>연락·협상·계약이 분리되어 <strong>준비 기간 장기화</strong></li>
+          <li>본식 당일 현장에서 <strong>팀워크 부재</strong></li>
+        </ul>
+      </div>
+      <div class="compare-item">
+        <div class="compare-title">개선: 크루 기반 제공</div>
+        <ul style="font-size:11px; padding-left:16px;">
+          <li><strong>1회 결제</strong>로 통합 패키지 예약</li>
+          <li><strong>일관된 컨셉</strong> (크루 단위 동일 스타일)</li>
+          <li>검증된 협업 기반 <strong>현장 품질 확보</strong></li>
+          <li>일원화된 소통으로 <strong>준비 부담 감소</strong></li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>크루 시스템 개요</h3>
+    <div class="key-point">
+      <div class="key-point-title">핵심 개념: 프리랜서 자율 팀 구성 및 플랫폼 운영 지원</div>
+	    <p style="font-size: 12px;"><strong>웨딩 크루</strong>는 프리랜서들이 팀 단위로 서비스를 제공하고, 플랫폼이 거래(계약·결제·정산)와 리스크 관리(분쟁·CS)를 지원하는 협업 시스템입니다.</p>
+    </div>
+
+    <h4 style="margin-top: 20px;">플랫폼의 3가지 역할</h4>
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 15px 0;">
+	      <div style="background: #eff6ff; border-radius: 8px; padding: 12px; text-align: center;">
+	        <div style="width: 32px; height: 32px; background: #1e40af; border-radius: 8px; margin: 0 auto 10px; display: flex; align-items: center; justify-content: center;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        </div>
+        <div style="font-weight: 700; color: #1e40af; margin-bottom: 6px;">판매 채널</div>
+	        <ul style="font-size: 10px; text-align: left; margin: 0; padding-left: 14px; color: #374151;">
+	          <li>크루 마켓 노출</li>
+	          <li>AI 추천 연동</li>
+	        </ul>
+	      </div>
+	      <div style="background: #ecfdf5; border-radius: 8px; padding: 12px; text-align: center;">
+	        <div style="width: 32px; height: 32px; background: #065f46; border-radius: 8px; margin: 0 auto 10px; display: flex; align-items: center; justify-content: center;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+        </div>
+        <div style="font-weight: 700; color: #065f46; margin-bottom: 6px;">정산 관리</div>
+	        <ul style="font-size: 10px; text-align: left; margin: 0; padding-left: 14px; color: #374151;">
+	          <li>자동 수익 분배</li>
+	          <li>거래 증빙 지원</li>
+	        </ul>
+	      </div>
+	      <div style="background: #fef2f2; border-radius: 8px; padding: 12px; text-align: center;">
+	        <div style="width: 32px; height: 32px; background: #991b1b; border-radius: 8px; margin: 0 auto 10px; display: flex; align-items: center; justify-content: center;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <div style="font-weight: 700; color: #991b1b; margin-bottom: 6px;">리스크 관리</div>
+	        <ul style="font-size: 10px; text-align: left; margin: 0; padding-left: 14px; color: #374151;">
+	          <li>취소/노쇼·분쟁 대응</li>
+	          <li>CS 중재 및 정산 보류</li>
+	        </ul>
+	      </div>
+	    </div>
+
+	    <h3 style="margin-top: 20px;">기대 효과</h3>
+	    <table class="form-table dense-table" style="font-size: 11px; margin-bottom: 12px;">
+	      <tr>
+	        <th style="width: 18%">구분</th>
+	        <th style="width: 52%">핵심 효과</th>
+	        <th style="width: 30%">성과로 측정</th>
+	      </tr>
+	      <tr>
+	        <td><strong>고객</strong></td>
+	        <td>복수 카테고리(촬영·음향·제작 등)를 팀 단위로 한 번에 의사결정·예약하여 준비 부담과 불확실성을 낮춥니다.</td>
+	        <td>상담→예약 전환율, 환불/클레임률, 만족도</td>
+	      </tr>
+	      <tr style="background: #f9fafb;">
+	        <td><strong>공급자</strong></td>
+	        <td>단품 수주 중심에서 ‘패키지’로 객단가를 높이고, 정산·증빙·CS 부담을 플랫폼이 흡수하여 운영 효율을 개선합니다.</td>
+	        <td>평균 객단가, 재수주율, 정산 소요시간</td>
+	      </tr>
+	      <tr>
+	        <td><strong>플랫폼</strong></td>
+	        <td>검증 리뷰·거래 데이터가 축적되어 추천 정확도와 신뢰가 상승하고, 커뮤니티→거래 전환이 강화됩니다.</td>
+	        <td>검증 리뷰 누적, 분쟁률, 재방문율</td>
+	      </tr>
+	    </table>
+	    <div class="note" style="margin: 10px 0 14px 0; font-size: 12px;">
+	      초기에는 “거래 표준화(계약·결제·정산) + 검증 리뷰 축적”에 집중하고, 이후 크루 패키지를 고도화하여 신규 카테고리(레코딩/뮤직비디오/라이브 등)까지 확장합니다.
+	    </div>
+
+		    <h3 style="margin-top: 20px;">크루 패키지 구성 예시</h3>
+		    <table style="font-size: 11px;">
+		      <tr>
+		        <th style="width: 26%;">패키지명</th>
+		        <th style="width: 30%;">컨셉</th>
+		        <th style="width: 44%;">구성(산출물)</th>
+		      </tr>
+		      <tr style="background: #fef3c7;">
+		        <td><strong>러브송 MV 크루</strong></td>
+		        <td>축가를 음원·영상으로 패키징</td>
+		        <td>녹음/피치 보정/믹싱·마스터링 + 1곡 MV 촬영·편집</td>
+		      </tr>
+			      <tr>
+			        <td><strong>라이브 퍼포먼스 크루</strong></td>
+			        <td>밴드·음향·기록을 한 번에</td>
+			        <td>라이브 축가(2~3인) + 현장 음향(믹싱) + 라이브 레코딩 + 숏폼 5종</td>
+			      </tr>
+			      <tr style="background: #f9fafb;">
+			        <td><strong>스토리 다큐 크루</strong></td>
+			        <td>인터뷰 기반 서사형 기록</td>
+			        <td>사전 인터뷰 + 다큐 영상(본식 포함) + 내레이션/사운드디자인 + 스냅</td>
+			      </tr>
+		    </table>
+
+    <div class="footer-label"></div>
+  </div>
+
+	  <div class="page" id="crew-rules">
+	    <div class="label-box">2. 실현 가능성 (Solution)_창업 아이템의 개발 계획</div>
+	    <h2 style="margin: 0 0 10px 0;">2.7 크루 운영 모델(정의 및 효과)</h2>
+	    <p>크루 시스템은 “팀 단위 상품(패키지)”을 표준 거래로 만들고, 플랫폼이 거래 신뢰와 운영 효율을 보완하는 구조입니다.</p>
+
+    <h3>운영 구조(요약)</h3>
+    <div class="grid-2" style="gap: 12px; margin-top: 12px;">
+      <div class="card">
+        <div class="mini-title">1) 크루 패키지 기획</div>
+        <ul style="font-size: 11px; margin: 0; padding-left: 16px;">
+          <li>카테고리 조합(촬영·음향·제작 등)으로 팀 상품화</li>
+          <li>가격·범위·납품물 기준을 명확히 정의</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="mini-title">2) 표준 거래</div>
+        <ul style="font-size: 11px; margin: 0; padding-left: 16px;">
+          <li>전자계약·에스크로 결제로 거래 리스크를 낮춤</li>
+          <li>일정·납품·정산을 동일 프로세스로 관리</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="mini-title">3) 품질 관리</div>
+        <ul style="font-size: 11px; margin: 0; padding-left: 16px;">
+          <li>검증 리뷰(실거래 기반)로 품질을 측정·공개</li>
+          <li>지표 기반으로 노출/추천을 자동 최적화</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="mini-title">4) 재구매/확장</div>
+        <ul style="font-size: 11px; margin: 0; padding-left: 16px;">
+          <li>커뮤니티 유입 → 패키지 예약 전환 루프 형성</li>
+          <li>신규 카테고리(레코딩, MV 제작, 라이브 등)로 확장</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3 style="margin-top: 18px;">관리 지표(예시)</h3>
+    <table class="form-table dense-table" style="font-size: 11px; margin-top: 10px;">
+      <tr>
+        <th style="width: 22%">지표</th>
+        <th style="width: 48%">정의</th>
+        <th style="width: 30%">활용</th>
+      </tr>
+      <tr>
+        <td><strong>이행률</strong></td>
+        <td>예약 후 정상 수행(취소/노쇼 제외) 비율</td>
+        <td>노출·추천 가중치</td>
+      </tr>
+      <tr style="background: #f9fafb;">
+        <td><strong>검증 리뷰</strong></td>
+        <td>실거래 완료 고객의 후기(텍스트/미디어) 누적</td>
+        <td>품질 공개·신뢰 확보</td>
+      </tr>
+      <tr>
+        <td><strong>분쟁률</strong></td>
+        <td>거래 대비 분쟁 접수 비율</td>
+        <td>정책 개선·리스크 관리</td>
+      </tr>
+      <tr style="background: #f9fafb;">
+        <td><strong>패키지 전환율</strong></td>
+        <td>상담/탐색 대비 패키지 예약 전환 비율</td>
+        <td>구성/가격 최적화</td>
+      </tr>
+    </table>
+	    <div class="footer-label"></div>
+	  </div>
+
+		  <div class="page" id="crew-operation">
+		    <div class="label-box">2. 실현 가능성 (Solution)_창업 아이템의 개발 계획</div>
+		    <h2 style="margin: 0 0 10px 0;">2.8 크루 운영 정책 및 리스크 관리</h2>
+		    <p>정산·취소/노쇼·분쟁 대응을 표준화하여 거래 신뢰를 유지합니다.</p>
+	    <h3>거래 신뢰 장치(요약)</h3>
+	    <div class="grid-2" style="gap: 12px; margin-top: 12px;">
+	      <div class="card">
+	        <div class="mini-title">표준 계약·에스크로</div>
+	        <ul style="font-size: 11px; margin: 0; padding-left: 16px;">
+	          <li>거래 범위·납품물·일정·환불 기준을 계약서로 표준화</li>
+	          <li>대금은 에스크로로 예치해 이행 리스크를 완화</li>
+	        </ul>
+	      </div>
+	      <div class="card">
+	        <div class="mini-title">정산·증빙 자동화</div>
+	        <ul style="font-size: 11px; margin: 0; padding-left: 16px;">
+	          <li>크루 내 합의 비율에 따라 자동 분배 및 내역 제공</li>
+	          <li>세금계산서/현금영수증 등 거래 증빙을 프로세스로 지원</li>
+	        </ul>
+	      </div>
+	      <div class="card">
+	        <div class="mini-title">검증 리뷰 기반 품질</div>
+	        <ul style="font-size: 11px; margin: 0; padding-left: 16px;">
+	          <li>실거래 고객만 리뷰 작성(신뢰도 확보)</li>
+	          <li>리뷰·분쟁 데이터를 추천/노출에 반영</li>
+	        </ul>
+	      </div>
+	      <div class="card">
+	        <div class="mini-title">CS·대체 지원</div>
+	        <ul style="font-size: 11px; margin: 0; padding-left: 16px;">
+	          <li>취소/노쇼 등 이행 리스크 발생 시 대체 지원</li>
+	          <li>분쟁 접수 시 중재·증빙 확인·정산 보류로 피해 최소화</li>
+	        </ul>
+	      </div>
+	    </div>
+
+	    <h3 style="margin-top: 18px;">운영 SLA(예시)</h3>
+	    <table class="form-table dense-table" style="font-size: 11px; margin-top: 10px;">
+	      <tr>
+	        <th style="width: 28%">항목</th>
+	        <th style="width: 42%">기준</th>
+	        <th style="width: 30%">비고</th>
+	      </tr>
+	      <tr>
+	        <td><strong>이의 접수 응답</strong></td>
+	        <td>24시간 이내 1차 응답</td>
+	        <td>증빙 요청/사실 확인</td>
+	      </tr>
+	      <tr style="background: #f9fafb;">
+	        <td><strong>중재 완료</strong></td>
+	        <td>72시간 이내 1차 중재</td>
+	        <td>합의 불가 시 내부 심의</td>
+	      </tr>
+	      <tr>
+	        <td><strong>대체 지원</strong></td>
+	        <td>상황에 따라 우선순위 배정(가능 시)</td>
+	        <td>동일/유사 카테고리 기준</td>
+	      </tr>
+	      <tr style="background: #f9fafb;">
+	        <td><strong>정산 처리</strong></td>
+	        <td>예식일 D+7일 정산</td>
+	        <td>분쟁 시 정산 보류 가능</td>
+	      </tr>
+	    </table>
+
+		    <h3 style="margin-top: 18px;">2.9 분쟁 처리(요약)</h3>
+		    <div class="grid-3" style="margin-top: 10px;">
+		      <div class="card" style="background:#eef2ff;">
+		        <div class="mini-title">접수·증빙</div>
+		        <div style="font-size: 11px; color: #374151; line-height: 1.5;">CS 접수 후 계약·대화·납품물 기준으로 사실관계를 확인합니다.</div>
+		      </div>
+		      <div class="card" style="background:#ecfccb;">
+		        <div class="mini-title">중재·대체</div>
+		        <div style="font-size: 11px; color: #374151; line-height: 1.5;">재이행/대체 지원을 우선 검토하고, 합의안을 도출합니다.</div>
+		      </div>
+		      <div class="card" style="background:#fee2e2;">
+		        <div class="mini-title">결정·정산</div>
+		        <div style="font-size: 11px; color: #374151; line-height: 1.5;">합의 불가 시 환불·부분환불·정산 조정을 결정합니다.</div>
+		      </div>
+		    </div>
+
+		    <table class="form-table dense-table" style="font-size: 11px; margin-top: 10px;">
+		      <tr>
+		        <th style="width: 28%">원칙</th>
+		        <th>내용</th>
+		      </tr>
+		      <tr>
+		        <td><strong>기준</strong></td>
+		        <td>표준 계약 및 객관적 증빙(납품물, 대화 기록, 일정)을 우선 기준으로 합니다.</td>
+		      </tr>
+		      <tr style="background: #f9fafb;">
+		        <td><strong>우선순위</strong></td>
+		        <td>대체/재이행이 가능한 경우 이를 우선 검토하고, 불가한 경우 환불·정산 조정을 적용합니다.</td>
+		      </tr>
+		    </table>
+
+		    <div class="footer-label"></div>
+		  </div>
+
+		  <div class="page tight" id="crew-ai">
+		    <div class="label-box">2. 실현 가능성 (Solution)_창업 아이템의 개발 계획</div>
+		    <h2 style="margin: 0 0 10px 0;">2.10 AI 매칭 기반 크루 추천 연계</h2>
+		    <p>개별 작가 탐색 흐름에서 크루 패키지 제안으로 전환이 이루어지도록 설계합니다.</p>
+
+	    <div class="key-point">
+	      <div class="key-point-title">고객 니즈 기반 자동 추천</div>
+	      <p style="font-size: 12px;">
+	        고객의 스타일·예산·일정·필요 카테고리를 분석해, 개별 매칭과 크루 패키지 중 최적안을 제시합니다.
+	      </p>
+	    </div>
+
+		    <h3 style="margin-top: 18px;">추천 트리거 조건</h3>
+		    <table style="font-size: 11px;">
+		      <tr>
+		        <th style="width:25%">조건</th>
+		        <th style="width:40%">판단 기준</th>
+		        <th style="width:35%">추천 방식</th>
+		      </tr>
+		      <tr style="background: #eff6ff;">
+		        <td><strong>복합 니즈</strong></td>
+		        <td>2개 이상 서비스 카테고리 동시 필요<br><span style="font-size:10px;color:#666;">(예: 녹음 + 촬영 + 편집)</span></td>
+		        <td>패키지 후보를 우선 제안하고, 비교 요소를 요약 제공</td>
+		      </tr>
+		      <tr>
+		        <td><strong>일정 압박</strong></td>
+		        <td>웨딩일이 임박하거나 일정 조율이 어려운 경우</td>
+		        <td>이행률·리뷰 기반의 검증된 크루를 우선 노출</td>
+		      </tr>
+		      <tr>
+		        <td><strong>예산·품질 기준</strong></td>
+		        <td>예산 범위 내 최적 조합을 원하는 경우</td>
+		        <td>개별 구성 대비 비용·납품물 차이를 요약해 제시</td>
+		      </tr>
+		    </table>
+
+	    <h3 style="margin-top: 18px;">추천 화면 흐름(예시)</h3>
+	    <div style="background: #f9fafb; border-radius: 12px; padding: 18px; border: 1px solid #e5e7eb; margin-top: 10px;">
+	      <div style="font-size: 11px; color: #666; margin-bottom: 12px;">고객 화면(예시)</div>
+	      <div class="grid-2" style="gap: 12px;">
+	        <div class="card" style="background: #ffffff;">
+		          <h4 style="margin-top: 0;">개별 후보 3개</h4>
+		          <div style="display: flex; gap: 10px; margin-top: 10px;">
+			            <div style="flex:1; background: #f3f4f6; padding: 10px; border-radius: 6px; text-align: center; font-size: 11px;">
+			              녹음 엔지니어<br><strong>단품</strong>
+			            </div>
+			            <div style="flex:1; background: #f3f4f6; padding: 10px; border-radius: 6px; text-align: center; font-size: 11px;">
+			              MV 촬영<br><strong>단품</strong>
+			            </div>
+			            <div style="flex:1; background: #f3f4f6; padding: 10px; border-radius: 6px; text-align: center; font-size: 11px;">
+			              MV 편집<br><strong>단품</strong>
+			            </div>
+			          </div>
+			          <div class="note" style="margin-top: 12px; font-size: 11px;">
+			            예상 합계: 단품 3개 합 (예시)
+			          </div>
+			        </div>
+		        <div class="card" style="background: linear-gradient(135deg, #18181b 0%, #374151 100%); color: white; border-color: #111827;">
+		          <div style="display: flex; justify-content: space-between; align-items: center;">
+			            <div style="font-weight: 900; font-size: 13px;">러브송 MV 크루</div>
+			            <div class="pill" style="background: rgba(255,255,255,0.16); color: #fff;">패키지</div>
+			          </div>
+			          <div style="margin-top: 8px; font-size: 11px; opacity: 0.9;">녹음/믹싱 + MV 제작</div>
+				          <div style="margin-top: 14px; display: flex; justify-content: space-between; align-items: flex-end;">
+				            <div style="font-size: 11px; opacity: 0.8;">개별 합 대비</div>
+				            <div style="font-size: 20px; font-weight: 900; letter-spacing: -0.02em;">패키지 가격</div>
+				          </div>
+	          <div style="margin-top: 12px; display: flex; gap: 8px;">
+	            <div style="flex: 1; background: #ffffff; color: #111827; border-radius: 8px; text-align: center; padding: 10px 0; font-weight: 900; font-size: 11px;">
+	              패키지로 예약
+	            </div>
+	            <div style="flex: 1; background: rgba(255,255,255,0.10); border: 1px solid rgba(255,255,255,0.18); color: #ffffff; border-radius: 8px; text-align: center; padding: 10px 0; font-weight: 900; font-size: 11px;">
+	              상세 비교
+	            </div>
+	          </div>
+	        </div>
+	      </div>
+	    </div>
+
+	    <div class="footer-label"></div>
+	  </div>
+
+	  <div class="page" id="lounge">
+	    <div class="label-box">3. 성장전략 (Scale-up)_사업화 추진 전략</div>
+	    <h2 style="margin: 0 0 10px 0;">3.1 목표 시장 진입 전략: 웨딩 라운지</h2>
+	    <p>익명 질의응답 · 검증 리뷰 · 발견 피드를 중심으로 커뮤니티 기반 전환 퍼널을 구성합니다.</p>
+    <p>블라인드의 익명 커뮤니티 메커니즘과 오늘의집의 UGC 기반 전환 구조를 참고하여, 웨딩 영역에서 콘텐츠·커뮤니티·거래·데이터의 선순환 구조를 구축합니다.</p>
+
+    <table>
+      <tr>
+        <th style="width:20%">단계</th>
+        <th style="width:30%">벤치마크</th>
+        <th style="width:30%">특별시 적용</th>
+        <th style="width:20%">핵심 지표</th>
+      </tr>
+      <tr>
+        <td><strong>콘텐츠</strong></td>
+        <td>오늘의집 인테리어 사진</td>
+        <td>웨딩 포트폴리오, 실거래 후기 영상</td>
+        <td>월간 콘텐츠 생산</td>
+      </tr>
+      <tr>
+        <td><strong>커뮤니티</strong></td>
+        <td>블라인드 익명 질의응답</td>
+        <td>웨딩 라운지 익명 질의응답 + 실거래 인증</td>
+        <td>DAU, 체류시간</td>
+      </tr>
+      <tr>
+        <td><strong>거래</strong></td>
+        <td>오늘의집 커머스</td>
+        <td>프리랜서 매칭/예약, 에스크로 결제</td>
+        <td>거래액, 전환율</td>
+      </tr>
+      <tr>
+        <td><strong>데이터</strong></td>
+        <td>스타일 태그</td>
+        <td>AI 매칭 학습 데이터</td>
+        <td>추천 정확도</td>
+      </tr>
+    </table>
+
+    <div class="grid-2" style="margin: 18px 0;">
+      <div class="card">
+        <h4>익명 질의응답</h4>
+        <ul>
+          <li>실거래 인증 배지로 신뢰 확보</li>
+          <li>예산/가족/감정 등 민감한 주제 해결</li>
+          <li>AI 모더레이션으로 스팸 차단</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4>검증 리뷰 및 발견 피드</h4>
+        <ul>
+          <li>플랫폼 결제 고객만 후기 작성</li>
+          <li>피드형 탐색 UI를 통해 예약으로 연결</li>
+          <li>해시태그 기반 탐색 + AI 추천</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>웨딩 라운지 화면(예시)</h3>
+    <div style="display: flex; gap: 16px; margin-top: 12px;">
+      <div style="flex: 1; background: #F9FAFB; border-radius: 12px; padding: 15px; border: 1px solid #E5E7EB;">
+        <div style="font-weight: 700; margin-bottom: 8px; color: #374151;">익명 질의응답</div>
+        <div style="background: white; border-radius: 8px; padding: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+          <div style="background: #f9fafb; border-radius: 6px; padding: 10px; margin-bottom: 10px;">
+            <div style="font-size: 10px; color: #666; margin-bottom: 4px;">인증 · 예비신부 · 3분 전</div>
+	            <div style="font-size: 11px; font-weight: 600;">축가를 ‘녹음 음원’으로 준비해도 될까요?</div>
+            <div style="font-size: 10px; color: #666;">답변 12 · 좋아요 48</div>
+          </div>
+          <div style="background: white; border: 1px solid #E5E7EB; border-radius: 6px; padding: 10px;">
+            <div style="font-size: 10px; color: #666; margin-bottom: 4px;">익명 · 예비신랑 · 15분 전</div>
+	            <div style="font-size: 11px; font-weight: 600;">축가 녹음/믹싱은 보통 얼마가 적정가인가요?</div>
+            <div style="font-size: 10px; color: #666;">답변 8 · 좋아요 23</div>
+          </div>
+        </div>
+        <div style="text-align: center; font-size: 10px; color: #9CA3AF; margin-top: 8px;">블라인드 스타일의 익명 대화 공간</div>
+      </div>
+      <div style="flex: 1; background: #F9FAFB; border-radius: 12px; padding: 15px; border: 1px solid #E5E7EB;">
+        <div style="font-weight: 700; margin-bottom: 8px; color: #374151;">발견 피드</div>
+        <div style="background: white; border-radius: 8px; padding: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+            <span style="font-size: 11px; font-weight: 600;">스냅사진작가 민지</span>
+            <span style="font-size: 10px; color: #a1a1aa;">3시간 전</span>
+          </div>
+          <div style="aspect-ratio: 4/3; background: linear-gradient(135deg, #fce4ec, #f8bbd0); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: rgba(0,0,0,0.5); font-weight: 600;">
+            성수동 빈티지 웨딩 스냅
+          </div>
+          <div style="display: flex; gap: 14px; font-size: 10px; color: #555; margin-top: 10px;">
+	            <span>좋아요 234</span>
+	            <span>대화 12</span>
+	            <span>저장 55</span>
+	          </div>
+	        </div>
+	        <div style="background: white; border-radius: 8px; padding: 12px; margin-top: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.08);">
+	          <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+	            <span style="font-size: 11px; font-weight: 600;">레코딩 엔지니어 도윤</span>
+	            <span style="font-size: 10px; color: #a1a1aa;">1일 전</span>
+	          </div>
+	          <div style="aspect-ratio: 4/3; background: linear-gradient(135deg, #e3f2fd, #bbdefb); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: rgba(0,0,0,0.55); font-weight: 600;">
+	            축가 녹음/믹싱 · 50만원
+	          </div>
+	          <div style="display: flex; gap: 14px; font-size: 10px; color: #555; margin-top: 10px;">
+	            <span>좋아요 567</span>
+	            <span>대화 34</span>
+	            <span>관심 142</span>
+	          </div>
+	        </div>
+      </div>
+    </div>
+    <div class="footer-label"></div>
+  </div>
+
+	  <div class="page" id="community">
+	    <div class="label-box">3. 성장전략 (Scale-up)_사업화 추진 전략</div>
+	    <h2 style="margin: 0 0 10px 0;">3.2 성과 지표(KPI) 목표</h2>
+	    <p>체류시간 · 콘텐츠 생산 · 검증 리뷰 · 전환율을 단계별로 관리합니다.</p>
+    <p>웨딩 라운지는 체류시간을 확보하고, 콘텐츠→예약 전환을 만드는 커뮤니티 기반 성장 장치입니다.</p>
+
+    <div style="margin-bottom: 20px;">
+      <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+        <span style="font-size: 13px; font-weight: 600;">일 평균 체류시간</span>
+        <span style="font-size: 11px; color: #666;">벤치마크: 블라인드 40분</span>
+      </div>
+      <div style="display: flex; gap: 4px; align-items: center; margin-top: 20px;">
+        <div style="flex: 1; background: #e5e5e5; height: 24px; border-radius: 4px; position: relative;">
+          <div style="background: linear-gradient(90deg, #a1a1aa 0%, #a1a1aa 12.5%, #52525b 12.5%, #52525b 37.5%, #18181b 37.5%, #18181b 75%); height: 100%; width: 75%; border-radius: 4px;"></div>
+          <span style="position: absolute; left: 10%; bottom: 100%; margin-bottom: 4px; font-size: 10px; color: #666;">5분</span>
+          <span style="position: absolute; left: 35%; bottom: 100%; margin-bottom: 4px; font-size: 10px; color: #666;">15분</span>
+          <span style="position: absolute; left: 72%; bottom: 100%; margin-bottom: 4px; font-size: 10px; font-weight: 600;">30분</span>
+        </div>
+        <div style="width: 50px; text-align: right; font-size: 11px; color: #999;">40분</div>
+      </div>
+      <div style="display: flex; justify-content: space-between; margin-top: 6px; font-size: 10px; color: #999; padding-right: 50px;">
+        <span>1년차</span><span style="margin-left: 15%;">2년차</span><span>3년차</span>
+      </div>
+    </div>
+
+    <div style="margin-bottom: 20px;">
+      <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+        <span style="font-size: 13px; font-weight: 600;">월간 콘텐츠 생산</span>
+        <span style="font-size: 11px; color: #666;">벤치마크: 오늘의집 수준</span>
+      </div>
+      <div style="display: flex; gap: 12px; align-items: flex-end; height: 90px; padding-bottom: 30px;">
+        <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+          <div style="flex: 1;"></div>
+          <div style="width: 80%; background: #a1a1aa; height: 10px; border-radius: 3px;"></div>
+          <span style="font-size: 10px; margin-top: 6px;">500건</span>
+          <span style="font-size: 9px; color: #999;">1년차</span>
+        </div>
+        <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+          <div style="flex: 1;"></div>
+          <div style="width: 80%; background: #52525b; height: 30px; border-radius: 3px;"></div>
+          <span style="font-size: 10px; margin-top: 6px;">3,000건</span>
+          <span style="font-size: 9px; color: #999;">2년차</span>
+        </div>
+        <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+          <div style="flex: 1;"></div>
+          <div style="width: 80%; background: #18181b; height: 50px; border-radius: 3px;"></div>
+          <span style="font-size: 10px; font-weight: 600; margin-top: 6px;">10,000건</span>
+          <span style="font-size: 9px; color: #999;">3년차</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="display: flex; gap: 40px; margin-top: 10px;">
+      <div style="flex: 1;">
+        <div style="font-size: 13px; font-weight: 600; margin-bottom: 12px;">검증 리뷰 누적</div>
+        <div style="display: flex; gap: 10px; align-items: flex-end; height: 80px; padding-bottom: 22px;">
+          <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+            <div style="width: 70%; background: #a1a1aa; height: 8px; border-radius: 3px;"></div>
+            <span style="font-size: 9px; margin-top: 4px;">2,000</span>
+            <span style="font-size: 8px; color: #999;">1년차</span>
+          </div>
+          <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+            <div style="width: 70%; background: #52525b; height: 24px; border-radius: 3px;"></div>
+            <span style="font-size: 9px; margin-top: 4px;">15,000</span>
+            <span style="font-size: 8px; color: #999;">2년차</span>
+          </div>
+          <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+            <div style="width: 70%; background: #18181b; height: 48px; border-radius: 3px;"></div>
+            <span style="font-size: 9px; font-weight: 600; margin-top: 4px;">50,000</span>
+            <span style="font-size: 8px; color: #999;">3년차</span>
+          </div>
+        </div>
+      </div>
+      <div style="flex: 1;">
+        <div style="font-size: 13px; font-weight: 600; margin-bottom: 12px;">콘텐츠→예약 전환율</div>
+        <div style="display: flex; gap: 8px; align-items: flex-end; height: 80px; padding-bottom: 22px;">
+          <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+            <div style="width: 65%; background: #a1a1aa; height: 14px; border-radius: 3px;"></div>
+            <span style="font-size: 9px; margin-top: 4px;">3%</span>
+            <span style="font-size: 8px; color: #999;">1년차</span>
+          </div>
+          <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+            <div style="width: 65%; background: #52525b; height: 24px; border-radius: 3px;"></div>
+            <span style="font-size: 9px; margin-top: 4px;">5%</span>
+            <span style="font-size: 8px; color: #999;">2년차</span>
+          </div>
+          <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+            <div style="width: 65%; background: #18181b; height: 38px; border-radius: 3px;"></div>
+            <span style="font-size: 9px; font-weight: 600; margin-top: 4px;">8%</span>
+            <span style="font-size: 8px; color: #999;">3년차</span>
+          </div>
+          <div style="flex: 1; display: flex; flex-direction: column; align-items: center; opacity: 0.6;">
+            <div style="width: 65%; background: #374151; height: 48px; border-radius: 3px;"></div>
+            <span style="font-size: 9px; margin-top: 4px;">10%+</span>
+            <span style="font-size: 8px; color: #374151;">오늘의집</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+	    <div class="footer-label"></div>
+	  </div>
+
+		  <div class="page" id="scaleup">
+		    <div class="label-box">3. 성장전략 (Scale-up)_사업화 추진 전략</div>
+		    <h2 style="margin: 0 0 10px 0;">사업화 추진 전략</h2>
+		    <p>버티컬 집중 → 거래/수수료/데이터 확장 → 지역 확장 순서로 스케일업합니다.</p>
+	    <p>출시 이후 3년 동안 서울·수도권에서 버티컬 1위를 확보하고, 크루·콘텐츠·데이터 비즈니스로 확장해 Pre-A까지 연결하는 전략입니다.</p>
+
+    <h3>3.1 경쟁/시장 전략</h3>
+    <table>
+      <tr>
+        <th style="width: 20%">플레이어</th>
+        <th style="width: 26%">모델</th>
+        <th style="width: 27%">한계</th>
+        <th style="width: 27%">특별시 차별화</th>
+      </tr>
+      <tr>
+        <td>숨고</td>
+        <td>Pay-per-lead 견적앱</td>
+        <td>저품질 리드, 웨딩 비특화, 고객 피로</td>
+        <td>AI가 선별한 상위 3개 제안, 일정/결제 일원화</td>
+      </tr>
+      <tr>
+        <td>크몽</td>
+        <td>Gig 카탈로그, 20% 수수료</td>
+        <td>오프라인 서비스 약함, 최저가 경쟁</td>
+        <td>서브서비스 현장 중심, 크루 수수료 3~7%</td>
+      </tr>
+      <tr>
+        <td>웨딩북</td>
+        <td>콘텐츠·커뮤니티</td>
+        <td>실제 계약/결제 미지원</td>
+        <td>AI 상담→실행까지 한 파이프라인 제공</td>
+      </tr>
+    </table>
+
+	    <h3>3.2 비즈니스 모델</h3>
+	    <ul>
+	      <li><strong>거래 수수료:</strong> 개인 매칭·크루 패키지 예약/결제 기반 수수료(에스크로/정산 포함).</li>
+	      <li><strong>공급자 유료 운영 도구:</strong> 채널/포트폴리오, 예약 캘린더, 문의/견적, 실적 리포트, 프로모션 기능.</li>
+	      <li><strong>제휴·커머스(확장):</strong> 여정 기반 추천 상품/제휴(혼수·가전·소품 등) 및 광고.</li>
+	      <li><strong>프로 기능(추후):</strong> 예비부부용 고급 기능(예: 맞춤 플랜/콘텐츠 자동화)은 제품 단계에 따라 선택적으로 유료화.</li>
+	    </ul>
+
+    <h3>3.3 투자 및 자금 전략</h3>
+    <div class="card">
+      <p><strong>Seed</strong> → <strong>Angel</strong> → <strong>Pre-A</strong>의 단계적 투자유치로 크루 확장과 지역 확장을 추진합니다. 조달 자금은 프로덕트/데이터 60%, GTM 25%, 운영·법무 15% 비중으로 배분합니다.</p>
+    </div>
+
+    <h3>3.4 사회적 가치 도입 계획</h3>
+    <ul>
+      <li><strong>환경(E):</strong> 저탄소 웨딩 옵션 추천(식물성 케이터링, 다회용 데코). 탄소 절감 리포트를 고객에게 제공.</li>
+      <li><strong>사회(S):</strong> 여성/경력단절 프리랜서 대상 코칭·교육, 지역 기반 크루 구성으로 소상공인 매출 증대.</li>
+      <li><strong>지배구조(G):</strong> 표준계약·에스크로·분쟁조정 프로세스 투명 공개, 개인정보 비식별화·AI 윤리 가이드 수립.</li>
+    </ul>
+
+    <h3>3.5 전체 사업 로드맵</h3>
+    <table>
+      <tr>
+        <th>구분</th>
+        <th>추진 내용</th>
+        <th>기간</th>
+        <th>세부 내용</th>
+      </tr>
+	      <tr>
+	        <td>1단계</td>
+	        <td>MVP·Seed</td>
+	        <td>2026 상반기</td>
+	        <td>AI 코어 구축, 베타 500쌍, 서울 서브서비스 10종 집중</td>
+	      </tr>
+	      <tr>
+	        <td>2단계</td>
+	        <td>확장</td>
+	        <td>2026 하반기~2027 상반기</td>
+	        <td>서울/경기 전역 확장, 크루 400명, 월간 활성 예비부부 5천쌍, Angel 라운드</td>
+	      </tr>
+	      <tr>
+	        <td>3단계</td>
+	        <td>스케일업</td>
+	        <td>2027 하반기~</td>
+	        <td>부산·대구 진출, B2B 제휴, Pre-A, 아시아(도쿄/방콕) PoC</td>
+	      </tr>
+	    </table>
+	    <div class="footer-label"></div>
+	  </div>
+
+		  <div class="page" id="team">
+		    <div class="label-box">4. 팀 구성 (Team)_대표자 및 팀원 구성 계획</div>
+		    <h2 style="margin: 0 0 10px 0;">대표자 및 팀원 구성 계획</h2>
+		    <p>제품(UX)·기술(AI/플랫폼)·운영(거래/정산)·채널(콘텐츠/커뮤니티) 역할을 동시에 실행할 수 있도록 핵심 역할 중심으로 구성합니다.</p>
+
+	    <table>
+	      <tr>
+	        <th>구분</th>
+	        <th>직위</th>
+	        <th>담당 업무</th>
+	        <th>보유 역량 (경력/학력 등)</th>
+	        <th>구성 상태</th>
+	      </tr>
+	      <tr>
+	        <td>1</td>
+	        <td>대표자(CEO)</td>
+	        <td>사업 총괄, 시장·공급자 확보, 운영 설계</td>
+	        <td>
+	          <div style="font-weight: 800;">김찬주</div>
+	          <div style="margin-top: 6px; font-size: 11px; color: #374151; line-height: 1.45;">
+	            <div><span style="font-weight: 800; color: #111827;">학력</span> 서울과학기술대학교 안전공학과(학사)</div>
+	            <div style="height: 6px;"></div>
+	            <div><span style="font-weight: 800; color: #111827;">경력</span> 숨고·크몽 음향/녹음 상위 전문가(5년+), NT Studio 음향 엔지니어 실장, NCA 뉴콘텐츠아카데미 2기 우수 전시(2025)</div>
+	          </div>
+	        </td>
+	        <td>확정</td>
+	      </tr>
+	      <tr>
+	        <td>2</td>
+	        <td>CTO</td>
+	        <td>AI/플랫폼 아키텍처, 제품 개발</td>
+	        <td>LLM·RAG·임베딩/벡터 검색 기반 매칭, 데이터 파이프라인, 앱/웹 MVP 단독 개발(풀스택) 역량</td>
+	        <td>확정</td>
+	      </tr>
+	      <tr>
+	        <td>3</td>
+	        <td>CPO</td>
+	        <td>제품 기획, UX 설계, 데이터 기반 개선</td>
+	        <td>사용자 여정/정보 구조 설계, 커뮤니티·콘텐츠 경험 설계, 실험/지표 운영 기반의 반복 개선 역량</td>
+	        <td>확정</td>
+	      </tr>
+	      <tr>
+	        <td>4</td>
+	        <td>CMO</td>
+	        <td>브랜딩, 채널 운영, 초기 GTM</td>
+	        <td>콘텐츠 제작/운영, 커뮤니티 성장, 크루·라운지 유입 채널 구축 및 성과 운영 역량</td>
+	        <td>확정</td>
+	      </tr>
+	      <tr>
+	        <td>5</td>
+	        <td>업무 파트너(협력)</td>
+	        <td>결제/전자계약/정산, 법무·표준계약, 품질/리스크 운영</td>
+	        <td>플랫폼 안전거래(에스크로·정산) 및 표준계약/분쟁 처리 프로세스 고도화를 위한 외부 파트너 협력</td>
+	        <td>협의 중</td>
+	      </tr>
+	    </table>
+
+    <h3>협력 기관 현황 및 협업 방안</h3>
+    <table>
+      <tr>
+        <th style="width: 12%">구분</th>
+        <th style="width: 25%">파트너명</th>
+        <th style="width: 33%">보유 역량</th>
+        <th style="width: 30%">협업 방안 및 시기</th>
+      </tr>
+	      <tr>
+	        <td>1</td>
+	        <td>AI/데이터 협력</td>
+	        <td>LLM 품질/안전성 평가, 검색·추천 고도화</td>
+	        <td>품질 지표 설계 및 운영, 2026 상반기 협의</td>
+	      </tr>
+	      <tr>
+	        <td>2</td>
+	        <td>웨딩 스튜디오 연합</td>
+	        <td>촬영/메이크업/드레스 공급망, 포트폴리오 데이터</td>
+	        <td>공급자 온보딩, 공동 프로모션, 2026 상반기~</td>
+	      </tr>
+	      <tr>
+	        <td>3</td>
+	        <td>PG·전자계약사</td>
+	        <td>에스크로/정산 인프라, 보안 인증</td>
+	        <td>결제/전자계약 연동 및 안전거래 고도화, 2026 상반기~</td>
+	      </tr>
+	    </table>
+
+    <div class="note">외부 멘토·산업 전문가와의 협력으로 Biz-Dev(웨딩 밸류체인 제휴)와 투자 레버리지를 확보할 계획입니다.</div>
+    <div class="footer-label"></div>
+  </div>
+
+		  <div class="page" id="appendix">
+		    <div class="label-box">부록</div>
+		    <h2 style="margin: 0 0 10px 0;">지표·산식 및 용어 정의</h2>
+		    <p>본문에서 사용하는 성과 지표의 정의와 측정 기준을 정리합니다.</p>
+	    <h3>커뮤니티 KPI 정의</h3>
+	    <table class="form-table">
+	      <tr>
+	        <th style="width: 24%">지표</th>
+	        <th style="width: 40%">정의</th>
+	        <th style="width: 36%">측정 기준(예시)</th>
+	      </tr>
+	      <tr>
+	        <td>일 평균 체류시간</td>
+	        <td>라운지/콘텐츠 영역에서 사용자가 실제로 머문 평균 시간</td>
+	        <td>동일 사용자 1일 누적 체류시간(초) / DAU</td>
+	      </tr>
+	      <tr>
+	        <td>월간 콘텐츠 생산</td>
+	        <td>크루·소비자 생성 콘텐츠의 월간 생성량</td>
+	        <td>게시물(후기/추천/질문/포트폴리오) 합산</td>
+	      </tr>
+	      <tr>
+	        <td>검증 리뷰 누적</td>
+	        <td>예약·결제까지 완료된 거래에 대해 수집된 검증 리뷰 누적</td>
+	        <td>결제 완료 주문 기준 리뷰 수(중복 제외)</td>
+	      </tr>
+	      <tr>
+	        <td>콘텐츠→예약 전환율</td>
+	        <td>콘텐츠 소비 이후 예약으로 이어지는 전환율</td>
+	        <td>예약 완료 세션 / 콘텐츠 소비 세션</td>
+	      </tr>
+	    </table>
+
+	    <h3>크루 운영 용어</h3>
+	    <table class="form-table">
+	      <tr>
+	        <th style="width: 24%">용어</th>
+	        <th style="width: 76%">정의</th>
+	      </tr>
+	      <tr>
+	        <td>펑크(Punk)</td>
+	        <td>확정된 일정/촬영 등 서비스 제공을 정당한 사유 없이 이행하지 않거나, 고객 경험에 중대한 손해를 유발한 위반 행위</td>
+	      </tr>
+	      <tr>
+	        <td>대체 인력 풀</td>
+	        <td>서비스 공백 방지를 위해 사전 검증된 백업 크루/프리랜서 후보군(지역·카테고리별 상시 유지)</td>
+	      </tr>
+	      <tr>
+	        <td>에스크로 정산</td>
+	        <td>결제 대금을 안전하게 보관하고, 서비스 완료 확인 후 정산하는 방식(분쟁·환불 리스크 최소화)</td>
+	      </tr>
+	    </table>
+
+		    <div class="footer-label"></div>
+		  </div>
+
+	    <script>
+	      (function () {
+	        function computePxPerMm() {
+	          const probe = document.createElement('div');
+	          probe.style.position = 'absolute';
+	          probe.style.left = '-9999px';
+	          probe.style.top = '0';
+	          probe.style.height = '100mm';
+	          probe.style.width = '1px';
+	          probe.style.visibility = 'hidden';
+	          document.body.appendChild(probe);
+	          const pxPerMm = probe.getBoundingClientRect().height / 100;
+	          probe.remove();
+	          return pxPerMm || 3.78;
+	        }
+
+	        function renumberFooters() {
+	          const pages = Array.from(document.querySelectorAll('.page'));
+	          pages.forEach((page, idx) => {
+	            const footer = page.querySelector('.footer-label');
+	            if (!footer) return;
+	            footer.textContent = `${idx + 1} / ${pages.length}`;
+	          });
+	        }
+
+	        function checkOverflow() {
+	          const pxPerMm = computePxPerMm();
+	          const pageHeightMm = 297;
+	          const toleranceMm = 0.6;
+	          const pages = Array.from(document.querySelectorAll('.page'));
+	          const overflowed = [];
+
+	          pages.forEach((page, idx) => {
+	            const rect = page.getBoundingClientRect();
+	            const heightMm = rect.height / pxPerMm;
+	            const footerText = page.querySelector('.footer-label')?.textContent?.trim();
+	            const label = footerText || `#${page.id || idx + 1}`;
+
+	            if (heightMm > pageHeightMm + toleranceMm) {
+	              page.classList.add('has-overflow');
+	              overflowed.push({ label, heightMm });
+	            } else {
+	              page.classList.remove('has-overflow');
+	            }
+	          });
+
+          const panel = document.getElementById('overflow-panel');
+          const items = document.getElementById('overflow-items');
+          if (!panel || !items) return;
+
+          if (overflowed.length === 0) {
+            panel.classList.remove('bad');
+            items.textContent = '오버플로 없음 (화면 기준). PDF 출력에서 초과가 보이면 해당 페이지 내용을 분리해 주세요.';
+            return;
+          }
+
+	          panel.classList.add('bad');
+	          items.innerHTML = overflowed
+	            .map(o => `- ${o.label} (높이 약 ${o.heightMm.toFixed(1)}mm)`)
+	            .join('<br>');
+	        }
+
+	        document.getElementById('recheck-overflow')?.addEventListener('click', () => {
+	          renumberFooters();
+	          checkOverflow();
+	        });
+	        document.getElementById('toggle-print-sim')?.addEventListener('click', () => {
+	          document.body.classList.toggle('print-sim');
+	          renumberFooters();
+	          checkOverflow();
+	        });
+	        window.addEventListener('beforeprint', renumberFooters);
+	        window.addEventListener('load', () => {
+	          renumberFooters();
+	          checkOverflow();
+	        });
+	      })();
+	    </script>
+		</body>
+		</html>

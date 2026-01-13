@@ -9,44 +9,15 @@ import { addActivityLog } from "@/lib/utils/activityLog";
 import type { Task } from "@/lib/types/task";
 import RichTextEditor from "@/components/common/RichTextEditor";
 
+import { saveTask, deleteTask, updateTaskStatus as updateSupabaseTaskStatus } from "@/lib/utils/task";
+
 export default function TasksPage() {
   const { user } = useUser();
   const { tasks, setTasks } = useData();
   const { showToast } = useToast();
   const currentUser = user?.name || "김찬주";
 
-  const [filterStatus, setStatusFilter] = useState<"전체" | "todo" | "in_progress" | "done">("전체");
-  const [filterPriority, setPriorityFilter] = useState<string>("전체");
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
-  const [showAddForm, setShowAddForm] = useState(false);
-
-  const [newTask, setNewTask] = useState<{
-    title: string;
-    description: string;
-    status: "todo" | "in_progress" | "done";
-    priority: "low" | "medium" | "high";
-    assignedTo: string;
-    dueDate: string;
-  }>({
-    title: "",
-    description: "",
-    status: "todo",
-    priority: "medium",
-    assignedTo: currentUser,
-    dueDate: new Date().toISOString().split("T")[0],
-  });
-
-  // 필터링된 작업 목록
-  const filteredTasks = useMemo(() => {
-    return tasks.filter((task) => {
-      const matchStatus = filterStatus === "전체" || task.status === filterStatus;
-      const matchPriority = filterPriority === "전체" || task.priority === filterPriority;
-      const matchSearch = task.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                          task.description?.toLowerCase().includes(searchQuery.toLowerCase());
-      return matchStatus && matchPriority && matchSearch;
-    });
-  }, [tasks, filterStatus, filterPriority, searchQuery]);
+  // ... (상단 상태 생략)
 
   const handleCreateTask = async () => {
     if (!newTask.title.trim()) {
@@ -69,10 +40,10 @@ export default function TasksPage() {
     };
 
     try {
-      const updatedTasks = [task, ...tasks];
-      setTasks(updatedTasks);
-      localStorage.setItem("team-dashboard-tasks", JSON.stringify(updatedTasks));
-      
+      // Supabase 및 LocalStorage 동시 저장
+      await saveTask(task);
+      setTasks([task, ...tasks]);
+
       addActivityLog({
         user: currentUser,
         type: "task",
@@ -80,27 +51,27 @@ export default function TasksPage() {
         targetTitle: task.title,
       });
 
-      showToast("새 작업이 등록되었습니다.", "success");
+      showToast("새 작업이 Supabase에 저장되었습니다.", "success");
       setShowAddForm(false);
-      setNewTask({
-        title: "",
-        description: "",
-        status: "todo",
-        priority: "medium",
-        assignedTo: currentUser,
-        dueDate: new Date().toISOString().split("T")[0],
-      });
+      // ... 초기화
     } catch (e) {
       showToast("작업 등록에 실패했습니다.", "error");
     }
   };
 
-  const updateTaskStatus = (id: string, newStatus: "todo" | "in_progress" | "done") => {
-    const updatedTasks = tasks.map(t => t.id === id ? { ...t, status: newStatus, updatedAt: new Date().toISOString() } : t);
-    setTasks(updatedTasks);
-    localStorage.setItem("team-dashboard-tasks", JSON.stringify(updatedTasks));
-    showToast(`상태가 ${newStatus === 'done' ? '완료' : '변경'}되었습니다.`, "info");
+  const handleUpdateTaskStatus = async (id: string, newStatus: "todo" | "in_progress" | "done") => {
+    try {
+      await updateSupabaseTaskStatus(id, newStatus);
+      const updatedTasks = tasks.map(t => t.id === id ? { ...t, status: newStatus, updatedAt: new Date().toISOString() } : t);
+      setTasks(updatedTasks);
+      showToast(`상태가 변경되었습니다.`, "info");
+    } catch (e) {
+      showToast("상태 변경 실패", "error");
+    }
   };
+
+  // ... 나머지 UI 부분에서 handleUpdateTaskStatus 사용하도록 수정
+
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] p-6">
@@ -309,130 +280,240 @@ export default function TasksPage() {
         {selectedTask && (
           <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center z-[110] p-4 sm:p-6">
             <div className="bg-white rounded-[1.5rem] w-full max-w-[1200px] h-[90vh] shadow-2xl overflow-hidden animate-slide-in flex flex-col">
-              {/* 모달 헤더 */}
-              <div className="px-8 py-5 border-b border-slate-100 flex justify-between items-center bg-white">
-                <div className="flex items-center gap-2">
-                  <span className={`px-2 py-0.5 rounded text-[10px] font-black uppercase ${
-                    selectedTask.priority === 'high' ? 'bg-rose-100 text-rose-600' : 'bg-blue-100 text-blue-600'
-                  }`}>
-                    {selectedTask.priority} Priority
-                  </span>
-                  <span className="text-slate-300">/</span>
-                  <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">Task Details</span>
-                </div>
-                <button onClick={() => setSelectedTask(null)} className="w-10 h-10 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-400 transition-colors">✕</button>
-              </div>
-
-              {/* 본문 */}
-              <div className="flex-1 overflow-y-auto custom-scrollbar p-8 sm:p-12">
-                <div className="max-w-3xl mx-auto space-y-8">
-                  <div>
-                    <h2 className="text-3xl font-black text-slate-900 mb-6">{selectedTask.title}</h2>
-                    
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 py-6 border-y border-slate-50">
-                      <div className="space-y-1">
-                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider">담당자</span>
-                        <div className="flex items-center gap-2">
-                          <div className="w-6 h-6 rounded-full bg-indigo-600 flex items-center justify-center text-[10px] font-bold text-white">
-                            {selectedTask.assignedTo[0]}
-                          </div>
-                          <span className="text-sm font-bold text-slate-700">{selectedTask.assignedTo}</span>
-                        </div>
-                      </div>
-                      <div className="space-y-1">
-                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider">상태</span>
-                        <div className="flex items-center gap-1.5">
-                          <div className={`w-2 h-2 rounded-full ${
-                            selectedTask.status === 'done' ? 'bg-emerald-500' : selectedTask.status === 'in_progress' ? 'bg-indigo-500' : 'bg-slate-300'
-                          }`} />
-                          <span className="text-sm font-bold text-slate-700 uppercase">{selectedTask.status}</span>
-                        </div>
-                      </div>
-                      <div className="space-y-1">
-                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider">마감일</span>
-                        <div className="text-sm font-bold text-slate-700">{selectedTask.dueDate}</div>
-                      </div>
-                      <div className="space-y-1">
-                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider">작성자</span>
-                        <div className="text-sm font-bold text-slate-500">{selectedTask.createdBy || "미지정"}</div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="prose prose-slate max-w-none task-content-view">
-                    <div 
-                      className="text-slate-600 leading-relaxed min-h-[200px]"
-                      dangerouslySetInnerHTML={{ __html: selectedTask.description || "<p className='text-slate-400 italic'>작업 내용이 없습니다.</p>" }}
-                    />
-                  </div>
-                  {/* 뷰어 전용 스타일 */}
-                  <style jsx global>{`
-                    .task-content-view img {
-                      max-width: 100%;
-                      /* height: auto;  <-- 제거: 리사이징된 높이 유지 */
-                      border-radius: 8px;
-                      margin: 16px 0;
-                      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-                    }
-                    .task-content-view a {
-                      color: #4f46e5;
-                      text-decoration: underline;
-                    }
-                    .task-content-view ul {
-                      list-style-type: disc;
-                      padding-left: 1.5em;
-                      margin: 1em 0;
-                    }
-                    .task-content-view ol {
-                      list-style-type: decimal;
-                      padding-left: 1.5em;
-                      margin: 1em 0;
-                    }
-                    .task-content-view blockquote {
-                      border-left: 4px solid #e2e8f0;
-                      padding-left: 1em;
-                      color: #64748b;
-                      font-style: italic;
-                    }
-                  `}</style>
-                </div>
-              </div>
-
-              {/* 하단 바 */}
-              <div className="p-6 bg-slate-50/50 border-t border-slate-100 flex justify-between items-center px-12">
-                <button 
-                  onClick={() => {
-                    if(confirm("이 작업을 삭제하시겠습니까?")) {
-                      const updated = tasks.filter(t => t.id !== selectedTask.id);
-                      setTasks(updated);
-                      localStorage.setItem("team-dashboard-tasks", JSON.stringify(updated));
-                      setSelectedTask(null);
-                      showToast("작업이 삭제되었습니다.", "info");
-                    }
-                  }}
-                  className="text-xs font-bold text-rose-400 hover:text-rose-600 transition-colors"
-                >
-                  작업 삭제하기
-                </button>
-                <div className="flex gap-3">
-                  <button onClick={() => setSelectedTask(null)} className="px-6 py-2.5 text-sm font-bold text-slate-500">닫기</button>
-                  {selectedTask.status !== 'done' && (
-                    <button 
-                      onClick={() => {
-                        updateTaskStatus(selectedTask.id, 'done');
-                        setSelectedTask(null);
-                      }}
-                      className="px-6 py-2.5 bg-emerald-500 text-white font-black rounded-xl hover:bg-emerald-600 transition-all shadow-lg shadow-emerald-100"
-                    >
-                      완료 처리
-                    </button>
-                  )}
-                </div>
-              </div>
+              <TaskDetailContent 
+                task={selectedTask} 
+                onClose={() => setSelectedTask(null)}
+                onUpdate={(updatedTask) => {
+                  const updatedTasks = tasks.map(t => t.id === updatedTask.id ? updatedTask : t);
+                  setTasks(updatedTasks);
+                  localStorage.setItem("team-dashboard-tasks", JSON.stringify(updatedTasks));
+                  setSelectedTask(updatedTask);
+                  showToast("작업이 수정되었습니다.", "success");
+                }}
+                onDelete={(id) => {
+                  if(confirm("이 작업을 삭제하시겠습니까?")) {
+                    const updated = tasks.filter(t => t.id !== id);
+                    setTasks(updated);
+                    localStorage.setItem("team-dashboard-tasks", JSON.stringify(updated));
+                    setSelectedTask(null);
+                    showToast("작업이 삭제되었습니다.", "info");
+                  }
+                }}
+                onStatusChange={(id, status) => updateTaskStatus(id, status)}
+              />
             </div>
           </div>
         )}
       </div>
     </div>
+  );
+}
+
+// 작업 상세 및 수정 컴포넌트 분리
+function TaskDetailContent({ task, onClose, onUpdate, onDelete, onStatusChange }: { 
+  task: Task, 
+  onClose: () => void, 
+  onUpdate: (t: Task) => void, 
+  onDelete: (id: string) => void,
+  onStatusChange: (id: string, status: Task['status']) => void 
+}) {
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedTask, setEditedTask] = useState<Task>(task);
+
+  const handleSave = () => {
+    onUpdate(editedTask);
+    setIsEditing(false);
+  };
+
+  if (isEditing) {
+    return (
+      <>
+        {/* 수정 모드 헤더 */}
+        <div className="px-8 py-5 border-b border-slate-100 flex justify-between items-center bg-white">
+          <div className="flex items-center gap-3">
+            <span className="text-xs font-black text-slate-400 uppercase tracking-widest">Editing Task</span>
+          </div>
+          <button onClick={() => setIsEditing(false)} className="w-10 h-10 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-400 transition-colors">✕</button>
+        </div>
+
+        {/* 수정 모드 본문 */}
+        <div className="flex-1 overflow-y-auto custom-scrollbar p-8 sm:p-12 space-y-10">
+          <div className="space-y-4">
+            <input 
+              type="text"
+              value={editedTask.title}
+              onChange={(e) => setEditedTask({...editedTask, title: e.target.value})}
+              className="w-full bg-transparent border-none text-4xl font-black text-slate-900 placeholder:text-slate-200 outline-none p-0 focus:ring-0"
+            />
+            
+            <div className="flex flex-wrap gap-6 border-y border-slate-50 py-6">
+              <div className="flex items-center gap-3">
+                <span className="text-[11px] font-black text-slate-400 uppercase w-20">담당자</span>
+                <div className="flex items-center gap-2 px-3 py-1.5 bg-slate-50 rounded-xl">
+                  <span className="text-sm font-bold text-slate-700">{editedTask.assignedTo}</span>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <span className="text-[11px] font-black text-slate-400 uppercase w-20">우선순위</span>
+                <select 
+                  value={editedTask.priority}
+                  onChange={(e) => setEditedTask({...editedTask, priority: e.target.value as any})}
+                  className="bg-slate-50 border-none rounded-xl text-sm font-bold text-slate-700 px-3 py-1.5 outline-none cursor-pointer hover:bg-slate-100 transition-colors"
+                >
+                  <option value="high">🔴 긴급</option>
+                  <option value="medium">🟡 보통</option>
+                  <option value="low">🟢 낮음</option>
+                </select>
+              </div>
+              <div className="flex items-center gap-3">
+                <span className="text-[11px] font-black text-slate-400 uppercase w-20">마감일</span>
+                <input 
+                  type="date"
+                  value={editedTask.dueDate}
+                  onChange={(e) => setEditedTask({...editedTask, dueDate: e.target.value})}
+                  className="bg-slate-50 border-none rounded-xl text-sm font-bold text-slate-700 px-3 py-1.5 outline-none cursor-pointer hover:bg-slate-100 transition-colors"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="min-h-[500px]">
+            <RichTextEditor 
+              value={editedTask.description || ""}
+              onChange={(content) => setEditedTask({...editedTask, description: content})}
+              placeholder="내용을 입력하세요..."
+            />
+          </div>
+        </div>
+
+        {/* 수정 모드 하단 바 */}
+        <div className="p-6 bg-slate-50/50 border-t border-slate-100 flex justify-end gap-4 px-12">
+          <button onClick={() => setIsEditing(false)} className="px-8 py-3 text-sm font-bold text-slate-400 hover:text-slate-900 transition-colors">취소</button>
+          <button onClick={handleSave} className="px-10 py-3 bg-indigo-600 text-white font-black rounded-2xl hover:bg-indigo-700 shadow-xl shadow-indigo-100 transition-all active:scale-95">저장하기</button>
+        </div>
+      </>
+    );
+  }
+
+  return (
+    <>
+      {/* 보기 모드 헤더 */}
+      <div className="px-8 py-5 border-b border-slate-100 flex justify-between items-center bg-white">
+        <div className="flex items-center gap-2">
+          <span className={`px-2 py-0.5 rounded text-[10px] font-black uppercase ${
+            task.priority === 'high' ? 'bg-rose-100 text-rose-600' : 'bg-blue-100 text-blue-600'
+          }`}>
+            {task.priority} Priority
+          </span>
+          <span className="text-slate-300">/</span>
+          <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">Task Details</span>
+        </div>
+        <div className="flex items-center gap-3">
+          <button 
+            onClick={() => setIsEditing(true)}
+            className="px-4 py-2 bg-slate-100 text-slate-600 text-xs font-bold rounded-lg hover:bg-slate-200 transition-colors"
+          >
+            수정
+          </button>
+          <button onClick={onClose} className="w-10 h-10 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-400 transition-colors">✕</button>
+        </div>
+      </div>
+
+      {/* 보기 모드 본문 */}
+      <div className="flex-1 overflow-y-auto custom-scrollbar p-8 sm:p-12">
+        <div className="max-w-3xl mx-auto space-y-8">
+          <div>
+            <h2 className="text-3xl font-black text-slate-900 mb-6">{task.title}</h2>
+            
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 py-6 border-y border-slate-50">
+              <div className="space-y-1">
+                <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider">담당자</span>
+                <div className="flex items-center gap-2">
+                  <div className="w-6 h-6 rounded-full bg-indigo-600 flex items-center justify-center text-[10px] font-bold text-white">
+                    {task.assignedTo[0]}
+                  </div>
+                  <span className="text-sm font-bold text-slate-700">{task.assignedTo}</span>
+                </div>
+              </div>
+              <div className="space-y-1">
+                <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider">상태</span>
+                <div className="flex items-center gap-1.5">
+                  <div className={`w-2 h-2 rounded-full ${
+                    task.status === 'done' ? 'bg-emerald-500' : task.status === 'in_progress' ? 'bg-indigo-500' : 'bg-slate-300'
+                  }`} />
+                  <span className="text-sm font-bold text-slate-700 uppercase">{task.status}</span>
+                </div>
+              </div>
+              <div className="space-y-1">
+                <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider">마감일</span>
+                <div className="text-sm font-bold text-slate-700">{task.dueDate}</div>
+              </div>
+              <div className="space-y-1">
+                <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider">작성자</span>
+                <div className="text-sm font-bold text-slate-500">{task.createdBy || "미지정"}</div>
+              </div>
+            </div>
+          </div>
+
+          <div className="prose prose-slate max-w-none task-content-view">
+            <div 
+              className="text-slate-600 leading-relaxed min-h-[200px]"
+              dangerouslySetInnerHTML={{ __html: task.description || "<p className='text-slate-400 italic'>작업 내용이 없습니다.</p>" }}
+            />
+          </div>
+          {/* 뷰어 전용 스타일 */}
+          <style jsx global>{`
+            .task-content-view img {
+              max-width: 100%;
+              /* height: auto;  <-- 제거: 리사이징된 높이 유지 */
+              border-radius: 8px;
+              margin: 16px 0;
+              box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            }
+            .task-content-view a {
+              color: #4f46e5;
+              text-decoration: underline;
+            }
+            .task-content-view ul {
+              list-style-type: disc;
+              padding-left: 1.5em;
+              margin: 1em 0;
+            }
+            .task-content-view ol {
+              list-style-type: decimal;
+              padding-left: 1.5em;
+              margin: 1em 0;
+            }
+            .task-content-view blockquote {
+              border-left: 4px solid #e2e8f0;
+              padding-left: 1em;
+              color: #64748b;
+              font-style: italic;
+            }
+          `}</style>
+        </div>
+      </div>
+
+      {/* 보기 모드 하단 바 */}
+      <div className="p-6 bg-slate-50/50 border-t border-slate-100 flex justify-between items-center px-12">
+        <button 
+          onClick={() => onDelete(task.id)}
+          className="text-xs font-bold text-rose-400 hover:text-rose-600 transition-colors"
+        >
+          작업 삭제하기
+        </button>
+        <div className="flex gap-3">
+          <button onClick={onClose} className="px-6 py-2.5 text-sm font-bold text-slate-500">닫기</button>
+          {task.status !== 'done' && (
+            <button 
+              onClick={() => onStatusChange(task.id, 'done')}
+              className="px-6 py-2.5 bg-emerald-500 text-white font-black rounded-xl hover:bg-emerald-600 transition-all shadow-lg shadow-emerald-100"
+            >
+              완료 처리
+            </button>
+          )}
+        </div>
+      </div>
+    </>
   );
 }

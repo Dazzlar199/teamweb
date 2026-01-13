@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>특별시 - 2026 예비창업패키지 사업계획서 (IR Deck Ver.)</title>
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+    <style>
+        /* 
+         * Professional Reading Deck Style 
+         * Purpose: Detailed Business Plan Submission
+         * Theme: Trustworthy, Editorial, Data-driven
+         */
+
+        :root {
+            --navy-900: #0F172A; /* Primary Dark */
+            --navy-700: #1E293B;
+            --navy-50: #F8FAFC;
+            --orange-500: #F97316; /* Point Color */
+            --orange-600: #EA580C;
+            --gray-900: #111827; /* Text Main */
+            --gray-600: #4B5563; /* Text Sub */
+            --gray-400: #9CA3AF;
+            --gray-200: #E5E7EB; /* Border */
+            
+            --slide-w: 1920px;
+            --slide-h: 1080px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Pretendard', sans-serif;
+            background-color: #555;
+            color: var(--gray-900);
+            line-height: 1.5;
+        }
+
+        /* Slide Layout */
+        .slide {
+            width: var(--slide-w);
+            height: var(--slide-h);
+            background: white;
+            margin: 0 auto 40px auto;
+            position: relative;
+            overflow: hidden;
+            page-break-after: always;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header */
+        .header {
+            height: 100px;
+            padding: 0 80px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--gray-200);
+        }
+
+        .header-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--navy-900);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header-logo {
+            width: 32px;
+            height: 32px;
+            background: var(--navy-900);
+            border-radius: 6px;
+        }
+
+        .header-info {
+            font-size: 16px;
+            color: var(--gray-600);
+            font-weight: 500;
+        }
+
+        /* Content Area */
+        .content {
+            flex: 1;
+            padding: 60px 80px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .page-title-area {
+            margin-bottom: 40px;
+        }
+
+        .page-tag {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--orange-600);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 12px;
+        }
+
+        .page-title {
+            font-size: 48px;
+            font-weight: 800;
+            color: var(--navy-900);
+            line-height: 1.2;
+        }
+
+        .page-summary {
+            font-size: 20px;
+            color: var(--gray-600);
+            margin-top: 16px;
+            max-width: 80%;
+        }
+
+        /* Grid Layouts */
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 30px; }
+        .grid-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 24px; }
+        
+        .col-left-wide { display: grid; grid-template-columns: 1.5fr 1fr; gap: 40px; }
+        .col-right-wide { display: grid; grid-template-columns: 1fr 1.5fr; gap: 40px; }
+
+        /* Components */
+        .box {
+            border: 1px solid var(--gray-200);
+            border-radius: 12px;
+            padding: 32px;
+            background: white;
+        }
+
+        .box-gray { background: var(--navy-50); border: none; }
+        .box-navy { background: var(--navy-900); color: white; border: none; }
+        
+        .box-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .box-navy .box-title { color: white; }
+
+        /* Data Tables */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 16px;
+        }
+
+        .data-table th {
+            text-align: left;
+            padding: 12px 0;
+            border-bottom: 2px solid var(--navy-900);
+            color: var(--navy-700);
+            font-weight: 700;
+        }
+
+        .data-table td {
+            padding: 16px 0;
+            border-bottom: 1px solid var(--gray-200);
+            color: var(--gray-600);
+            vertical-align: top;
+        }
+
+        .data-table strong { color: var(--navy-900); font-weight: 700; }
+
+        /* Lists */
+        .check-list li {
+            list-style: none;
+            padding-left: 28px;
+            position: relative;
+            margin-bottom: 12px;
+            font-size: 18px;
+            color: var(--gray-600);
+        }
+
+        .check-list li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--orange-500);
+            font-weight: 800;
+        }
+
+        /* Charts (CSS only) */
+        .bar-chart {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .bar-row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .bar-label { width: 120px; font-size: 16px; font-weight: 600; color: var(--navy-700); }
+        .bar-track { flex: 1; background: var(--gray-200); height: 24px; border-radius: 4px; overflow: hidden; }
+        .bar-fill { height: 100%; background: var(--navy-900); display: flex; align-items: center; padding-right: 8px; justify-content: flex-end; color: white; font-size: 12px; font-weight: 700; }
+        .bar-fill.orange { background: var(--orange-500); }
+
+        /* Footer */
+        .footer {
+            height: 60px;
+            padding: 0 80px;
+            border-top: 1px solid var(--gray-200);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+            color: var(--gray-400);
+        }
+
+        /* Typography Utilities */
+        .text-orange { color: var(--orange-600); }
+        .text-navy { color: var(--navy-900); }
+        .text-lg { font-size: 20px; }
+        .text-sm { font-size: 14px; }
+        .font-bold { font-weight: 700; }
+        
+        /* Print */
+        @media print {
+            body { background: none; }
+            .slide { margin: 0; page-break-after: always; box-shadow: none; border: none; }
+            * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Slide 1: Cover (Executive Summary) -->
+    <section class="slide">
+        <div class="content" style="justify-content: center; padding-top: 120px;">
+            <div style="font-size: 24px; font-weight: 700; color: var(--orange-600); margin-bottom: 24px; letter-spacing: 0.2em;">2026 PRE-STARTUP PACKAGE</div>
+            <h1 style="font-size: 80px; font-weight: 900; line-height: 1.1; color: var(--navy-900); margin-bottom: 40px;">
+                웨딩 서브서비스의 파편화를 혁신하는<br>
+                AI 에이전트, <span style="color: var(--orange-500);">특별씨</span>
+            </h1>
+            <div style="font-size: 28px; line-height: 1.6; color: var(--gray-600); max-width: 1200px; margin-bottom: 80px;">
+                검색은 AI가, 결정은 고객이.<br>
+                탐색 비용을 90% 줄이고, 프리랜서의 수익을 극대화하는 양면 플랫폼
+            </div>
+            
+            <div class="grid-4" style="border-top: 2px solid var(--navy-900); padding-top: 40px;">
+                <div>
+                    <div style="font-size: 16px; color: var(--gray-400); font-weight: 600; margin-bottom: 8px;">TARGET MARKET</div>
+                    <div style="font-size: 32px; font-weight: 800; color: var(--navy-900);">8,888억 원</div>
+                    <div style="font-size: 16px; color: var(--gray-600);">웨딩 서브서비스 SOM</div>
+                </div>
+                <div>
+                    <div style="font-size: 16px; color: var(--gray-400); font-weight: 600; margin-bottom: 8px;">VALIDATION</div>
+                    <div style="font-size: 32px; font-weight: 800; color: var(--navy-900);">200명+</div>
+                    <div style="font-size: 16px; color: var(--gray-600);">Pre-launch 공급자 확보</div>
+                </div>
+                <div>
+                    <div style="font-size: 16px; color: var(--gray-400); font-weight: 600; margin-bottom: 8px;">BUSINESS MODEL</div>
+                    <div style="font-size: 32px; font-weight: 800; color: var(--navy-900);">3-Track</div>
+                    <div style="font-size: 16px; color: var(--gray-600);">수수료 + 구독 + 데이터</div>
+                </div>
+                <div>
+                    <div style="font-size: 16px; color: var(--gray-400); font-weight: 600; margin-bottom: 8px;">TEAM</div>
+                    <div style="font-size: 32px; font-weight: 800; color: var(--navy-900);">CEO & CTO</div>
+                    <div style="font-size: 16px; color: var(--gray-600);">현장 전문가 + AI 개발자</div>
+                </div>
+            </div>
+        </div>
+        <div class="footer">
+            <span>Special City : AI Wedding Agent</span>
+            <span>01</span>
+        </div>
+    </section>
+
+    <!-- Slide 2: Problem Analysis -->
+    <section class="slide">
+        <div class="header">
+            <div class="header-title"><div class="header-logo"></div> 특별시</div>
+            <div class="header-info">PART 1. PROBLEM & OPPORTUNITY</div>
+        </div>
+        <div class="content">
+            <div class="page-title-area">
+                <div class="page-tag">THE PROBLEM</div>
+                <h2 class="page-title">가장 행복해야 할 순간이,<br>가장 스트레스 받는 '관리의 늪'이 되었습니다.</h2>
+                <p class="page-summary">스드메 계약은 시작일 뿐입니다. 축가, 영상, 사회자 등 5~7개의 서브서비스를 각각 알아보고, 예약하고, 조율하는 과정은 예비부부에게 '제2의 업무'가 됩니다.</p>
+            </div>
+
+            <div class="col-left-wide" style="height: 100%;">
+                <!-- Left: Interviews & Data -->
+                <div style="display: flex; flex-direction: column; gap: 30px;">
+                    <div class="box-gray" style="padding: 40px;">
+                        <div class="box-title text-navy">😫 예비부부의 Pain Point (N=150 설문)</div>
+                        <div class="bar-chart">
+                            <div class="bar-row">
+                                <div class="bar-label">정보 탐색</div>
+                                <div class="bar-track"><div class="bar-fill orange" style="width: 78%;">78% "비교가 어렵다"</div></div>
+                            </div>
+                            <div class="bar-row">
+                                <div class="bar-label">가격 신뢰</div>
+                                <div class="bar-track"><div class="bar-fill" style="width: 65%;">65% "부르는 게 값이다"</div></div>
+                            </div>
+                            <div class="bar-row">
+                                <div class="bar-label">소통 피로</div>
+                                <div class="bar-track"><div class="bar-fill" style="width: 55%;">55% "반복 문의 지친다"</div></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="box" style="flex: 1;">
+                        <div class="box-title">🎤 심층 인터뷰 : "왜 기존 플랫폼을 안 쓰나요?"</div>
+                        <div style="display: flex; flex-direction: column; gap: 20px;">
+                            <div style="border-left: 4px solid var(--orange-500); padding-left: 20px;">
+                                <p class="text-lg font-bold text-navy">"숨고는 웨딩 전문성이 떨어져요"</p>
+                                <p class="text-gray-600">"청소, 이사 견적 사이에 웨딩이 껴있으니 신뢰가 안 가요. 포트폴리오보다 가격만 묻는 느낌이라 결국 인스타로 다시 찾았어요." (예비신부 김OO, 29세)</p>
+                            </div>
+                            <div style="border-left: 4px solid var(--navy-900); padding-left: 20px;">
+                                <p class="text-lg font-bold text-navy">"블로그 후기는 다 광고 같아요"</p>
+                                <p class="text-gray-600">"진짜 내돈내산 후기를 찾으려면 카페 등급부터 올려야 해요. 정보 비대칭이 너무 심합니다." (예비신랑 박OO, 32세)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Market Failure Analysis -->
+                <div class="box-navy" style="display: flex; flex-direction: column; justify-content: center;">
+                    <div class="box-title">시장 실패의 원인</div>
+                    <ul class="check-list" style="margin-top: 20px;">
+                        <li style="color: var(--gray-200); margin-bottom: 30px;">
+                            <strong style="color: white; display: block; margin-bottom: 8px;">1. 극심한 정보 비대칭</strong>
+                            웨딩홀/플래너 중심의 리베이트 구조로 가격 정보가 불투명함
+                        </li>
+                        <li style="color: var(--gray-200); margin-bottom: 30px;">
+                            <strong style="color: white; display: block; margin-bottom: 8px;">2. 범용 플랫폼의 한계</strong>
+                            숨고, 크몽은 '스타일/감성' 매칭이 불가능한 키워드/가격 중심 구조
+                        </li>
+                        <li style="color: var(--gray-200);">
+                            <strong style="color: white; display: block; margin-bottom: 8px;">3. 아날로그 방식의 비효율</strong>
+                            여전히 전화, 엑셀, 카톡 캡처로 일정을 조율하는 낙후된 프로세스
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="footer">
+            <span>Special City Business Plan 2026</span>
+            <span>02</span>
+        </div>
+    </section>
+
+    <!-- Slide 3: Solution Tech -->
+    <section class="slide">
+        <div class="header">
+            <div class="header-title"><div class="header-logo"></div> 특별시</div>
+            <div class="header-info">PART 2. SOLUTION & TECHNOLOGY</div>
+        </div>
+        <div class="content">
+            <div class="page-title-area">
+                <div class="page-tag">CORE TECHNOLOGY</div>
+                <h2 class="page-title">단순 검색이 아닌,<br>취향을 이해하는 <span class="text-orange">AI 에이전트</span></h2>
+                <p class="page-summary">LLM(거대언어모델)과 벡터 검색(Vector Search) 기술을 결합하여, 예비부부의 모호한 감성적 요구사항을 정교한 추천으로 전환합니다.</p>
+            </div>
+
+            <div class="grid-3" style="height: 500px;">
+                <!-- Step 1 -->
+                <div class="box" style="display: flex; flex-direction: column;">
+                    <div style="background: var(--navy-900); color: white; padding: 8px 16px; border-radius: 20px; align-self: flex-start; font-weight: 700; font-size: 14px; margin-bottom: 20px;">STEP 1. 멀티모달 입력</div>
+                    <div style="text-align: center; margin: 30px 0;">
+                        <img src="https://via.placeholder.com/100x100?text=IMG" style="border-radius: 8px; display: inline-block;">
+                        <div style="margin-top: 20px; font-style: italic; color: var(--gray-600);">"이 사진처럼 빈티지하면서도<br>너무 어둡지는 않은 느낌 찾아줘"</div>
+                    </div>
+                    <div style="margin-top: auto;">
+                        <strong class="text-navy">기술적 차별점:</strong>
+                        <p class="text-sm text-gray-600 mt-2">CLIP 모델을 활용하여 이미지의 '스타일/분위기'를 벡터 데이터로 추출하고, 자연어 요구사항과 결합합니다.</p>
+                    </div>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="box-navy" style="display: flex; flex-direction: column; position: relative;">
+                    <div style="background: var(--orange-500); color: white; padding: 8px 16px; border-radius: 20px; align-self: flex-start; font-weight: 700; font-size: 14px; margin-bottom: 20px;">STEP 2. 벡터 유사도 매칭</div>
+                    <div style="flex: 1; display: flex; align-items: center; justify-content: center;">
+                        <div style="text-align: center;">
+                            <div style="font-size: 48px; font-weight: 900; color: white; margin-bottom: 10px;">RAG</div>
+                            <div style="font-size: 18px; color: var(--gray-400);">Retrieval-Augmented Generation</div>
+                        </div>
+                    </div>
+                    <div style="border-top: 1px solid rgba(255,255,255,0.2); padding-top: 20px;">
+                        <ul style="font-size: 14px; color: var(--gray-200); line-height: 1.8;">
+                            <li>• 포트폴리오 10만 건 임베딩 DB</li>
+                            <li>• 실시간 일정/예산 필터링</li>
+                            <li>• Cosine Similarity 기반 랭킹</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="box" style="display: flex; flex-direction: column;">
+                    <div style="background: var(--navy-900); color: white; padding: 8px 16px; border-radius: 20px; align-self: flex-start; font-weight: 700; font-size: 14px; margin-bottom: 20px;">STEP 3. 초개인화 제안</div>
+                    <div style="background: var(--navy-50); padding: 20px; border-radius: 8px; margin: 20px 0;">
+                        <strong class="text-navy" style="font-size: 14px;">🤖 특별씨 에이전트</strong>
+                        <p class="text-sm text-gray-600 mt-2">"신부님 취향(빈티지+밝음)과 예산(80만원)에 딱 맞는 작가 3분을 찾았어요. A님은 색감이 좋고, B님은 보정본을 많이 줍니다."</p>
+                    </div>
+                    <div style="margin-top: auto;">
+                        <strong class="text-navy">고객 가치:</strong>
+                        <p class="text-sm text-gray-600 mt-2">수백 명 리스트를 보는 대신, AI가 검증한 '결정 가능한 옵션'만 받아보며 시간을 95% 단축합니다.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tech Specs Table -->
+            <div style="margin-top: 40px;">
+                <table class="data-table">
+                    <colgroup>
+                        <col style="width: 20%;">
+                        <col style="width: 40%;">
+                        <col style="width: 40%;">
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th>기술 스택</th>
+                            <th>상세 사양</th>
+                            <th>구현 현황 (CTO)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>LLM & Embedding</strong></td>
+                            <td>OpenAI GPT-4o, text-embedding-3-small</td>
+                            <td>MVP 프로토타입 구현 완료 (정확도 85%)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Vector DB</strong></td>
+                            <td>Supabase (pgvector), Pinecone</td>
+                            <td>포트폴리오 1,000건 테스트 데이터 구축</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Service App</strong></td>
+                            <td>Flutter (Cross-platform), Next.js (Web)</td>
+                            <td>와이어프레임 설계 완료, 개발 착수</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="footer">
+            <span>Special City Business Plan 2026</span>
+            <span>03</span>
+        </div>
+    </section>
+
+    <!-- Slide 4: Market Analysis -->
+    <section class="slide">
+        <div class="header">
+            <div class="header-title"><div class="header-logo"></div> 특별시</div>
+            <div class="header-info">PART 3. MARKET SIZE & STRATEGY</div>
+        </div>
+        <div class="content">
+            <div class="page-title-area">
+                <div class="page-tag">MARKET SIZE</div>
+                <h2 class="page-title">웨딩 시장의 <span class="text-orange">롱테일(Long-tail)</span>을<br>통합하는 플랫폼</h2>
+                <p class="page-summary">전체 웨딩 시장은 정체기지만, '개인화된 서브서비스' 시장은 SNS 문화와 함께 폭발적으로 성장하고 있습니다. 우리는 이 8,800억 원 시장의 1등을 목표로 합니다.</p>
+            </div>
+
+            <div class="col-left-wide">
+                <!-- Market Calculation -->
+                <div class="box-gray" style="padding: 40px;">
+                    <div style="font-size: 20px; font-weight: 700; color: var(--navy-900); margin-bottom: 20px;">TAM-SAM-SOM 산출 근거 (Bottom-Up)</div>
+                    
+                    <div style="margin-bottom: 30px;">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 10px;">
+                            <span class="text-lg font-bold text-gray-600">TAM (전체 웨딩 시장)</span>
+                            <span class="text-lg font-bold text-gray-400">약 6조 원</span>
+                        </div>
+                        <div style="background: var(--gray-200); height: 10px; border-radius: 5px;"></div>
+                    </div>
+
+                    <div style="margin-bottom: 30px;">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 10px;">
+                            <span class="text-lg font-bold text-navy">SAM (서브서비스 시장)</span>
+                            <span class="text-lg font-bold text-navy">8,888억 원</span>
+                        </div>
+                        <div style="background: var(--gray-200); height: 10px; border-radius: 5px;">
+                            <div style="background: var(--navy-700); width: 15%; height: 100%; border-radius: 5px;"></div>
+                        </div>
+                        <p class="text-sm text-gray-600 mt-2">
+                            * 연간 혼인 22.2만 건 (통계청 2024) × 평균 서브서비스 지출 400만원 (스냅, 영상, 축가 등 5~7종 합계)
+                        </p>
+                    </div>
+
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 10px;">
+                            <span class="text-lg font-bold text-orange">SOM (3년 내 목표 시장)</span>
+                            <span class="text-lg font-bold text-orange">266억 원</span>
+                        </div>
+                        <div style="background: var(--gray-200); height: 10px; border-radius: 5px;">
+                            <div style="background: var(--orange-500); width: 3%; height: 100%; border-radius: 5px;"></div>
+                        </div>
+                        <p class="text-sm text-gray-600 mt-2">
+                            * SAM의 3% (초기 진입 가능한 온라인 전환 수요)
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Competitor Analysis -->
+                <div class="box">
+                    <div class="box-title">경쟁사 비교 분석</div>
+                    <table class="data-table" style="font-size: 14px;">
+                        <thead>
+                            <tr>
+                                <th>구분</th>
+                                <th>숨고 / 크몽</th>
+                                <th>웨딩북</th>
+                                <th class="text-orange">특별시</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>정체성</strong></td>
+                                <td>범용 마켓</td>
+                                <td>정보 커뮤니티</td>
+                                <td><strong>AI 에이전트</strong></td>
+                            </tr>
+                            <tr>
+                                <td><strong>매칭</strong></td>
+                                <td>단순 견적 입찰</td>
+                                <td>업체 리스트</td>
+                                <td><strong>스타일 벡터 매칭</strong></td>
+                            </tr>
+                            <tr>
+                                <td><strong>수수료</strong></td>
+                                <td>20~30%</td>
+                                <td>비공개 (입점비)</td>
+                                <td><strong>3~5% (최저)</strong></td>
+                            </tr>
+                            <tr>
+                                <td><strong>편의성</strong></td>
+                                <td>개별 연락 필수</td>
+                                <td>정보만 확인</td>
+                                <td><strong>원스톱 예약/결제</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="footer">
+            <span>Special City Business Plan 2026</span>
+            <span>04</span>
+        </div>
+    </section>
+
+    <!-- Slide 5: Business Model & Unit Economics -->
+    <section class="slide">
+        <div class="header">
+            <div class="header-title"><div class="header-logo"></div> 특별시</div>
+            <div class="header-info">PART 4. BUSINESS MODEL & FINANCE</div>
+        </div>
+        <div class="content">
+            <div class="page-title-area">
+                <div class="page-tag">UNIT ECONOMICS</div>
+                <h2 class="page-title">수수료와 구독의 <span class="text-orange">하이브리드 BM</span><br>LTV/CAC 5.5배의 건강한 수익 구조</h2>
+            </div>
+
+            <div class="grid-3" style="margin-bottom: 40px;">
+                <div class="box" style="border-top: 4px solid var(--orange-500);">
+                    <div class="text-lg font-bold text-navy mb-2">1. 중개 수수료</div>
+                    <div class="text-3xl font-bold text-orange mb-4">3 ~ 5%</div>
+                    <p class="text-gray-600 text-sm">
+                        • 프리랜서 매칭 거래액 기반<br>
+                        • 업계 최저 수준으로 공급자 Lock-in<br>
+                        • 크루(팀) 거래 시 객단가 상승
+                    </p>
+                </div>
+                <div class="box" style="border-top: 4px solid var(--navy-900);">
+                    <div class="text-lg font-bold text-navy mb-2">2. 구독 모델 (SaaS)</div>
+                    <div class="text-3xl font-bold text-navy mb-4">월 1.9만 원</div>
+                    <p class="text-gray-600 text-sm">
+                        • 프리랜서 전용 CRM/정산 툴 제공<br>
+                        • 포트폴리오 관리 및 상위 노출<br>
+                        • 안정적인 MRR(월반복매출) 확보
+                    </p>
+                </div>
+                <div class="box" style="border-top: 4px solid var(--gray-400);">
+                    <div class="text-lg font-bold text-navy mb-2">3. 데이터 비즈니스</div>
+                    <div class="text-3xl font-bold text-gray-600 mb-4">Future</div>
+                    <p class="text-gray-600 text-sm">
+                        • 신혼부부 라이프스타일 데이터<br>
+                        • 가전, 가구, 금융 타겟 광고<br>
+                        • 확장성 높은 고마진 모델
+                    </p>
+                </div>
+            </div>
+
+            <div class="box-gray" style="padding: 40px;">
+                <div class="box-title">📊 Unit Economics Simulation (초기 6개월 기준)</div>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>지표</th>
+                            <th>수치</th>
+                            <th>산출 근거 및 의미</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>CAC</strong> (고객획득비용)</td>
+                            <td>36,500원</td>
+                            <td>채널 믹스(SNS광고 50%, 바이럴 30%, 제휴 20%) 가중 평균</td>
+                        </tr>
+                        <tr>
+                            <td><strong>ARPU</strong> (객단가)</td>
+                            <td>400,000원</td>
+                            <td>서브서비스 평균 거래액 (스냅+영상 기준)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>LTV</strong> (고객생애가치)</td>
+                            <td>200,000원</td>
+                            <td>평균 2.5회 거래 × 수수료 수익 + 프리랜서 구독 기여분 (보수적 접근)</td>
+                        </tr>
+                        <tr>
+                            <td class="text-orange"><strong>LTV / CAC</strong></td>
+                            <td class="text-orange" style="font-size: 24px; font-weight: 800;">5.5x</td>
+                            <td><strong>투자 적격 기준(3x)을 상회하는 높은 수익성</strong></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Payback Period</strong></td>
+                            <td>1.8개월</td>
+                            <td>마케팅 비용 회수 기간 (매우 빠름)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="footer">
+            <span>Special City Business Plan 2026</span>
+            <span>05</span>
+        </div>
+    </section>
+
+    <!-- Slide 6: Execution Plan -->
+    <section class="slide">
+        <div class="header">
+            <div class="header-title"><div class="header-logo"></div> 특별시</div>
+            <div class="header-info">PART 5. EXECUTION & TEAM</div>
+        </div>
+        <div class="content">
+            <div class="page-title-area">
+                <div class="page-tag">ROADMAP & MILESTONES</div>
+                <h2 class="page-title">2026년, <span class="text-orange">국내 1위 서브웨딩 플랫폼</span> 도약</h2>
+                <p class="page-summary">이미 200명의 프리랜서를 확보했습니다. 검증된 가설을 바탕으로 공격적으로 실행합니다.</p>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0; margin-top: 40px; position: relative;">
+                <!-- Timeline Line -->
+                <div style="position: absolute; top: 20px; left: 0; width: 100%; height: 4px; background: var(--gray-200); z-index: 0;"></div>
+
+                <!-- Phase 1 -->
+                <div style="padding-right: 40px; position: relative; z-index: 1;">
+                    <div style="width: 40px; height: 40px; background: var(--navy-900); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; margin-bottom: 20px;">1</div>
+                    <div style="font-size: 24px; font-weight: 800; color: var(--navy-900); margin-bottom: 10px;">Phase 1. 기반 구축</div>
+                    <div style="font-size: 16px; color: var(--orange-600); font-weight: 700; margin-bottom: 20px;">2026. 01 ~ 06</div>
+                    <div class="box">
+                        <ul class="check-list" style="font-size: 16px;">
+                            <li><strong>MVP 개발:</strong> AI 매칭 엔진 v1.0</li>
+                            <li><strong>공급자 확보:</strong> 프리랜서 200명 (달성)</li>
+                            <li><strong>초기 검증:</strong> 인터뷰 및 LoI 확보</li>
+                            <li>예비창업패키지 선정 및 자금 확보</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Phase 2 -->
+                <div style="padding-right: 40px; position: relative; z-index: 1;">
+                    <div style="width: 40px; height: 40px; background: var(--orange-500); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; margin-bottom: 20px;">2</div>
+                    <div style="font-size: 24px; font-weight: 800; color: var(--navy-900); margin-bottom: 10px;">Phase 2. 시장 진입</div>
+                    <div style="font-size: 16px; color: var(--orange-600); font-weight: 700; margin-bottom: 20px;">2026. 07 ~ 12</div>
+                    <div class="box">
+                        <ul class="check-list" style="font-size: 16px;">
+                            <li><strong>베타 런칭:</strong> 실제 매칭 및 결제 오픈</li>
+                            <li><strong>마케팅:</strong> 웨딩 박람회 및 SNS 광고</li>
+                            <li><strong>KPI:</strong> 월 매칭 350건, 매출 1천만원</li>
+                            <li><strong>BEP 달성:</strong> 월 고정비 손익분기 돌파</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Phase 3 -->
+                <div style="position: relative; z-index: 1;">
+                    <div style="width: 40px; height: 40px; background: var(--gray-400); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; margin-bottom: 20px;">3</div>
+                    <div style="font-size: 24px; font-weight: 800; color: var(--navy-900); margin-bottom: 10px;">Phase 3. 확장</div>
+                    <div style="font-size: 16px; color: var(--orange-600); font-weight: 700; margin-bottom: 20px;">2027 ~</div>
+                    <div class="box-gray">
+                        <ul class="check-list" style="font-size: 16px;">
+                            <li><strong>지역 확장:</strong> 수도권 → 전국 광역시</li>
+                            <li><strong>카테고리 확장:</strong> 돌잔치, 기업 행사</li>
+                            <li><strong>Global:</strong> 아시아 웨딩 시장 진출</li>
+                            <li>Series A 투자 유치</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin-top: 40px; display: flex; gap: 20px; align-items: center; background: var(--navy-50); padding: 20px 40px; border-radius: 12px;">
+                <div style="font-weight: 700; color: var(--navy-900);">💡 Risk Management</div>
+                <div style="width: 1px; height: 20px; background: var(--gray-400);"></div>
+                <div style="font-size: 16px; color: var(--gray-600);">
+                    <strong>공급자 이탈 리스크:</strong> 에스크로 안전 결제 + AI 포트폴리오 관리 툴 제공으로 Lock-in 효과 극대화<br>
+                    <strong>경쟁사 진입 리스크:</strong> 웨딩 특화 데이터(취향, 예산, 실제 후기) 선점으로 기술적/데이터 해자(Moat) 구축
+                </div>
+            </div>
+        </div>
+        <div class="footer">
+            <span>Special City Business Plan 2026</span>
+            <span>06</span>
+        </div>
+    </section>
+
+</body>
+</html>
