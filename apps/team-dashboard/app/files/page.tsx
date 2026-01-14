@@ -8,6 +8,7 @@ import {
   getAllFiles,
   deleteFile,
   getImageUrl,
+  type FileMetadata,
 } from "@/lib/utils/storage";
 import { addActivityLog } from "@/lib/utils/activityLog";
 import { useUser } from "@/lib/context/UserContext";
@@ -39,14 +40,26 @@ export default function FilesPage() {
   const loadFiles = async () => {
     try {
       const allFiles = await getAllFiles();
-      setFiles(allFiles as any);
+      setFiles(allFiles as unknown as FileItem[]);
     } catch (e) {
       console.error("파일 로드 실패:", e);
     }
   };
 
   useEffect(() => {
-    loadFiles();
+    let ignore = false;
+    const init = async () => {
+      try {
+        const allFiles = await getAllFiles();
+        if (!ignore) {
+          setFiles(allFiles as unknown as FileItem[]);
+        }
+      } catch (e) {
+        console.error("파일 로드 실패:", e);
+      }
+    };
+    init();
+    return () => { ignore = true; };
   }, []);
 
   const filteredFiles = useMemo(() => {
@@ -76,7 +89,7 @@ export default function FilesPage() {
         category,
       };
 
-      await saveFile(fileItem as any, file);
+      await saveFile(fileItem as unknown as FileMetadata, file);
       addActivityLog({ user: currentUser, type: 'file', action: '파일을 업로드했습니다', targetTitle: file.name });
     }
     loadFiles();

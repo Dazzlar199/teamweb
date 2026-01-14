@@ -57,8 +57,8 @@ export default function CalendarPage() {
     return events.filter(e => e.month === currentMonth && e.year === currentYear)
                  .sort((a, b) => {
                    if (a.date !== b.date) return a.date - b.date;
-                   const timeA = (a as any).time || "";
-                   const timeB = (b as any).time || "";
+                   const timeA = 'time' in a ? a.time : "";
+                   const timeB = 'time' in b ? b.time : "";
                    return timeA.localeCompare(timeB);
                  });
   }, [events, currentMonth, currentYear]);
@@ -243,21 +243,21 @@ export default function CalendarPage() {
               <div className="space-y-3">
                 {selectedDayEvents.map(event => {
                   const creator = TEAM_MEMBERS[event.createdBy as keyof typeof TEAM_MEMBERS] || { color: "#64748b" };
-                  const eventWithParticipants = event as any;
-                  const isParticipating = eventWithParticipants.participants?.includes(currentUser);
+                  const isParticipating = 'participants' in event && event.participants?.includes(currentUser);
+                  const eventTime = 'time' in event ? event.time : "종일";
                   return (
                     <div key={event.id} onClick={() => setViewEvent(event)} className="p-4 bg-slate-50/50 rounded-2xl border border-slate-100 transition-all hover:bg-white hover:shadow-md cursor-pointer group">
                       <div className="flex items-center justify-between mb-2">
-                        <span className="text-[9px] font-black text-indigo-600 bg-white px-1.5 py-0.5 rounded border border-indigo-100">{eventWithParticipants.time || "종일"}</span>
+                        <span className="text-[9px] font-black text-indigo-600 bg-white px-1.5 py-0.5 rounded border border-indigo-100">{eventTime}</span>
                         <div className="w-2 h-2 rounded-full shadow-sm" style={{ backgroundColor: creator.color }} />
                       </div>
                       <h3 className="text-xs font-bold text-slate-800 leading-snug group-hover:text-indigo-600 transition-colors">{event.title}</h3>
                       <div className="mt-3 flex items-center justify-between">
                         <div className="flex -space-x-1.5 overflow-hidden">
-                          {eventWithParticipants.participants?.slice(0, 3).map((p: string, i: number) => (
+                          {'participants' in event && event.participants?.slice(0, 3).map((p: string, i: number) => (
                             <div key={i} className="w-5 h-5 rounded-full border border-white bg-slate-200 flex items-center justify-center text-[8px] font-bold text-white shadow-sm" style={{ backgroundColor: TEAM_MEMBERS[p as keyof typeof TEAM_MEMBERS]?.color }}>{p[0]}</div>
                           ))}
-                          {(eventWithParticipants.participants?.length || 0) > 3 && <div className="w-5 h-5 rounded-full bg-slate-100 border border-white flex items-center justify-center text-[7px] font-black text-slate-400">+{(eventWithParticipants.participants?.length || 0) - 3}</div>}
+                          {'participants' in event && (event.participants?.length || 0) > 3 && <div className="w-5 h-5 rounded-full bg-slate-100 border border-white flex items-center justify-center text-[7px] font-black text-slate-400">+{(event.participants?.length || 0) - 3}</div>}
                         </div>
                         {event.createdBy !== "시스템" && (
                           <button 
@@ -283,7 +283,7 @@ export default function CalendarPage() {
                     <div className="absolute -left-[4.5px] top-1 w-2 h-2 rounded-full bg-slate-200 border-2 border-white" style={{ backgroundColor: TEAM_MEMBERS[event.createdBy as keyof typeof TEAM_MEMBERS]?.color }} />
                     <div className="flex items-center gap-2 mb-1">
                       <span className="text-[10px] font-black text-slate-400">{event.date}일</span>
-                      <span className="text-[10px] font-bold text-indigo-500">{(event as any).time || "종일"}</span>
+                      <span className="text-[10px] font-bold text-indigo-500">{'time' in event ? event.time : "종일"}</span>
                     </div>
                     <p className="text-[12px] font-bold text-slate-700 truncate">{event.title}</p>
                   </div>

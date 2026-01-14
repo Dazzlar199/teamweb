@@ -17,7 +17,59 @@ export default function TasksPage() {
   const { showToast } = useToast();
   const currentUser = user?.name || "김찬주";
 
-  // ... (상단 상태 생략)
+  // 상태 관리
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [filterStatus, setStatusFilter] = useState<"전체" | "todo" | "in_progress" | "done">("전체");
+  const [filterPriority, setPriorityFilter] = useState<string>("전체");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
+  
+  const [newTask, setNewTask] = useState({
+    title: "",
+    description: "",
+    status: "todo" as Task['status'],
+    priority: "medium" as Task['priority'],
+    assignedTo: currentUser,
+    dueDate: new Date().toISOString().split('T')[0],
+  });
+
+  // 필터링된 작업 목록
+  const filteredTasks = useMemo(() => {
+    return tasks.filter((task) => {
+      const matchesStatus = filterStatus === "전체" || task.status === filterStatus;
+      const matchesPriority = filterPriority === "전체" || task.priority === filterPriority;
+      const matchesSearch = 
+        task.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+        (task.description && task.description.toLowerCase().includes(searchQuery.toLowerCase()));
+      
+      return matchesStatus && matchesPriority && matchesSearch;
+    });
+  }, [tasks, filterStatus, filterPriority, searchQuery]);
+
+  const updateTaskStatus = async (id: string, newStatus: Task['status']) => {
+    try {
+      await updateSupabaseTaskStatus(id, newStatus);
+      const updatedTasks = tasks.map(t => 
+        t.id === id ? { ...t, status: newStatus, updatedAt: new Date().toISOString() } : t
+      );
+      setTasks(updatedTasks);
+      
+      // 활동 로그 추가
+      const task = tasks.find(t => t.id === id);
+      if (task) {
+        addActivityLog({
+          user: currentUser,
+          type: "task",
+          action: `작업 상태를 ${newStatus === 'done' ? '완료' : newStatus}로 변경했습니다`,
+          targetTitle: task.title,
+        });
+      }
+      
+      showToast(`상태가 변경되었습니다.`, "info");
+    } catch (e) {
+      showToast("상태 변경 실패", "error");
+    }
+  };
 
   const handleCreateTask = async () => {
     if (!newTask.title.trim()) {
@@ -53,24 +105,20 @@ export default function TasksPage() {
 
       showToast("새 작업이 Supabase에 저장되었습니다.", "success");
       setShowAddForm(false);
-      // ... 초기화
+      
+      // 폼 초기화
+      setNewTask({
+        title: "",
+        description: "",
+        status: "todo",
+        priority: "medium",
+        assignedTo: currentUser,
+        dueDate: new Date().toISOString().split('T')[0],
+      });
     } catch (e) {
       showToast("작업 등록에 실패했습니다.", "error");
     }
   };
-
-  const handleUpdateTaskStatus = async (id: string, newStatus: "todo" | "in_progress" | "done") => {
-    try {
-      await updateSupabaseTaskStatus(id, newStatus);
-      const updatedTasks = tasks.map(t => t.id === id ? { ...t, status: newStatus, updatedAt: new Date().toISOString() } : t);
-      setTasks(updatedTasks);
-      showToast(`상태가 변경되었습니다.`, "info");
-    } catch (e) {
-      showToast("상태 변경 실패", "error");
-    }
-  };
-
-  // ... 나머지 UI 부분에서 handleUpdateTaskStatus 사용하도록 수정
 
 
   return (
@@ -357,7 +405,7 @@ function TaskDetailContent({ task, onClose, onUpdate, onDelete, onStatusChange }
                 <span className="text-[11px] font-black text-slate-400 uppercase w-20">우선순위</span>
                 <select 
                   value={editedTask.priority}
-                  onChange={(e) => setEditedTask({...editedTask, priority: e.target.value as any})}
+                  onChange={(e) => setEditedTask({...editedTask, priority: e.target.value as Task['priority']})}
                   className="bg-slate-50 border-none rounded-xl text-sm font-bold text-slate-700 px-3 py-1.5 outline-none cursor-pointer hover:bg-slate-100 transition-colors"
                 >
                   <option value="high">🔴 긴급</option>

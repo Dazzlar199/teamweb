@@ -172,6 +172,8 @@ export default function DocumentsPage() {
   const checklist = getDocumentChecklist();
   const expiredCount = getExpiredDocuments().length;
 
+  const now = Date.now();
+
   return (
     <div className="min-h-screen bg-[#F9FAFB]">
       <div className="max-w-7xl mx-auto">
@@ -336,7 +338,7 @@ export default function DocumentsPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
             {filteredDocuments.map((document) => {
               const isExpired =
-                document.expiryDate && document.expiryDate < Date.now();
+                document.expiryDate && document.expiryDate < now;
               const expiryDate = document.expiryDate
                 ? new Date(document.expiryDate)
                 : null;

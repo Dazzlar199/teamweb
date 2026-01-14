@@ -4,7 +4,7 @@ const DB_NAME = "team-dashboard-storage";
 const DB_VERSION = 1;
 const STORE_NAME = "files";
 
-interface FileMetadata {
+export interface FileMetadata {
   id: string;
   name: string;
   size: number;
