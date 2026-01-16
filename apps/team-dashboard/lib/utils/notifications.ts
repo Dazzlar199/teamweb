@@ -54,7 +54,7 @@ export async function addNotification(
   notification: Omit<Notification, 'id' | 'timestamp' | 'read' | 'user_name'>,
   targetUsers?: string[]
 ): Promise<void> {
-  const users = targetUsers && targetUsers.length > 0 ? targetUsers : ["김찬주", "박건희", "김예린", "이나영"]; // 정정된 팀원 명단
+  const users = targetUsers && targetUsers.length > 0 ? targetUsers : ["김찬주", "박건희", "김예린", "이나영"];
 
   const newNotifications = users.map(user => ({
     id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
@@ -66,18 +66,19 @@ export async function addNotification(
     eventId: notification.eventId,
     link: notification.link,
     read: false,
-    created_at: Date.now() // SQL schema expects created_at as BIGINT
+    created_at: Date.now()
   }));
 
   if (isSupabaseConfigured()) {
     try {
       const { error } = await supabase.from('notifications').insert(newNotifications);
       if (error) {
-        console.error("알림 DB 저장 실패 (상세):", JSON.stringify(error, null, 2));
+        console.error("알림 DB 저장 실패:", JSON.stringify(error, null, 2));
         throw error;
       }
     } catch (e) {
       console.error("알림 DB 저장 중 예외 발생:", e);
+      throw new Error("알림 생성에 실패했습니다.");
     }
   } else {
     // LocalStorage fallback
@@ -112,36 +113,43 @@ export async function getNotifications(userName: string): Promise<Notification[]
 
 export async function markAsRead(notificationId: string): Promise<void> {
   if (isSupabaseConfigured()) {
-    await supabase.from('notifications').update({ read: true }).eq('id', notificationId);
+    try {
+      const { error } = await supabase.from('notifications').update({ read: true }).eq('id', notificationId);
+      if (error) throw error;
+    } catch (error) {
+      console.error("알림 읽음 처리 실패:", error);
+      // 읽음 표시는 실패해도 UI 흐름을 막지 않음
+    }
   }
 }
 
 export async function markAllAsRead(userName: string): Promise<void> {
-
   if (isSupabaseConfigured()) {
-
-    await supabase.from('notifications').update({ read: true }).eq('user_name', userName);
-
+    try {
+      const { error } = await supabase.from('notifications').update({ read: true }).eq('user_name', userName);
+      if (error) throw error;
+    } catch (error) {
+      console.error("전체 알림 읽음 처리 실패:", error);
+      // 읽음 표시는 실패해도 UI 흐름을 막지 않음
+    }
   }
-
 }
 
 
 
 /**
-
  * 알림 삭제
-
  */
-
 export async function deleteNotification(notificationId: string): Promise<void> {
-
   if (isSupabaseConfigured()) {
-
-    await supabase.from('notifications').delete().eq('id', notificationId);
-
+    try {
+      const { error } = await supabase.from('notifications').delete().eq('id', notificationId);
+      if (error) throw error;
+    } catch (error) {
+      console.error("알림 삭제 실패:", error);
+      throw new Error("알림 삭제에 실패했습니다.");
+    }
   }
-
 }
 
 

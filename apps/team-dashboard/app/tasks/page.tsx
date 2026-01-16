@@ -379,13 +379,23 @@ export default function TasksPage() {
                   setSelectedTask(updatedTask);
                   showToast("작업이 수정되었습니다.", "success");
                 }}
-                onDelete={(id) => {
+                onDelete={async (id) => {
                   if(confirm("이 작업을 삭제하시겠습니까?")) {
-                    const updated = tasks.filter(t => t.id !== id);
-                    setTasks(updated);
-                    localStorage.setItem("team-dashboard-tasks", JSON.stringify(updated));
-                    setSelectedTask(null);
-                    showToast("작업이 삭제되었습니다.", "info");
+                    try {
+                      // 낙관적 업데이트
+                      const updated = tasks.filter(t => t.id !== id);
+                      setTasks(updated);
+
+                      // Supabase 삭제
+                      await deleteTask(id);
+                      await refreshTasks(); // DataContext 동기화
+
+                      setSelectedTask(null);
+                      showToast("작업이 삭제되었습니다.", "info");
+                    } catch (error) {
+                      await refreshTasks(); // 에러 시 복구
+                      showToast("작업 삭제에 실패했습니다.", "error");
+                    }
                   }
                 }}
                 onStatusChange={(id, status) => updateTaskStatus(id, status)}

@@ -113,7 +113,7 @@ function getConversationId(user1: string, user2: string): string {
 
 // Realtime 구독 관리
 let messageRealtimeChannel: any = null;
-let messageRealtimeCallbacks: Set<() => void> = new Set();
+const messageRealtimeCallbacks: Set<() => void> = new Set();
 
 /**
  * 메시지 Realtime 구독 시작
@@ -246,7 +246,17 @@ export async function sendMessage(
     read: false,
   };
 
-  // localStorage에 저장
+  // Supabase 먼저 저장 (설정되어 있는 경우)
+  if (isSupabaseConfigured()) {
+    try {
+      await saveMessageToSupabase(message);
+    } catch (error) {
+      console.error("[sendMessage] Supabase 저장 실패:", error);
+      throw new Error("메시지 전송에 실패했습니다. 다시 시도해주세요.");
+    }
+  }
+
+  // Supabase 성공 후 localStorage 저장
   const messages = getLocalStorage<Message[]>(STORAGE_KEY, []);
   messages.push(message);
   setLocalStorage(STORAGE_KEY, messages);
@@ -256,17 +266,6 @@ export async function sendMessage(
     window.dispatchEvent(new CustomEvent("messages-updated"));
   } catch (e) {
     // CustomEvent 생성 실패는 무시
-  }
-
-  // Supabase 동기화 (백그라운드)
-  if (isSupabaseConfigured()) {
-    (async () => {
-      try {
-        await saveMessageToSupabase(message);
-      } catch (error) {
-        console.error("[sendMessage] Supabase 동기화 실패:", error);
-      }
-    })();
   }
 
   return message;
@@ -279,6 +278,17 @@ export async function markMessageAsRead(
   messageId: string,
   currentUser: string
 ): Promise<void> {
+  // Supabase 먼저 업데이트 (설정되어 있는 경우)
+  if (isSupabaseConfigured()) {
+    try {
+      await updateMessageReadStatus(messageId, true);
+    } catch (error) {
+      console.error("[markMessageAsRead] Supabase 업데이트 실패:", error);
+      // 읽음 표시는 실패해도 계속 진행 (사용자 경험을 위해)
+    }
+  }
+
+  // localStorage 업데이트
   const messages = getLocalStorage<Message[]>(STORAGE_KEY, []);
   const updated = messages.map((msg) => {
     if (msg.id === messageId && msg.receiver === currentUser && !msg.read) {
@@ -291,17 +301,6 @@ export async function markMessageAsRead(
     return msg;
   });
   setLocalStorage(STORAGE_KEY, updated);
-
-  // Supabase 동기화
-  if (isSupabaseConfigured()) {
-    (async () => {
-      try {
-        await updateMessageReadStatus(messageId, true);
-      } catch (error) {
-        console.error("[markMessageAsRead] Supabase 동기화 실패:", error);
-      }
-    })();
-  }
 }
 
 /**
