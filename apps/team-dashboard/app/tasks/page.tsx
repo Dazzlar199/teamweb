@@ -7,7 +7,7 @@ import { useData } from "@/lib/context/DataContext";
 import { useToast } from "@/lib/context/ToastContext";
 import { addActivityLog } from "@/lib/utils/activityLog";
 import type { Task } from "@/lib/types/task";
-import NotionEditor from "@/components/common/NotionEditor";
+import EnhancedEditor from "@/components/common/EnhancedEditor";
 
 import { saveTask, deleteTask, updateTaskStatus as updateSupabaseTaskStatus } from "@/lib/utils/task";
 
@@ -347,11 +347,11 @@ export default function TasksPage() {
                 </div>
 
                 {/* 에디터 영역 */}
-                <div className="max-w-5xl mx-auto w-full min-h-[600px] bg-white rounded-2xl p-8 shadow-sm">
-                  <NotionEditor
+                <div className="max-w-5xl mx-auto w-full min-h-[600px]">
+                  <EnhancedEditor
                     value={newTask.description}
                     onChange={(content) => setNewTask({...newTask, description: content})}
-                    placeholder="'/' 를 입력하여 명령어를 사용하세요..."
+                    placeholder="내용을 입력하세요... (우측 상단 '사용 가이드' 버튼을 클릭하면 모든 기능을 확인할 수 있습니다)"
                   />
                 </div>
               </div>
@@ -466,11 +466,11 @@ function TaskDetailContent({ task, onClose, onUpdate, onDelete, onStatusChange }
             </div>
           </div>
 
-          <div className="min-h-[500px] bg-white rounded-2xl p-8">
-            <NotionEditor
+          <div className="min-h-[500px]">
+            <EnhancedEditor
               value={editedTask.description || ""}
               onChange={(content) => setEditedTask({...editedTask, description: content})}
-              placeholder="'/' 를 입력하여 명령어를 사용하세요..."
+              placeholder="내용을 입력하세요... (우측 상단 '사용 가이드' 버튼을 클릭하면 모든 기능을 확인할 수 있습니다)"
             />
           </div>
         </div>
