@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { getTotalUnreadCount, getConversations, subscribeToMessages } from "@/lib/utils/message";
 import { useUser } from "@/lib/context/UserContext";
@@ -17,7 +17,7 @@ export default function MessageBell() {
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const buttonRef = useRef<HTMLButtonElement>(null);
 
-  const loadUnreadCount = async () => {
+  const loadUnreadCount = useCallback(async () => {
     if (!currentUser) return;
     try {
       const count = await getTotalUnreadCount(currentUser);
@@ -25,7 +25,7 @@ export default function MessageBell() {
     } catch (e) {
       console.error("메시지 카운트 로드 실패:", e);
     }
-  };
+  }, [currentUser]);
 
   useEffect(() => {
     if (currentUser) {
@@ -58,7 +58,7 @@ export default function MessageBell() {
         unsubscribe();
       };
     }
-  }, [currentUser]);
+  }, [currentUser, loadUnreadCount]);
 
   const handleClick = () => {
     router.push("/messages");

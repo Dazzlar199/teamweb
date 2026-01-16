@@ -190,6 +190,7 @@ export default function YechangpackPage() {
       { id: "yp-doc-6", name: "[Q&A] 2025년도 예창패 주요 질의응답", type: "pdf", size: "340KB", path: `${YECHANG_DOCS_PATH}/[별첨 4] 2025년도 예비창업패키지 예비창업자 모집공고 관련 주요 질의응답.pdf`, category: "참고" },
     ];
     setDocuments(actualDocs);
+     
   }, []);
 
   const updateRoadmapPhases = (newPhases: RoadmapPhase[]) => {
@@ -264,7 +265,7 @@ export default function YechangpackPage() {
           ].map((tab) => (
             <button
               key={tab.id}
-              onClick={() => setActiveTab(tab.id as any)}
+              onClick={() => setActiveTab(tab.id as "roadmap" | "checklist" | "evidence" | "documents" | "notes")}
               className={`px-6 py-2.5 rounded-xl text-xs font-black transition-all ${activeTab === tab.id ? "bg-indigo-600 text-white shadow-md" : "text-slate-500 hover:bg-slate-50"}`}
             >
               {tab.label}

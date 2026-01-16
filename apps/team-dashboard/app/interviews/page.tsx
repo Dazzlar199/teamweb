@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useUser } from "@/lib/context/UserContext";
 import { handleError } from "@/lib/utils/errorHandler";
 import {
@@ -58,11 +58,11 @@ export default function InterviewsPage() {
     script: COUPLE_INTERVIEW_SCRIPT,
   });
 
-  const loadInterviews = () => {
+  const loadInterviews = useCallback(() => {
     try {
       const loaded = getInterviews();
       setInterviews(loaded);
-      
+
       // 통계 계산
       const coupleCount = loaded.filter(i => i.type === 'couple').length;
       const freelancerCount = loaded.filter(i => i.type === 'freelancer').length;
@@ -83,11 +83,11 @@ export default function InterviewsPage() {
     } catch (e) {
       console.error("인터뷰 로드 실패:", e);
     }
-  };
+  }, []);
 
   useEffect(() => {
     loadInterviews();
-  }, []);
+  }, [loadInterviews]);
 
   const handleAddInterview = () => {
     try {
@@ -760,7 +760,7 @@ function InterviewDetailModal({
                   key={idx}
                   className="bg-[#EFF6FF] rounded p-3 text-sm italic text-[#1E40AF]"
                 >
-                  "{quote}"
+                  &ldquo;{quote}&rdquo;
                 </div>
               ))}
             </div>

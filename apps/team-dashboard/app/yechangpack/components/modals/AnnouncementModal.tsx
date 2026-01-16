@@ -104,7 +104,7 @@ export default function AnnouncementModal({
                       <li>타겟 고객의 니즈와 페인 포인트</li>
                     </ul>
                     <p className="text-xs text-[#6B7280] mt-2 italic">
-                      공고문에서 "사업의 필요성" 섹션을 참고하세요
+                      공고문에서 &ldquo;사업의 필요성&rdquo; 섹션을 참고하세요
                     </p>
                   </div>
                 </div>
@@ -127,7 +127,7 @@ export default function AnnouncementModal({
                       <li>구체적인 실행 계획과 방법론</li>
                     </ul>
                     <p className="text-xs text-[#6B7280] mt-2 italic">
-                      공고문에서 "사업계획서 작성 가이드" 섹션을 참고하세요
+                      공고문에서 &ldquo;사업계획서 작성 가이드&rdquo; 섹션을 참고하세요
                     </p>
                   </div>
                 </div>

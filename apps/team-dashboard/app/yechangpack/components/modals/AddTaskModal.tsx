@@ -39,6 +39,7 @@ export default function AddTaskModal({
       setDescription("");
       setSelectedPhase(initialPhaseId);
     }
+     
   }, [initialTask, initialPhaseId]);
 
   const handleSave = () => {

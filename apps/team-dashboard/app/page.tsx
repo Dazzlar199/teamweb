@@ -5,11 +5,11 @@ import Link from "next/link";
 import { getActivityLogs } from "@/lib/utils/activityLog";
 import { checkDeadlines } from "@/lib/utils/notifications";
 import { getEvents } from "@/lib/utils/event";
-import { getLocalStorage } from "@/lib/utils/localStorage";
-import { getToday, filterTodayEvents } from "@/lib/utils/date";
+import { filterTodayEvents } from "@/lib/utils/date";
 import type { ActivityLog as ActivityLogType } from "@/lib/utils/activityLog";
 import type { Event, Holiday } from "@/lib/types/event";
 import type { Task } from "@/lib/types/task";
+import type { FileItem } from "@/lib/types/file";
 
 // 리팩토링된 하위 컴포넌트들
 import DashboardStats from "./components/dashboard/DashboardStats";
@@ -23,7 +23,7 @@ export default function DashboardPage() {
   const [events, setEvents] = useState<(Event | Holiday)[]>([]);
   const [tasks, setTasks] = useState<Task[]>([]);
   const [recentActivities, setRecentActivities] = useState<ActivityLogType[]>([]);
-  const [recentFiles, setRecentFiles] = useState<any[]>([]);
+  const [recentFiles, setRecentFiles] = useState<FileItem[]>([]);
   const [selectedDate, setSelectedDate] = useState<number>(new Date().getDate());
   const [selectedDateEvents, setSelectedDateEvents] = useState<(Event | Holiday)[]>([]);
 

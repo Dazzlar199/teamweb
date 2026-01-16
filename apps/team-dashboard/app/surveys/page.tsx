@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useUser } from "@/lib/context/UserContext";
 import { handleError } from "@/lib/utils/errorHandler";
 import {
@@ -31,7 +31,7 @@ export default function SurveysPage() {
   });
 
   // Force update for Vercel build
-  const loadSurveys = () => {
+  const loadSurveys = useCallback(() => {
     try {
       const loaded = getSurveys();
       setSurveys(loaded);
@@ -52,11 +52,11 @@ export default function SurveysPage() {
         action: "설문조사 로드",
       });
     }
-  };
+  }, []);
 
   useEffect(() => {
     loadSurveys();
-  }, []);
+  }, [loadSurveys]);
 
   const handleAddSurvey = () => {
     if (!newSurvey.title || newSurvey.questions.length === 0) {

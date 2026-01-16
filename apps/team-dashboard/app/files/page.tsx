@@ -1,13 +1,10 @@
 "use client";
 
 import { useState, useRef, useEffect, useMemo } from "react";
-import { FileTypeIcon } from "@/components/icons/Icon";
-import { TEAM_MEMBERS } from "@/lib/constants/team";
 import {
   saveFile,
   getAllFiles,
   deleteFile,
-  getImageUrl,
   type FileMetadata,
 } from "@/lib/utils/storage";
 import { addActivityLog } from "@/lib/utils/activityLog";
@@ -119,10 +116,10 @@ export default function FilesPage() {
         {/* 필터 및 검색 */}
         <div className="flex flex-col md:flex-row gap-4">
           <div className="flex bg-white p-1 rounded-2xl border border-slate-200 shadow-sm w-fit">
-            {["전체", "이미지", "문서", "스프레드시트"].map((cat) => (
+            {(["전체", "이미지", "문서", "스프레드시트"] as const).map((cat) => (
               <button
                 key={cat}
-                onClick={() => setActiveCategory(cat as any)}
+                onClick={() => setActiveCategory(cat as FileCategory | "전체")}
                 className={`px-5 py-2 text-xs font-black rounded-xl transition-all ${
                   activeCategory === cat ? "bg-indigo-600 text-white shadow-md" : "text-slate-500 hover:bg-slate-50"
                 }`}

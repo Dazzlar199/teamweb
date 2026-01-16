@@ -4,16 +4,12 @@ import { useState, useMemo } from "react";
 import { useUser } from "@/lib/context/UserContext";
 import { useData } from "@/lib/context/DataContext";
 import { useToast } from "@/lib/context/ToastContext";
-import { handleError } from "@/lib/utils/errorHandler";
 import {
   savePost,
   deletePost,
   incrementViews,
   toggleLike,
   addComment,
-  updateComment,
-  deleteComment,
-  toggleCommentLike,
 } from "@/lib/utils/post";
 import type { Post, PostCategory, Comment } from "@/lib/types/post";
 import RichTextEditor from "@/components/common/RichTextEditor";
@@ -28,8 +24,6 @@ export default function CommunicationPage() {
   const [showPostForm, setShowPostForm] = useState(false);
   const [filterCategory, setFilterCategory] = useState<PostCategory | "all">("all");
   const [searchQuery, setSearchQuery] = useState("");
-  const [editingPost, setEditingPost] = useState<Post | null>(null);
-  const [editingComment, setEditingComment] = useState<{ postId: string; commentId: string } | null>(null);
 
   const [newPost, setNewPost] = useState({
     title: "",

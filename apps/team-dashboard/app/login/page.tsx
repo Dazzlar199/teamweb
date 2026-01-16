@@ -50,7 +50,7 @@ export default function LoginPage() {
 
     try {
       // 1. 기초 유효성 검사
-      if (!TEAM_MEMBER_NAMES.includes(trimmedName as any)) {
+      if (!(TEAM_MEMBER_NAMES as readonly string[]).includes(trimmedName)) {
         throw new Error(`"${trimmedName}"은(는) 등록된 팀원이 아닙니다.`);
       }
 
@@ -68,7 +68,7 @@ export default function LoginPage() {
       console.log("Login Attempt:", { email }); 
 
       // 3. 로그인 시도
-      let { error: signInError } = await supabase.auth.signInWithPassword({
+      const { error: signInError } = await supabase.auth.signInWithPassword({
         email,
         password: trimmedPassword,
       });

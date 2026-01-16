@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { getNotifications, markAsRead, markAllAsRead, deleteNotification, getUnreadCount, requestNotificationPermission, subscribeToNotifications } from "@/lib/utils/notifications";
 import type { Notification } from "@/lib/utils/notifications";
 import { useUser } from "@/lib/context/UserContext";
@@ -15,13 +15,13 @@ export default function NotificationBell() {
   const buttonRef = useRef<HTMLButtonElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const loadNotifications = async () => {
+  const loadNotifications = useCallback(async () => {
     if (!currentUser) return;
     const notifs = await getNotifications(currentUser);
     const unread = await getUnreadCount(currentUser);
     setNotifications(notifs);
     setUnreadCount(unread);
-  };
+  }, [currentUser]);
 
   useEffect(() => {
     if (currentUser) {
@@ -40,7 +40,7 @@ export default function NotificationBell() {
         clearInterval(interval);
       };
     }
-  }, [currentUser]);
+  }, [currentUser, loadNotifications]);
 
   useEffect(() => {
     // 브라우저 알림 권한 요청

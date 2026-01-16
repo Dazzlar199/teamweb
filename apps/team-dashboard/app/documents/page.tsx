@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import { useUser } from "@/lib/context/UserContext";
 import { handleError } from "@/lib/utils/errorHandler";
 import {
@@ -172,7 +172,7 @@ export default function DocumentsPage() {
   const checklist = getDocumentChecklist();
   const expiredCount = getExpiredDocuments().length;
 
-  const now = Date.now();
+  const now = useMemo(() => Date.now(), []);
 
   return (
     <div className="min-h-screen bg-[#F9FAFB]">
