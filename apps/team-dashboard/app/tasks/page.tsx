@@ -7,7 +7,7 @@ import { useData } from "@/lib/context/DataContext";
 import { useToast } from "@/lib/context/ToastContext";
 import { addActivityLog } from "@/lib/utils/activityLog";
 import type { Task } from "@/lib/types/task";
-import RichTextEditor from "@/components/common/RichTextEditor";
+import NotionEditor from "@/components/common/NotionEditor";
 
 import { saveTask, deleteTask, updateTaskStatus as updateSupabaseTaskStatus } from "@/lib/utils/task";
 
@@ -21,6 +21,7 @@ export default function TasksPage() {
   const [showAddForm, setShowAddForm] = useState(false);
   const [filterStatus, setStatusFilter] = useState<"전체" | "todo" | "in_progress" | "done">("전체");
   const [filterPriority, setPriorityFilter] = useState<string>("전체");
+  const [filterAssignee, setFilterAssignee] = useState<string>("전체"); // 인원 필터 추가
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   
@@ -38,13 +39,14 @@ export default function TasksPage() {
     return tasks.filter((task) => {
       const matchesStatus = filterStatus === "전체" || task.status === filterStatus;
       const matchesPriority = filterPriority === "전체" || task.priority === filterPriority;
-      const matchesSearch = 
-        task.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+      const matchesAssignee = filterAssignee === "전체" || task.assignedTo === filterAssignee;
+      const matchesSearch =
+        task.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         (task.description && task.description.toLowerCase().includes(searchQuery.toLowerCase()));
-      
-      return matchesStatus && matchesPriority && matchesSearch;
+
+      return matchesStatus && matchesPriority && matchesAssignee && matchesSearch;
     });
-  }, [tasks, filterStatus, filterPriority, searchQuery]);
+  }, [tasks, filterStatus, filterPriority, filterAssignee, searchQuery]);
 
   const updateTaskStatus = async (id: string, newStatus: Task['status']) => {
     try {
@@ -149,20 +151,50 @@ export default function TasksPage() {
         </div>
 
         {/* 필터 바 */}
-        <div className="glass-card p-2 rounded-2xl flex flex-wrap items-center gap-2">
-          <div className="flex bg-slate-100 p-1 rounded-xl">
-            {(["전체", "todo", "in_progress", "done"] as const).map((s) => (
-              <button
-                key={s}
-                onClick={() => setStatusFilter(s)}
-                className={`px-4 py-1.5 text-xs font-bold rounded-lg transition-all ${
-                  filterStatus === s ? "bg-white text-indigo-600 shadow-sm" : "text-slate-500 hover:text-slate-800"
-                }`}
-              >
-                {s === "todo" ? "대기" : s === "in_progress" ? "진행" : s === "done" ? "완료" : "전체 상태"}
-              </button>
-            ))}
+        <div className="glass-card p-4 rounded-2xl space-y-3">
+          {/* 인원 필터 */}
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="text-xs font-black text-slate-400 uppercase tracking-wider mr-2">담당자</span>
+            {(["전체", "김찬주", "박건희", "이나영", "김예린"] as const).map((person) => {
+              const member = person !== "전체" ? TEAM_MEMBERS[person as keyof typeof TEAM_MEMBERS] : null;
+              return (
+                <button
+                  key={person}
+                  onClick={() => setFilterAssignee(person)}
+                  className={`px-4 py-2 text-xs font-bold rounded-xl transition-all flex items-center gap-2 ${
+                    filterAssignee === person
+                      ? "bg-indigo-600 text-white shadow-lg shadow-indigo-200"
+                      : "bg-white text-slate-600 hover:bg-slate-50 border border-slate-200"
+                  }`}
+                >
+                  {member && (
+                    <div
+                      className="w-2 h-2 rounded-full"
+                      style={{ backgroundColor: member.color }}
+                    />
+                  )}
+                  {person === "전체" ? "전체 보기" : person}
+                  {member && <span className="text-[10px] opacity-70">{member.role}</span>}
+                </button>
+              );
+            })}
           </div>
+
+          {/* 상태 & 우선순위 필터 */}
+          <div className="flex flex-wrap items-center gap-2">
+            <div className="flex bg-slate-100 p-1 rounded-xl">
+              {(["전체", "todo", "in_progress", "done"] as const).map((s) => (
+                <button
+                  key={s}
+                  onClick={() => setStatusFilter(s)}
+                  className={`px-4 py-1.5 text-xs font-bold rounded-lg transition-all ${
+                    filterStatus === s ? "bg-white text-indigo-600 shadow-sm" : "text-slate-500 hover:text-slate-800"
+                  }`}
+                >
+                  {s === "todo" ? "대기" : s === "in_progress" ? "진행" : s === "done" ? "완료" : "전체 상태"}
+                </button>
+              ))}
+            </div>
           
           <select 
             value={filterPriority}
@@ -176,7 +208,7 @@ export default function TasksPage() {
           </select>
 
           <div className="flex-1 relative min-w-[200px]">
-            <input 
+            <input
               type="text"
               placeholder="작업 명칭 또는 내용 검색..."
               value={searchQuery}
@@ -184,6 +216,7 @@ export default function TasksPage() {
               className="w-full pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
             />
             <svg className="w-4 h-4 absolute left-3.5 top-2.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+          </div>
           </div>
         </div>
 
@@ -314,11 +347,11 @@ export default function TasksPage() {
                 </div>
 
                 {/* 에디터 영역 */}
-                <div className="max-w-5xl mx-auto w-full min-h-[600px]">
-                  <RichTextEditor 
+                <div className="max-w-5xl mx-auto w-full min-h-[600px] bg-white rounded-2xl p-8 shadow-sm">
+                  <NotionEditor
                     value={newTask.description}
                     onChange={(content) => setNewTask({...newTask, description: content})}
-                    placeholder="내용을 입력하세요..."
+                    placeholder="'/' 를 입력하여 명령어를 사용하세요..."
                   />
                 </div>
               </div>
@@ -433,11 +466,11 @@ function TaskDetailContent({ task, onClose, onUpdate, onDelete, onStatusChange }
             </div>
           </div>
 
-          <div className="min-h-[500px]">
-            <RichTextEditor 
+          <div className="min-h-[500px] bg-white rounded-2xl p-8">
+            <NotionEditor
               value={editedTask.description || ""}
               onChange={(content) => setEditedTask({...editedTask, description: content})}
-              placeholder="내용을 입력하세요..."
+              placeholder="'/' 를 입력하여 명령어를 사용하세요..."
             />
           </div>
         </div>
