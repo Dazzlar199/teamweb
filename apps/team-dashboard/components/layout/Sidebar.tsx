@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   DashboardIcon,
   CalendarIcon,
@@ -36,6 +36,7 @@ const menuItems = [
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const router = useRouter();
   const { user, setUser } = useUser();
 
   return (
@@ -137,9 +138,10 @@ export default function Sidebar() {
             </div>
           </div>
           <button
-            onClick={() => {
-              setUser(null);
+            onClick={async () => {
+              await setUser(null);
               localStorage.removeItem("team-dashboard-user");
+              router.push('/login');
             }}
             className="w-full py-2 text-[11.5px] font-bold text-slate-500 hover:text-rose-600 bg-slate-50 hover:bg-rose-50 rounded-lg transition-all border border-slate-100 hover:border-rose-100"
           >

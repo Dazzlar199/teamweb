@@ -13,7 +13,7 @@ import { saveTask, deleteTask, updateTaskStatus as updateSupabaseTaskStatus } fr
 
 export default function TasksPage() {
   const { user } = useUser();
-  const { tasks, setTasks } = useData();
+  const { tasks, setTasks, refreshTasks } = useData();
   const { showToast } = useToast();
   const currentUser = user?.name || "김찬주";
 
@@ -48,12 +48,15 @@ export default function TasksPage() {
 
   const updateTaskStatus = async (id: string, newStatus: Task['status']) => {
     try {
-      await updateSupabaseTaskStatus(id, newStatus);
-      const updatedTasks = tasks.map(t => 
+      // 낙관적 업데이트
+      const updatedTasks = tasks.map(t =>
         t.id === id ? { ...t, status: newStatus, updatedAt: new Date().toISOString() } : t
       );
       setTasks(updatedTasks);
-      
+
+      await updateSupabaseTaskStatus(id, newStatus);
+      await refreshTasks(); // DataContext 동기화
+
       // 활동 로그 추가
       const task = tasks.find(t => t.id === id);
       if (task) {
@@ -64,9 +67,10 @@ export default function TasksPage() {
           targetTitle: task.title,
         });
       }
-      
+
       showToast(`상태가 변경되었습니다.`, "info");
     } catch (e) {
+      await refreshTasks(); // 에러 시 복구
       showToast("상태 변경 실패", "error");
     }
   };
@@ -92,9 +96,12 @@ export default function TasksPage() {
     };
 
     try {
+      // 낙관적 업데이트
+      setTasks([task, ...tasks]);
+
       // Supabase 및 LocalStorage 동시 저장
       await saveTask(task);
-      setTasks([task, ...tasks]);
+      await refreshTasks(); // DataContext 동기화
 
       addActivityLog({
         user: currentUser,
@@ -105,7 +112,7 @@ export default function TasksPage() {
 
       showToast("새 작업이 Supabase에 저장되었습니다.", "success");
       setShowAddForm(false);
-      
+
       // 폼 초기화
       setNewTask({
         title: "",
@@ -116,6 +123,7 @@ export default function TasksPage() {
         dueDate: new Date().toISOString().split('T')[0],
       });
     } catch (e) {
+      await refreshTasks(); // 에러 시 복구
       showToast("작업 등록에 실패했습니다.", "error");
     }
   };

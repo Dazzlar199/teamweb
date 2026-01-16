@@ -76,13 +76,14 @@ export default function CommunicationPage() {
 
       // 낙관적 업데이트
       setPosts(prev => [post, ...prev]);
-      
+
       await savePost(post);
+      await refreshPosts(); // DataContext 동기화
       showToast("게시글이 등록되었습니다.", "success");
       setShowPostForm(false);
       setNewPost({ title: "", content: "", category: "일반", pinned: false });
     } catch (error) {
-      refreshPosts(); // 에러 시 복구
+      await refreshPosts(); // 에러 시 복구
       showToast("게시글 등록에 실패했습니다.", "error");
     }
   };
@@ -92,10 +93,11 @@ export default function CommunicationPage() {
     try {
       setPosts(prev => prev.filter(p => p.id !== id));
       await deletePost(id);
+      await refreshPosts(); // DataContext 동기화
       if (selectedPost?.id === id) setSelectedPost(null);
       showToast("게시글이 삭제되었습니다.", "success");
     } catch (error) {
-      refreshPosts();
+      await refreshPosts();
       showToast("삭제 실패", "error");
     }
   };
@@ -121,10 +123,11 @@ export default function CommunicationPage() {
       }
 
       await addComment(postId, comment);
+      await refreshPosts(); // DataContext 동기화
       setNewCommentInput(prev => ({ ...prev, [postId]: "" }));
       showToast("댓글이 등록되었습니다.", "success");
     } catch (error) {
-      refreshPosts();
+      await refreshPosts();
       showToast("댓글 등록 실패", "error");
     }
   };
@@ -142,8 +145,9 @@ export default function CommunicationPage() {
         return p;
       }));
       await toggleLike(postId, currentUser);
+      await refreshPosts(); // DataContext 동기화
     } catch (error) {
-      refreshPosts();
+      await refreshPosts();
     }
   };
 
