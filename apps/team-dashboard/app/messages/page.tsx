@@ -25,17 +25,24 @@ export default function MessagesPage() {
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // 실시간 동기화 및 데이터 로드
+  // 실시간 동기화 (currentUser가 변경될 때만 재구독)
   useEffect(() => {
-    if (currentUser) {
+    if (!currentUser) return;
+
+    loadConversations();
+    const unsubscribe = subscribeToMessages(() => {
       loadConversations();
-      const unsubscribe = subscribeToMessages(() => {
-        loadConversations();
-        if (selectedUser) loadMessages(selectedUser);
-      });
-      return () => unsubscribe();
+    });
+
+    return () => unsubscribe();
+  }, [currentUser]);
+
+  // selectedUser 변경 시 메시지 로드
+  useEffect(() => {
+    if (selectedUser && currentUser) {
+      loadMessages(selectedUser);
     }
-  }, [currentUser, selectedUser]);
+  }, [selectedUser]);
 
   useEffect(() => {
     scrollToBottom();

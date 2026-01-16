@@ -2,6 +2,7 @@ import { getLocalStorage, setLocalStorage } from "./localStorage";
 import { supabase, isSupabaseConfigured } from "@/lib/supabase/client";
 import type { Post, Comment } from "@/lib/types/post";
 import { addNotification } from "./notifications";
+import { TEAM_MEMBER_NAMES } from "@/lib/constants/team";
 
 const STORAGE_KEY = "team-posts";
 
@@ -145,7 +146,7 @@ export async function savePost(post: Post): Promise<void> {
           title: '새 게시글 등록',
           message: `${post.author}님이 소통공간에 새 글을 올렸습니다: ${post.title}`,
           link: '/communication'
-        }, ["김찬주", "박건희", "김예린", "이나영"].filter(u => u !== post.author));
+        }, [...TEAM_MEMBER_NAMES].filter(u => u !== post.author));
       }
     } catch (error) {
       console.error("Supabase 게시글 저장 실패:", error);

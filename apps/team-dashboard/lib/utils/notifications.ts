@@ -1,6 +1,7 @@
 // 알림 관리 유틸리티 (Supabase 연동 및 팀 공유 보강)
 
 import { supabase, isSupabaseConfigured } from "@/lib/supabase/client";
+import { TEAM_MEMBER_NAMES } from "@/lib/constants/team";
 
 export interface Notification {
   id: string;
@@ -54,7 +55,7 @@ export async function addNotification(
   notification: Omit<Notification, 'id' | 'timestamp' | 'read' | 'user_name'>,
   targetUsers?: string[]
 ): Promise<void> {
-  const users = targetUsers && targetUsers.length > 0 ? targetUsers : ["김찬주", "박건희", "김예린", "이나영"];
+  const users = targetUsers && targetUsers.length > 0 ? targetUsers : [...TEAM_MEMBER_NAMES];
 
   const newNotifications = users.map(user => ({
     id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,

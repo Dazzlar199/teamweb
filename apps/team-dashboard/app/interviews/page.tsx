@@ -11,6 +11,7 @@ import {
   getInterviewsByType,
 } from "@/lib/utils/interview";
 import type { Interview, InterviewType, InterviewStatus } from "@/lib/types/interview";
+import { TEAM_MEMBER_NAMES } from "@/lib/constants/team";
 
 // 가이드북 인터뷰 스크립트 (예비부부용)
 const COUPLE_INTERVIEW_SCRIPT = `1. 결혼 준비는 어떻게 진행하고 계신가요?
@@ -35,7 +36,7 @@ const FREELANCER_INTERVIEW_SCRIPT = `1. 현재 어떤 플랫폼에서 활동하�
 
 export default function InterviewsPage() {
   const { user } = useUser();
-  const currentUser = user?.name || "김찬주";
+  const currentUser = user?.name || TEAM_MEMBER_NAMES[0];
   
   const [interviews, setInterviews] = useState<Interview[]>([]);
   const [filterType, setFilterType] = useState<InterviewType | "all">("all");

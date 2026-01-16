@@ -7,6 +7,7 @@ import ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
 import { getExpenditures, saveExpenditure, deleteExpenditure, updateExpenditureStatus, NCAExpenditure } from "@/lib/utils/finance";
 import { supabase, isSupabaseConfigured } from "@/lib/supabase/client";
+import { TEAM_MEMBER_NAMES } from "@/lib/constants/team";
 
 // --- Types ---
 type NCABimok = "전문가활용비" | "임차비" | "재료구입비" | "외주용역비";
@@ -130,7 +131,7 @@ export default function FinancePage() {
       date: newExp.date || new Date().toISOString().split("T")[0],
     } as NCAExpenditure;
 
-    const success = await saveExpenditure(exp, user?.name || "김찬주");
+    const success = await saveExpenditure(exp, user?.name || TEAM_MEMBER_NAMES[0]);
     if (success) {
       setShowAddModal(false);
       showToast("등록되었습니다.", "success");

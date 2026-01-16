@@ -12,11 +12,12 @@ import {
 } from "@/lib/utils/survey";
 import type { Interview } from "@/lib/types/interview";
 import type { Survey } from "@/lib/types/survey";
+import { TEAM_MEMBER_NAMES } from "@/lib/constants/team";
 
 export default function ResearchPage() {
   const { user } = useUser();
   const { showToast } = useToast();
-  const currentUser = user?.name || "김찬주";
+  const currentUser = user?.name || TEAM_MEMBER_NAMES[0];
 
   const [activeTab, setActiveTab] = useState<"interviews" | "surveys">("interviews");
   const [interviews, setInterviews] = useState<Interview[]>([]);

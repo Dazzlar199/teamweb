@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { createContext, useContext, useState, useEffect, ReactNode, useMemo, useCallback } from "react";
 import { User, getUserInfo, isAdmin as checkIsAdmin, canModify as checkCanModify } from "@/lib/types/user";
 import { createClient } from "@/lib/supabase/client";
 
@@ -44,7 +44,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
     return () => subscription.unsubscribe();
   }, [supabase]);
 
-  const handleSetUser = async (newUser: User | null) => {
+  const handleSetUser = useCallback(async (newUser: User | null) => {
     if (newUser === null) {
       await supabase.auth.signOut();
       setUser(null);
@@ -52,18 +52,22 @@ export function UserProvider({ children }: { children: ReactNode }) {
        // setUser는 이제 내부 상태 업데이트용보다는 로그아웃용으로 주로 쓰임
        setUser(newUser);
     }
-  };
+  }, [supabase]);
+
+  const isAuthenticated = useMemo(() => user !== null, [user]);
+  const isAdmin = useMemo(() => checkIsAdmin(user), [user]);
+  const canModifyFn = useCallback((resourceAuthor: string) => checkCanModify(user, resourceAuthor), [user]);
+
+  const contextValue = useMemo(() => ({
+    user,
+    setUser: handleSetUser,
+    isAuthenticated,
+    isAdmin,
+    canModify: canModifyFn,
+  }), [user, handleSetUser, isAuthenticated, isAdmin, canModifyFn]);
 
   return (
-    <UserContext.Provider
-      value={{
-        user,
-        setUser: handleSetUser,
-        isAuthenticated: user !== null,
-        isAdmin: checkIsAdmin(user),
-        canModify: (resourceAuthor: string) => checkCanModify(user, resourceAuthor),
-      }}
-    >
+    <UserContext.Provider value={contextValue}>
       {children}
     </UserContext.Provider>
   );

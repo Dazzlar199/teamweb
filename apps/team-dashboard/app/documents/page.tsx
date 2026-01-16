@@ -13,6 +13,7 @@ import {
 } from "@/lib/utils/document";
 import { getFile } from "@/lib/utils/storage";
 import type { Document, DocumentCategory } from "@/lib/types/document";
+import { TEAM_MEMBER_NAMES } from "@/lib/constants/team";
 
 const CATEGORY_LABELS: Record<DocumentCategory, string> = {
   corporate: "법인 관련",
@@ -29,7 +30,7 @@ const CATEGORY_LABELS: Record<DocumentCategory, string> = {
 
 export default function DocumentsPage() {
   const { user } = useUser();
-  const currentUser = user?.name || "김찬주";
+  const currentUser = user?.name || TEAM_MEMBER_NAMES[0];
 
   const [documents, setDocuments] = useState<Document[]>([]);
   const [filterCategory, setFilterCategory] = useState<

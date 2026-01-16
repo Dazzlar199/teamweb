@@ -6,6 +6,7 @@ import { getDocuments } from "@/lib/utils/document";
 import { getLocalStorage, setLocalStorage } from "@/lib/utils/localStorage";
 import { useUser } from "@/lib/context/UserContext";
 import { useToast } from "@/lib/context/ToastContext";
+import { TEAM_MEMBER_NAMES } from "@/lib/constants/team";
 
 import type {
   RoadmapPhase,
@@ -29,7 +30,7 @@ import ChecklistTab from "./components/ChecklistTab";
 export default function YechangpackPage() {
   const { user } = useUser();
   const { showToast } = useToast();
-  const currentUser = user?.name || "김찬주";
+  const currentUser = user?.name || TEAM_MEMBER_NAMES[0];
   const [activeTab, setActiveTab] = useState<"roadmap" | "checklist" | "evidence" | "documents" | "notes">("roadmap");
 
   const [roadmapPhases, setRoadmapPhases] = useState<RoadmapPhase[]>([]);

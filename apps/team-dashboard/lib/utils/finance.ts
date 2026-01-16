@@ -2,6 +2,7 @@
 
 import { supabase, isSupabaseConfigured } from "@/lib/supabase/client";
 import { addNotification } from "./notifications";
+import { TEAM_MEMBER_NAMES } from "@/lib/constants/team";
 
 export interface NCAExpenditure {
   id: string;
@@ -57,7 +58,7 @@ export async function saveExpenditure(exp: NCAExpenditure, userName: string): Pr
         title: '새로운 지출 등록',
         message: `${userName}님이 ${exp.item_name} (${exp.amount_in_krw.toLocaleString()}원) 내역을 등록했습니다.`,
         link: '/finance'
-      }, ["김찬주", "박건희", "김예린", "이나영"].filter(u => u !== userName));
+      }, [...TEAM_MEMBER_NAMES].filter(u => u !== userName));
 
       return true;
     } catch (e) {

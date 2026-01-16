@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { TEAM_MEMBERS } from "@/lib/constants/team";
+import { TEAM_MEMBERS, TEAM_MEMBER_NAMES } from "@/lib/constants/team";
 import { useUser } from "@/lib/context/UserContext";
 import { useData } from "@/lib/context/DataContext";
 import { useToast } from "@/lib/context/ToastContext";
@@ -15,7 +15,7 @@ export default function TasksPage() {
   const { user } = useUser();
   const { tasks, setTasks, refreshTasks } = useData();
   const { showToast } = useToast();
-  const currentUser = user?.name || "김찬주";
+  const currentUser = user?.name || TEAM_MEMBER_NAMES[0];
 
   // 상태 관리
   const [showAddForm, setShowAddForm] = useState(false);

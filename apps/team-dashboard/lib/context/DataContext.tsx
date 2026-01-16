@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState, useEffect, ReactNode, useCallback } from "react";
+import { createContext, useContext, useState, useEffect, ReactNode, useCallback, useMemo } from "react";
 import { Post } from "@/lib/types/post";
 import { getPosts } from "@/lib/utils/post";
 import { Event, Holiday } from "@/lib/types/event";
@@ -45,27 +45,51 @@ export function DataProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const initData = async () => {
-      await Promise.all([refreshPosts(), refreshEvents(), refreshTasks()]);
+      const [postsData, eventsData, tasksData] = await Promise.all([
+        getPosts(),
+        getEvents(),
+        getTasks()
+      ]);
+      setPosts(postsData);
+      setEvents(eventsData);
+      setTasks(tasksData);
     };
     initData();
-    
+
     // 타 탭에서의 변경 감지
-    const handleStorage = (e: StorageEvent) => {
-      if (e.key === "team-posts") refreshPosts();
-      if (e.key === "team-dashboard-events") refreshEvents();
-      if (e.key === "team-dashboard-tasks") refreshTasks();
+    const handleStorage = async (e: StorageEvent) => {
+      if (e.key === "team-posts") {
+        const data = await getPosts();
+        setPosts(data);
+      }
+      if (e.key === "team-dashboard-events") {
+        const data = await getEvents();
+        setEvents(data);
+      }
+      if (e.key === "team-dashboard-tasks") {
+        const data = await getTasks();
+        setTasks(data);
+      }
     };
-    
+
     window.addEventListener("storage", handleStorage);
     return () => window.removeEventListener("storage", handleStorage);
-  }, [refreshPosts, refreshEvents, refreshTasks]);
+  }, []); // 빈 배열로 한 번만 실행
+
+  const contextValue = useMemo(() => ({
+    posts,
+    events,
+    tasks,
+    refreshPosts,
+    refreshEvents,
+    refreshTasks,
+    setPosts,
+    setEvents,
+    setTasks
+  }), [posts, events, tasks, refreshPosts, refreshEvents, refreshTasks]);
 
   return (
-    <DataContext.Provider value={{ 
-      posts, events, tasks, 
-      refreshPosts, refreshEvents, refreshTasks,
-      setPosts, setEvents, setTasks 
-    }}>
+    <DataContext.Provider value={contextValue}>
       {children}
     </DataContext.Provider>
   );

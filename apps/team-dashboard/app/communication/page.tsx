@@ -13,12 +13,13 @@ import {
 } from "@/lib/utils/post";
 import type { Post, PostCategory, Comment } from "@/lib/types/post";
 import RichTextEditor from "@/components/common/RichTextEditor";
+import { TEAM_MEMBER_NAMES } from "@/lib/constants/team";
 
 export default function CommunicationPage() {
   const { user, canModify } = useUser();
   const { posts, setPosts, refreshPosts } = useData();
   const { showToast } = useToast();
-  const currentUser = user?.name || "김찬주";
+  const currentUser = user?.name || TEAM_MEMBER_NAMES[0];
 
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [showPostForm, setShowPostForm] = useState(false);

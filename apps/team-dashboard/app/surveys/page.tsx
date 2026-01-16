@@ -11,10 +11,11 @@ import {
   getResponsesBySurvey,
 } from "@/lib/utils/survey";
 import type { Survey, Question, QuestionType, SurveyStatus, SurveyTargetType } from "@/lib/types/survey";
+import { TEAM_MEMBER_NAMES } from "@/lib/constants/team";
 
 export default function SurveysPage() {
   const { user } = useUser();
-  const currentUser = user?.name || "김찬주";
+  const currentUser = user?.name || TEAM_MEMBER_NAMES[0];
   
   const [surveys, setSurveys] = useState<Survey[]>([]);
   const [filterStatus, setFilterStatus] = useState<SurveyStatus | "all">("all");

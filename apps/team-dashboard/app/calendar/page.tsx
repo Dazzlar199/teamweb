@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo, useCallback } from "react";
-import { TEAM_MEMBERS } from "@/lib/constants/team";
+import { TEAM_MEMBERS, TEAM_MEMBER_NAMES } from "@/lib/constants/team";
 import { useUser } from "@/lib/context/UserContext";
 import { useData } from "@/lib/context/DataContext";
 import { useToast } from "@/lib/context/ToastContext";
@@ -15,7 +15,7 @@ export default function CalendarPage() {
   const { user } = useUser();
   const { events, setEvents, refreshEvents } = useData();
   const { showToast } = useToast();
-  const currentUser = user?.name || "김찬주";
+  const currentUser = user?.name || TEAM_MEMBER_NAMES[0];
   
   const today = useMemo(() => new Date(), []);
   const todayYear = today.getFullYear();

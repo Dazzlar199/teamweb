@@ -10,6 +10,7 @@ import {
 import { addActivityLog } from "@/lib/utils/activityLog";
 import { useUser } from "@/lib/context/UserContext";
 import { useToast } from "@/lib/context/ToastContext";
+import { TEAM_MEMBER_NAMES } from "@/lib/constants/team";
 
 type FileCategory = "이미지" | "문서" | "스프레드시트" | "기타";
 
@@ -28,7 +29,7 @@ interface FileItem {
 export default function FilesPage() {
   const { user } = useUser();
   const { showToast } = useToast();
-  const currentUser = user?.name || "김찬주";
+  const currentUser = user?.name || TEAM_MEMBER_NAMES[0];
   const [files, setFiles] = useState<FileItem[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState<FileCategory | "전체">("전체");
@@ -87,9 +88,9 @@ export default function FilesPage() {
       };
 
       await saveFile(fileItem as unknown as FileMetadata, file);
-      addActivityLog({ user: currentUser, type: 'file', action: '파일을 업로드했습니다', targetTitle: file.name });
+      await addActivityLog({ user: currentUser, type: 'file', action: '파일을 업로드했습니다', targetTitle: file.name });
     }
-    loadFiles();
+    await loadFiles();
     showToast("파일 업로드 완료", "success");
   };
 
@@ -157,7 +158,7 @@ export default function FilesPage() {
                   <button onClick={() => window.open(file.url)} className="p-2 bg-white text-indigo-600 rounded-full shadow-lg hover:scale-110 transition-transform">
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
                   </button>
-                  <button onClick={async () => { if(confirm('삭제하시겠습니까?')) { await deleteFile(file.id); loadFiles(); showToast('삭제되었습니다', 'info'); } }} className="p-2 bg-white text-rose-600 rounded-full shadow-lg hover:scale-110 transition-transform">
+                  <button onClick={async () => { if(confirm('삭제하시겠습니까?')) { await deleteFile(file.id); await loadFiles(); showToast('삭제되었습니다', 'info'); } }} className="p-2 bg-white text-rose-600 rounded-full shadow-lg hover:scale-110 transition-transform">
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
                   </button>
                 </div>
