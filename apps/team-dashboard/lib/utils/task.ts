@@ -118,65 +118,62 @@ export function getTasks(): Task[] | Promise<Task[]> {
 }
 
 // 태스크 저장
-export async function saveTask(task: Task): Promise<void>;
-export function saveTask(task: Task): void | Promise<void>;
-export function saveTask(task: Task): void | Promise<void> {
-  // 1. LocalStorage 저장 (낙관적 업데이트 및 오프라인 지원)
+export async function saveTask(task: Task): Promise<void> {
   const tasks = getLocalStorage<Task[]>(STORAGE_KEY, []);
   const index = tasks.findIndex((t) => t.id === task.id);
+  const isNewTask = index < 0;
 
+  // Supabase 먼저 저장 (설정되어 있는 경우)
+  if (isSupabaseConfigured()) {
+    try {
+      await saveTaskToSupabase(task);
+
+      // 새 태스크 생성 시 알림 (담당자에게)
+      if (isNewTask && task.assignedTo) {
+        await addNotification({
+          type: 'task',
+          title: '새 업무 배정',
+          message: `새로운 업무가 배정되었습니다: ${task.title}`,
+          link: '/tasks'
+        }, [task.assignedTo]);
+      }
+    } catch (error) {
+      console.error("Supabase 태스크 저장 실패:", error);
+      throw new Error("태스크 저장에 실패했습니다. 다시 시도해주세요.");
+    }
+  }
+
+  // Supabase 성공 후 localStorage 업데이트
   if (index >= 0) {
     tasks[index] = task;
   } else {
     tasks.unshift(task);
   }
-  
+
   // 날짜순 정렬 (최신순)
   tasks.sort((a, b) => {
     return new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime();
   });
 
   setLocalStorage(STORAGE_KEY, tasks);
-
-  // 2. Supabase 동기화 (비동기)
-  if (isSupabaseConfigured()) {
-    (async () => {
-      try {
-        await saveTaskToSupabase(task);
-        
-        // 새 태스크 생성 시 알림 (담당자에게)
-        if (index < 0 && task.assignedTo) {
-           await addNotification({
-            type: 'task',
-            title: '새 업무 배정',
-            message: `새로운 업무가 배정되었습니다: ${task.title}`,
-            link: '/tasks'
-          }, [task.assignedTo]);
-        }
-      } catch (error) {
-        console.warn("Supabase 태스크 동기화 실패 (무시됨):", error);
-      }
-    })();
-  }
 }
 
 // 태스크 삭제
-export async function deleteTask(taskId: string): Promise<void>;
-export function deleteTask(taskId: string): void | Promise<void>;
-export function deleteTask(taskId: string): void | Promise<void> {
+export async function deleteTask(taskId: string): Promise<void> {
+  // Supabase 먼저 삭제 (설정되어 있는 경우)
+  if (isSupabaseConfigured()) {
+    try {
+      await deleteTaskFromSupabase(taskId);
+    } catch (error) {
+      console.error("Supabase 태스크 삭제 실패:", error);
+      throw new Error("태스크 삭제에 실패했습니다. 다시 시도해주세요.");
+    }
+  }
+
+  // Supabase 성공 후 localStorage 업데이트
   const tasks = getLocalStorage<Task[]>(STORAGE_KEY, []);
   const filtered = tasks.filter((t) => t.id !== taskId);
   setLocalStorage(STORAGE_KEY, filtered);
-
-  if (isSupabaseConfigured()) {
-    (async () => {
-      try {
-        await deleteTaskFromSupabase(taskId);
-      } catch (error) {
-        console.warn("Supabase 태스크 삭제 실패 (무시됨):", error);
-      }
-    })();
-  }
 }
 
 // 태스크 ID로 가져오기
@@ -223,15 +220,13 @@ export function getTaskById(taskId: string): Task | undefined | Promise<Task | u
 }
 
 // 태스크 상태 업데이트
-export async function updateTaskStatus(taskId: string, status: Task['status']): Promise<void>;
-export function updateTaskStatus(taskId: string, status: Task['status']): void | Promise<void>;
-export function updateTaskStatus(taskId: string, status: Task['status']): void | Promise<void> {
+export async function updateTaskStatus(taskId: string, status: Task['status']): Promise<void> {
   const tasks = getLocalStorage<Task[]>(STORAGE_KEY, []);
   const task = tasks.find(t => t.id === taskId);
-  
+
   if (task) {
     task.status = status;
     task.updatedAt = new Date().toISOString();
-    saveTask(task);
+    await saveTask(task);
   }
 }
