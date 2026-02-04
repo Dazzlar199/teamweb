@@ -123,7 +123,21 @@ export async function saveTask(task: Task): Promise<void> {
   const index = tasks.findIndex((t) => t.id === task.id);
   const isNewTask = index < 0;
 
-  // Supabase 먼저 저장 (설정되어 있는 경우)
+  // 🔄 DATA LOSS FIX: localStorage 먼저 저장 (즉시 반영)
+  if (index >= 0) {
+    tasks[index] = task;
+  } else {
+    tasks.unshift(task);
+  }
+
+  // 날짜순 정렬 (최신순)
+  tasks.sort((a, b) => {
+    return new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime();
+  });
+
+  setLocalStorage(STORAGE_KEY, tasks);
+
+  // Supabase 백그라운드 동기화 (실패해도 데이터는 localStorage에 보존됨)
   if (isSupabaseConfigured()) {
     try {
       await saveTaskToSupabase(task);
@@ -138,42 +152,29 @@ export async function saveTask(task: Task): Promise<void> {
         }, [task.assignedTo]);
       }
     } catch (error) {
-      console.error("Supabase 태스크 저장 실패:", error);
-      throw new Error("태스크 저장에 실패했습니다. 다시 시도해주세요.");
+      console.error("Supabase 태스크 동기화 실패 (로컬 저장 완료):", error);
+      // ✅ 에러를 throw하지 않음 - 사용자에게는 성공으로 보임
+      // TODO: 향후 재시도 큐 구현 고려
     }
   }
-
-  // Supabase 성공 후 localStorage 업데이트
-  if (index >= 0) {
-    tasks[index] = task;
-  } else {
-    tasks.unshift(task);
-  }
-
-  // 날짜순 정렬 (최신순)
-  tasks.sort((a, b) => {
-    return new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime();
-  });
-
-  setLocalStorage(STORAGE_KEY, tasks);
 }
 
 // 태스크 삭제
 export async function deleteTask(taskId: string): Promise<void> {
-  // Supabase 먼저 삭제 (설정되어 있는 경우)
+  // 🔄 DATA LOSS FIX: localStorage 먼저 삭제
+  const tasks = getLocalStorage<Task[]>(STORAGE_KEY, []);
+  const filtered = tasks.filter((t) => t.id !== taskId);
+  setLocalStorage(STORAGE_KEY, filtered);
+
+  // Supabase 백그라운드 동기화
   if (isSupabaseConfigured()) {
     try {
       await deleteTaskFromSupabase(taskId);
     } catch (error) {
-      console.error("Supabase 태스크 삭제 실패:", error);
-      throw new Error("태스크 삭제에 실패했습니다. 다시 시도해주세요.");
+      console.error("Supabase 태스크 삭제 동기화 실패 (로컬 삭제 완료):", error);
+      // ✅ 에러를 throw하지 않음
     }
   }
-
-  // Supabase 성공 후 localStorage 업데이트
-  const tasks = getLocalStorage<Task[]>(STORAGE_KEY, []);
-  const filtered = tasks.filter((t) => t.id !== taskId);
-  setLocalStorage(STORAGE_KEY, filtered);
 }
 
 // 태스크 ID로 가져오기

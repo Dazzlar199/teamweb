@@ -1,0 +1,217 @@
+{
+  "metadata": {
+    "generated": "2026-02-04",
+    "version": "1.0.0",
+    "project_name": "Team Dashboard (특별시)",
+    "primary_app": "apps/team-dashboard",
+    "framework": "Next.js 16.1.1",
+    "react_version": "19.2.3",
+    "typescript": true
+  },
+  "recent_commits": [
+    {
+      "hash": "1726fe03",
+      "date": "2026-02-04",
+      "message": "fix: add timeout and error handling for middleware to prevent 504 errors",
+      "impact": "critical",
+      "files_changed": [
+        "apps/team-dashboard/lib/supabase/middleware.ts",
+        "apps/team-dashboard/middleware.ts"
+      ]
+    },
+    {
+      "hash": "ebc12a56",
+      "date": "2026-01-16",
+      "message": "fix: optimize React Context, remove hardcoded team names, and fix async operations",
+      "impact": "high"
+    },
+    {
+      "hash": "cb89a135",
+      "date": "2026-01-16",
+      "message": "fix: complete Supabase sync fixes for tasks, messages, and notifications",
+      "impact": "high"
+    }
+  ],
+  "architecture": {
+    "storage_strategy": "hybrid",
+    "primary_database": "Supabase (PostgreSQL)",
+    "fallback_storage": ["localStorage", "IndexedDB"],
+    "authentication": "Supabase SSR Auth",
+    "state_management": "React Context"
+  },
+  "routes": [
+    {"path": "/", "file": "app/page.tsx", "description": "Dashboard home"},
+    {"path": "/calendar", "file": "app/calendar/page.tsx", "description": "Calendar view"},
+    {"path": "/communication", "file": "app/communication/page.tsx", "description": "Team posts"},
+    {"path": "/documents", "file": "app/documents/page.tsx", "description": "Document management"},
+    {"path": "/files", "file": "app/files/page.tsx", "description": "File uploads"},
+    {"path": "/finance", "file": "app/finance/page.tsx", "description": "Financial tracking"},
+    {"path": "/interviews", "file": "app/interviews/page.tsx", "description": "Customer interviews"},
+    {"path": "/login", "file": "app/login/page.tsx", "description": "Authentication"},
+    {"path": "/messages", "file": "app/messages/page.tsx", "description": "Messaging"},
+    {"path": "/research", "file": "app/research/page.tsx", "description": "Research notes"},
+    {"path": "/surveys", "file": "app/surveys/page.tsx", "description": "Survey management"},
+    {"path": "/tasks", "file": "app/tasks/page.tsx", "description": "Task management"},
+    {"path": "/yechangpack", "file": "app/yechangpack/page.tsx", "description": "2026 Startup Package"}
+  ],
+  "critical_files": {
+    "authentication": [
+      "apps/team-dashboard/middleware.ts",
+      "apps/team-dashboard/lib/supabase/middleware.ts",
+      "apps/team-dashboard/lib/context/UserContext.tsx",
+      "apps/team-dashboard/lib/supabase/client.ts",
+      "apps/team-dashboard/lib/supabase/server.ts"
+    ],
+    "data_sync": [
+      "apps/team-dashboard/lib/utils/task.ts",
+      "apps/team-dashboard/lib/utils/event.ts",
+      "apps/team-dashboard/lib/utils/message.ts",
+      "apps/team-dashboard/lib/context/DataContext.tsx"
+    ],
+    "ui_core": [
+      "apps/team-dashboard/app/layout.tsx",
+      "apps/team-dashboard/components/layout/MainLayout.tsx",
+      "apps/team-dashboard/components/layout/Sidebar.tsx"
+    ],
+    "types": [
+      "apps/team-dashboard/lib/types/index.ts",
+      "apps/team-dashboard/lib/types/task.ts",
+      "apps/team-dashboard/lib/types/event.ts",
+      "apps/team-dashboard/lib/types/user.ts"
+    ]
+  },
+  "supabase_tables": [
+    "tasks",
+    "events",
+    "posts",
+    "messages",
+    "notifications",
+    "activity_logs",
+    "interviews",
+    "surveys",
+    "documents"
+  ],
+  "user_roles": [
+    {"role": "ADMIN", "users": ["정우", "Dazzlar"], "permissions": "full_access"},
+    {"role": "MEMBER", "users": [], "permissions": "standard_access"},
+    {"role": "GUEST", "users": [], "permissions": "read_only"}
+  ],
+  "problem_areas": [
+    {
+      "area": "Middleware Timeout",
+      "severity": "high",
+      "status": "mitigated",
+      "location": "lib/supabase/middleware.ts",
+      "description": "Auth checks could timeout on slow connections causing 504 errors",
+      "mitigation": "5-second timeout wrapper implemented 2026-02-04",
+      "remaining_risk": "Timeout might be too aggressive, no retry logic"
+    },
+    {
+      "area": "Dual Storage Consistency",
+      "severity": "medium",
+      "status": "active",
+      "location": "lib/utils/*.ts",
+      "description": "Data can diverge between Supabase and localStorage",
+      "mitigation": "Manual sync pattern in each utility",
+      "remaining_risk": "No conflict resolution, manual cache invalidation"
+    },
+    {
+      "area": "React Context Performance",
+      "severity": "medium",
+      "status": "active",
+      "location": "lib/context/DataContext.tsx",
+      "description": "Large arrays in Context trigger unnecessary re-renders",
+      "mitigation": "useMemo/useCallback optimizations",
+      "remaining_risk": "Performance degradation with >100 items"
+    },
+    {
+      "area": "File Storage Limitations",
+      "severity": "medium",
+      "status": "active",
+      "location": "lib/utils/storage.ts",
+      "description": "Files stored only in IndexedDB with quota limits",
+      "mitigation": "None",
+      "remaining_risk": "Quota exceeded errors, no server backup"
+    },
+    {
+      "area": "Type Safety Gaps",
+      "severity": "low",
+      "status": "active",
+      "location": "Various conversion points",
+      "description": "Manual snake_case/camelCase conversions, no runtime validation",
+      "mitigation": "TypeScript compile-time checks",
+      "remaining_risk": "Runtime type mismatches possible"
+    }
+  ],
+  "dependencies": {
+    "core": {
+      "next": "16.1.1",
+      "react": "19.2.3",
+      "react-dom": "19.2.3",
+      "typescript": "^5"
+    },
+    "supabase": {
+      "@supabase/ssr": "^0.8.0",
+      "@supabase/supabase-js": "^2.89.0"
+    },
+    "ui": {
+      "tailwindcss": "^4",
+      "@tailwindcss/postcss": "^4",
+      "quill": "^2.0.3",
+      "react-quill-new": "^3.3.3"
+    },
+    "utilities": {
+      "exceljs": "^4.4.0",
+      "file-saver": "^2.0.5"
+    }
+  },
+  "environment_variables": {
+    "required": [
+      "NEXT_PUBLIC_SUPABASE_URL",
+      "NEXT_PUBLIC_SUPABASE_ANON_KEY"
+    ],
+    "validation_function": "lib/supabase/client.ts::isSupabaseConfigured()"
+  },
+  "statistics": {
+    "total_routes": 13,
+    "total_components": 28,
+    "type_definitions": 10,
+    "utility_modules": 20,
+    "code_size_kb": 732,
+    "documentation_mb": 123
+  },
+  "testing": {
+    "status": "none",
+    "recommended_framework": "Vitest + React Testing Library",
+    "priority_areas": [
+      "Middleware timeout logic",
+      "Supabase/localStorage sync",
+      "Permission checks",
+      "File upload quota handling"
+    ]
+  },
+  "deployment": {
+    "platform": "Vercel",
+    "root_directory": "apps/team-dashboard",
+    "framework_preset": "Next.js",
+    "build_command": "auto",
+    "output_directory": ".next"
+  },
+  "quick_commands": {
+    "dev": "npm run dev",
+    "build": "npm run build",
+    "start": "npm run start",
+    "lint": "npm run lint"
+  },
+  "technical_debt": [
+    {"priority": "high", "task": "Add comprehensive error logging (Sentry)"},
+    {"priority": "high", "task": "Implement retry logic for failed Supabase operations"},
+    {"priority": "high", "task": "Add loading states and skeleton screens"},
+    {"priority": "high", "task": "Create E2E tests for critical paths"},
+    {"priority": "medium", "task": "Migrate files to Supabase Storage"},
+    {"priority": "medium", "task": "Add runtime validation (Zod schemas)"},
+    {"priority": "medium", "task": "Optimize Context re-renders"},
+    {"priority": "low", "task": "Generalize Yechangpack module"},
+    {"priority": "low", "task": "Add i18n support"}
+  ]
+}

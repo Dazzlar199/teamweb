@@ -100,9 +100,19 @@ export default function LoginPage() {
         throw signInError;
       }
 
-      // 성공
-      router.push("/");
-      router.refresh();
+      // 성공 - 세션 확인 후 리다이렉트
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        // 약간의 대기 후 리다이렉트 (쿠키 완전히 설정되도록)
+        await new Promise(resolve => setTimeout(resolve, 100));
+
+        const searchParams = new URLSearchParams(window.location.search);
+        const next = searchParams.get("next") || "/";
+        router.push(next);
+        router.refresh();
+      } else {
+        throw new Error("세션 생성에 실패했습니다. 다시 시도해주세요.");
+      }
 
     } catch (err: unknown) {
       if (err instanceof Error) {

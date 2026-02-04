@@ -4,6 +4,9 @@ import "./globals.css";
 import MainLayout from "@/components/layout/MainLayout";
 import { UserProvider } from "@/lib/context/UserContext";
 import { ToastProvider } from "@/lib/context/ToastContext";
+import { PostsProvider } from "@/lib/context/PostsContext";
+import { EventsProvider } from "@/lib/context/EventsContext";
+import { TasksProvider } from "@/lib/context/TasksContext";
 import { DataProvider } from "@/lib/context/DataContext";
 
 const geistSans = Geist({
@@ -33,9 +36,15 @@ export default function RootLayout({
       >
         <UserProvider>
           <ToastProvider>
-            <DataProvider>
-              <MainLayout>{children}</MainLayout>
-            </DataProvider>
+            <PostsProvider>
+              <EventsProvider>
+                <TasksProvider>
+                  <DataProvider>
+                    <MainLayout>{children}</MainLayout>
+                  </DataProvider>
+                </TasksProvider>
+              </EventsProvider>
+            </PostsProvider>
           </ToastProvider>
         </UserProvider>
       </body>

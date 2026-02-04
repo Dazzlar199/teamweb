@@ -134,7 +134,22 @@ export async function savePost(post: Post): Promise<void> {
   const index = posts.findIndex((p) => p.id === post.id);
   const isNewPost = index < 0;
 
-  // Supabase 먼저 저장 (설정되어 있는 경우)
+  // 🔄 DATA LOSS FIX: localStorage 먼저 저장
+  if (index >= 0) {
+    posts[index] = post;
+  } else {
+    posts.unshift(post);
+  }
+
+  posts.sort((a, b) => {
+    if (a.pinned && !b.pinned) return -1;
+    if (!a.pinned && b.pinned) return 1;
+    return b.createdAt - a.createdAt;
+  });
+
+  setLocalStorage(STORAGE_KEY, posts);
+
+  // Supabase 백그라운드 동기화
   if (isSupabaseConfigured()) {
     try {
       await savePostToSupabase(post);
@@ -149,43 +164,26 @@ export async function savePost(post: Post): Promise<void> {
         }, [...TEAM_MEMBER_NAMES].filter(u => u !== post.author));
       }
     } catch (error) {
-      console.error("Supabase 게시글 저장 실패:", error);
-      throw new Error("게시글 저장에 실패했습니다. 다시 시도해주세요.");
+      console.error("Supabase 게시글 동기화 실패 (로컬 저장 완료):", error);
     }
   }
-
-  // Supabase 성공 후 localStorage 업데이트
-  if (index >= 0) {
-    posts[index] = post;
-  } else {
-    posts.unshift(post);
-  }
-
-  posts.sort((a, b) => {
-    if (a.pinned && !b.pinned) return -1;
-    if (!a.pinned && b.pinned) return 1;
-    return b.createdAt - a.createdAt;
-  });
-
-  setLocalStorage(STORAGE_KEY, posts);
 }
 
 // 게시글 삭제
 export async function deletePost(postId: string): Promise<void> {
-  // Supabase 먼저 삭제 (설정되어 있는 경우)
+  // 🔄 DATA LOSS FIX: localStorage 먼저 삭제
+  const posts = getLocalStorage<Post[]>(STORAGE_KEY, []);
+  const filtered = posts.filter((p) => p.id !== postId);
+  setLocalStorage(STORAGE_KEY, filtered);
+
+  // Supabase 백그라운드 동기화
   if (isSupabaseConfigured()) {
     try {
       await deletePostFromSupabase(postId);
     } catch (error) {
-      console.error("Supabase 게시글 삭제 실패:", error);
-      throw new Error("게시글 삭제에 실패했습니다. 다시 시도해주세요.");
+      console.error("Supabase 게시글 삭제 동기화 실패 (로컬 삭제 완료):", error);
     }
   }
-
-  // Supabase 성공 후 localStorage 업데이트
-  const posts = getLocalStorage<Post[]>(STORAGE_KEY, []);
-  const filtered = posts.filter((p) => p.id !== postId);
-  setLocalStorage(STORAGE_KEY, filtered);
 }
 
 // 게시글 ID로 가져오기
