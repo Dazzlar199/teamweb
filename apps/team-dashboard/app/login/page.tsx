@@ -16,16 +16,19 @@ export default function LoginPage() {
   const supabase = createClient();
 
   // 환경 변수 로드 체크
+  const [isLocalMode, setIsLocalMode] = useState(false);
+
   useEffect(() => {
     const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
     const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-    console.log("Supabase Config Check:", { 
-      hasUrl: !!url, 
+    console.log("Supabase Config Check:", {
+      hasUrl: !!url,
       hasKey: !!key,
-      urlPrefix: url?.substring(0, 10) 
+      urlPrefix: url?.substring(0, 10)
     });
     if (!url || !key) {
-      setError("Supabase 환경 변수가 설정되지 않았습니다. 서버를 재시작해주세요.");
+      console.warn("⚠️ Supabase 미설정 - 로컬 모드로 전환");
+      setIsLocalMode(true);
     }
   }, []);
 
@@ -56,6 +59,18 @@ export default function LoginPage() {
 
       if (trimmedPassword !== REQUIRED_PASSWORD) {
         throw new Error("비밀번호가 올바르지 않습니다.");
+      }
+
+      // 🔄 로컬 모드: Supabase 없이 localStorage만 사용
+      if (isLocalMode) {
+        console.log("🏠 로컬 모드 로그인:", trimmedName);
+        localStorage.setItem("local-user", JSON.stringify({ name: trimmedName }));
+
+        const searchParams = new URLSearchParams(window.location.search);
+        const next = searchParams.get("next") || "/";
+        router.push(next);
+        router.refresh();
+        return;
       }
 
       // 2. Supabase용 이메일 생성

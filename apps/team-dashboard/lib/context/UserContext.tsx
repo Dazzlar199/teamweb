@@ -21,6 +21,18 @@ export function UserProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     // 초기 세션 확인
     const checkSession = async () => {
+      // 🔄 로컬 모드 체크
+      const localUser = localStorage.getItem("local-user");
+      if (localUser) {
+        try {
+          const userData = JSON.parse(localUser);
+          setUser(getUserInfo(userData.name));
+          return;
+        } catch (e) {
+          console.error("로컬 사용자 파싱 실패:", e);
+        }
+      }
+
       const { data: { session } } = await supabase.auth.getSession();
       if (session?.user) {
          // 이메일 주소의 로컬 파트(아이디)를 이름으로 사용하거나, 메타데이터 사용
@@ -28,7 +40,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
         setUser(getUserInfo(name));
       }
     };
-    
+
     checkSession();
 
     // Auth 상태 변경 감지
@@ -46,6 +58,8 @@ export function UserProvider({ children }: { children: ReactNode }) {
 
   const handleSetUser = useCallback(async (newUser: User | null) => {
     if (newUser === null) {
+      // 🔄 로컬 모드 로그아웃
+      localStorage.removeItem("local-user");
       await supabase.auth.signOut();
       setUser(null);
     } else {
