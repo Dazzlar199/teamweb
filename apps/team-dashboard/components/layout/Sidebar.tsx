@@ -139,9 +139,27 @@ export default function Sidebar() {
           </div>
           <button
             onClick={async () => {
-              await setUser(null);
-              localStorage.removeItem("team-dashboard-user");
-              router.push('/login');
+              try {
+                console.log("🚪 로그아웃 시작...");
+
+                // 모든 localStorage 클리어
+                localStorage.removeItem("team-dashboard-user");
+                localStorage.removeItem("local-user");
+
+                // UserContext의 setUser(null) 호출 (Supabase signOut 포함)
+                await setUser(null);
+
+                console.log("✅ 로그아웃 완료");
+
+                // 로그인 페이지로 이동
+                router.push('/login');
+                router.refresh();
+              } catch (error) {
+                console.error("❌ 로그아웃 실패:", error);
+                // 에러가 발생해도 강제 로그아웃
+                localStorage.clear();
+                window.location.href = '/login';
+              }
             }}
             className="w-full py-2 text-[11.5px] font-bold text-slate-500 hover:text-rose-600 bg-slate-50 hover:bg-rose-50 rounded-lg transition-all border border-slate-100 hover:border-rose-100"
           >

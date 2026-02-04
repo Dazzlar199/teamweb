@@ -5,7 +5,7 @@
 // - useEvents() from "@/lib/context/EventsContext"
 // - useTasks() from "@/lib/context/TasksContext"
 
-import { createContext, useContext, ReactNode } from "react";
+import { createContext, useContext, ReactNode, useMemo } from "react";
 import { usePosts } from "./PostsContext";
 import { useEvents } from "./EventsContext";
 import { useTasks } from "./TasksContext";
@@ -34,7 +34,8 @@ export function DataProvider({ children }: { children: ReactNode}) {
   const eventsContext = useEvents();
   const tasksContext = useTasks();
 
-  const contextValue = {
+  // ✅ useMemo로 불필요한 리렌더링 방지
+  const contextValue = useMemo(() => ({
     posts: postsContext.posts,
     events: eventsContext.events,
     tasks: tasksContext.tasks,
@@ -44,7 +45,17 @@ export function DataProvider({ children }: { children: ReactNode}) {
     setPosts: postsContext.setPosts,
     setEvents: eventsContext.setEvents,
     setTasks: tasksContext.setTasks,
-  };
+  }), [
+    postsContext.posts,
+    postsContext.refreshPosts,
+    postsContext.setPosts,
+    eventsContext.events,
+    eventsContext.refreshEvents,
+    eventsContext.setEvents,
+    tasksContext.tasks,
+    tasksContext.refreshTasks,
+    tasksContext.setTasks,
+  ]);
 
   return (
     <DataContext.Provider value={contextValue}>
