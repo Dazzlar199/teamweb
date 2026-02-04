@@ -21,13 +21,18 @@ export function PostsProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
-    const initData = async () => {
-      const data = await getPosts();
-      startTransition(() => {
-        setPosts(data);
-      });
-    };
-    initData();
+    // ⚡ 100ms 지연 후 로드 (페이지 로딩 우선)
+    const timer = setTimeout(() => {
+      const initData = async () => {
+        const data = await getPosts();
+        startTransition(() => {
+          setPosts(data);
+        });
+      };
+      initData();
+    }, 100);
+
+    return () => clearTimeout(timer);
 
     // 타 탭에서의 변경 감지 (디바운싱)
     let timeout: NodeJS.Timeout;

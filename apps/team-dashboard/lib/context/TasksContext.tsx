@@ -21,13 +21,18 @@ export function TasksProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
-    const initData = async () => {
-      const data = await getTasks();
-      startTransition(() => {
-        setTasks(data);
-      });
-    };
-    initData();
+    // ⚡ 200ms 지연 후 로드 (Events 다음)
+    const timer = setTimeout(() => {
+      const initData = async () => {
+        const data = await getTasks();
+        startTransition(() => {
+          setTasks(data);
+        });
+      };
+      initData();
+    }, 200);
+
+    return () => clearTimeout(timer);
 
     // 타 탭에서의 변경 감지 (디바운싱)
     let timeout: NodeJS.Timeout;

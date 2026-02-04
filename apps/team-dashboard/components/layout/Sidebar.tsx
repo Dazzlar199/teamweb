@@ -102,6 +102,7 @@ export default function Sidebar() {
                 ) : (
                   <Link
                     href={item.href}
+                    prefetch={true}
                     className={`flex items-center gap-3 px-4 py-2.5 rounded-xl text-[13.5px] font-bold transition-all ${
                       isActive
                         ? "bg-indigo-50 text-indigo-600 shadow-sm border border-indigo-100/50"
